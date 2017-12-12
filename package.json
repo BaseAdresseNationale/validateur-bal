@@ -1,0 +1,43 @@
+{
+  "name": "@etalab/bal",
+  "version": "0.1.0",
+  "description": "Outils permettant de manipuler les bases Adresse locales",
+  "repository": "git@github.com:etalab/base-adresse-locale.git",
+  "author": "Team Geo <geo@data.gouv.fr>",
+  "license": "MIT",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "index.js",
+  "bin": {
+    "bal": "bin/bal"
+  },
+  "scripts": {
+    "lint": "xo",
+    "build": "pkg ."
+  },
+  "dependencies": {
+    "blob-to-buffer": "^1.2.6",
+    "jschardet-french": "^0.0.1",
+    "luxon": "^0.2.5",
+    "papaparse": "^4.3.6",
+    "proj4": "^2.4.4",
+    "strip-bom": "^3.0.0",
+    "yargs": "^10.0.3"
+  },
+  "devDependencies": {
+    "pkg": "^4.3.0-beta.1",
+    "xo": "^0.18.2"
+  },
+  "engines": {
+    "node": ">= 8"
+  },
+  "xo": {
+    "space": 2,
+    "semicolon": false
+  },
+  "pkg": {
+    "scripts": "lib/**/*.js"
+  }
+}
