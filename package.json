@@ -1,6 +1,6 @@
 {
   "name": "@etalab/bal",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Outils permettant de manipuler les bases Adresse locales",
   "repository": "git@github.com:etalab/base-adresse-locale.git",
   "author": "Team Geo <geo@data.gouv.fr>",
