@@ -1,0 +1,16 @@
+cle_interop;uid_adresse;voie_nom;numero;suffixe;commune_nom;position;x;y;long;lat;source;date_der_maj
+A7482_6956_11;;Rue du Verdon;11;;Strasbourg;Entrée;1049409.0;6838286.4;7.737072;48.55045;Ville de Strasbourg;2013.01.26
+00000_5513_52;;Rue de la Renaissance;52;;Strasbourg;entrée;1052800.8;6845467.7;7.788841;48.613092;Ville de Strasbourg;
+67482_0340_43;;Rue de l'Aubépine;43;;Strasbourg;entrée;1051485.9;6844700.9;7.770409;48.606923;Ville de Strasbourg;2013-01-26
+67482_4765_195;;Route Oberhausbergen;195;;Strasbourg;entrée;1046725.9;6843246.2;7.704784;48.596428;Ville de Strasbourg;2013-01-26
+67482_0340_45;;Rue de l'Aubépine;45;;Strasbourg;Entrée;1051522.3;6844710.5;7.770909;48.606988;Ville de Strasbourg;2013-01-26
+67482_2498_16;;Avenue François Mitterrand;16;;Strasbourg;ddfdf;1046166.3;6842137.1;7.696314;48.586769;Ville de Strasbourg;2016-01-25
+67482_5740_8;;Rue du Rosslauf;8;;Strasbourg;;1047947.1;6843172.6;7.721256;48.595111;Ville de Strasbourg;2013-01-26
+67482_5740_8_BIS;;Rue du Rosslauf;8;;Strasbourg;;1047947.1;6843172.6;7.721256;48.595111;Ville de Strasbourg;2013-01-26
+35001_0010_00003;;Square Ella Maillart;3;;Acigné;bâtiment;363406.065895971;6791854.24255302;-1.52766874865078;48.1401803364252;Rennes Métropole;2013-10-23
+35001_0010_00005;;Square Ella Maillart;5;;Acigné;bâtiment;363405.727692226;6791858.39216199;-1.52767648509385;48.1402174400142;Rennes Métropole;2013-10-23
+35001_XX0010_3;;Square Ella Maillart;3;;Acigné;bâtiment;363406.065895971;6791854.24255302;-1.52766874865078;48.1401803364252;Rennes Métropole;2013-10-23
+35001_0010_5_BIS;;Square Ella Maillart;5;;Acigné;bâtiment;363405.727692226;6791858.39216199;-1.52767648509385;48.1402174400142;Rennes Métropole;2013-10-23
+35001_0010_00005_BIS;;Square Ella Maillart;5;;Acigné;bâtiment;363405.727692226;6791858.39216199;-1.52767648509385;48.1402174400142;Rennes Métropole;2013-10-23
+35001_0010_00005_3djsoi5;;Square Ella Maillart;5;;Acigné;bâtiment;363405.727692226;6791858.39216199;-1.52767648509385;48.1402174400142;Rennes Métropole;2013-10-23
+29189_0421_00163;;rue Eric Tabarly;163,0000000000;;PLOUGASTEL-DAOULAS;parcelle;156513.07;6834959.14;-4.35158094561215;48.3870664568835;BM_pays_de_brest;2017-07-25

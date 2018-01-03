@@ -58,7 +58,7 @@ typings/
 .env
 
 .DS_Store
-data
+/data
 
 bal-linux
 bal-macos
