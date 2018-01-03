@@ -4,7 +4,7 @@
 const yargs = require('yargs')
 
 yargs
-  .usage('Utilisation: $0 <command> [options]')
+  .usage('Utilisation: $0 <command>')
   .commandDir('../lib/commands')
   .example('$0 validate xxxxxx_bal_xxxxxxxxx.csv', 'Validation d’un fichier BAL')
   .help()
