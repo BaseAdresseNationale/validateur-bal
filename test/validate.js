@@ -17,3 +17,8 @@ test('validate a file', async t => {
   const report = await validate(buffer)
   t.is(report.parseMeta.encoding, 'UTF-8')
 })
+
+test('validate a binary file', async t => {
+  const buffer = await readAsBuffer('troll.png')
+  await t.throws(validate(buffer))
+})
