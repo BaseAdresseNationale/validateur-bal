@@ -1,1 +1,1 @@
-module.exports = require('./lib/validator/validate')
+exports.validate = require('./lib/validator/validate')
