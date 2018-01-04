@@ -34,3 +34,7 @@ Tous les champs du modèle ont été trouvés !
 
 Terminé !
 ```
+
+## Aide
+
+En cas de difficultés vous pourrez trouver de l'aide ici : [https://gitter.im/etalab/outils-bal](https://gitter.im/etalab/outils-bal)
