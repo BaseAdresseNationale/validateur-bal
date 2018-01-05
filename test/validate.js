@@ -20,5 +20,11 @@ test('validate a file', async t => {
 
 test('validate a binary file', async t => {
   const buffer = await readAsBuffer('troll.png')
-  await t.throws(validate(buffer))
+  await t.throws(validate(buffer), 'Unable to detect encoding')
+})
+
+test('validate an arbitrary CSV file', async t => {
+  const buffer = await readAsBuffer('junk.ascii.csv')
+  const report = await validate(buffer)
+  t.is(report.notFoundFields.length, 13)
 })
