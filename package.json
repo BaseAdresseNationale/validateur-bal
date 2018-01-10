@@ -23,7 +23,8 @@
     "lint": "xo",
     "build": "pkg .",
     "transpile": "babel lib --out-dir browser",
-    "test": "ava"
+    "test": "ava",
+    "prepublishOnly": "npm run transpile"
   },
   "dependencies": {
     "blob-to-buffer": "^1.2.6",
