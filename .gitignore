@@ -63,3 +63,5 @@ typings/
 bal-linux
 bal-macos
 bal-win.exe
+
+browser/

@@ -9,10 +9,11 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "index.js",
+  "main": "./lib/index.js",
   "files": [
     "bin",
     "lib",
+    "browser",
     "*.js"
   ],
   "bin": {
@@ -21,6 +22,7 @@
   "scripts": {
     "lint": "xo",
     "build": "pkg .",
+    "transpile": "babel lib --out-dir browser",
     "test": "ava"
   },
   "dependencies": {
@@ -34,6 +36,8 @@
   },
   "devDependencies": {
     "ava": "^0.24.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "pkg": "^4.3.0-beta.1",
     "xo": "^0.18.2"
   },
@@ -46,5 +50,26 @@
   },
   "pkg": {
     "scripts": "lib/**/*.js"
+  },
+  "browser": {
+    "./lib/index.js": "./browser/index.js"
+  },
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "browsers": [
+              "> 1% in FR",
+              "last 2 versions",
+              "ie 11",
+              "Firefox ESR"
+            ],
+            "uglify": true
+          }
+        }
+      ]
+    ]
   }
 }
