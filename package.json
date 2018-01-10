@@ -30,7 +30,6 @@
     "luxon": "^0.2.5",
     "papaparse": "^4.3.6",
     "proj4": "^2.4.4",
-    "strip-bom": "^3.0.0",
     "yargs": "^10.0.3"
   },
   "devDependencies": {
