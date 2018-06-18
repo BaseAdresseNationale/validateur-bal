@@ -27,12 +27,12 @@
     "prepublishOnly": "npm run transpile"
   },
   "dependencies": {
-    "blob-to-buffer": "^1.2.6",
+    "blob-to-buffer": "^1.2.8",
     "date-fns": "^1.29.0",
     "debug": "^3.1.0",
     "jschardet-french": "^0.0.1",
-    "papaparse": "^4.3.6",
-    "yargs": "^10.0.3"
+    "papaparse": "^4.5.0",
+    "yargs": "^11.0.0"
   },
   "devDependencies": {
     "ava": "^0.25.0",
