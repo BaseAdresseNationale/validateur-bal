@@ -5,7 +5,7 @@ const fs = require('fs')
 const {promisify} = require('util')
 const test = require('ava')
 
-const {validate} = require('../')
+const {validate} = require('..')
 
 const readFile = promisify(fs.readFile)
 
@@ -32,8 +32,8 @@ test('validate a file with aliases', async t => {
     uid_adresse: 'uid_adress',
     x: 'x_l93',
     y: 'y_l93'
-  })
-  ;[
+  });
+  [
     'cle_interop',
     'uid_adresse',
     'voie_nom',
