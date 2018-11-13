@@ -9,7 +9,7 @@ const {validate} = require('..')
 
 const readFile = promisify(fs.readFile)
 
-async function readAsBuffer(relativePath) {
+function readAsBuffer(relativePath) {
   const absolutePath = join(__dirname, 'data', relativePath)
   return readFile(absolutePath)
 }
