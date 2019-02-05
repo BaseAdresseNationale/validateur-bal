@@ -35,6 +35,17 @@ Tous les champs du modèle ont été trouvés !
 Terminé !
 ```
 
+## Navigateur
+
+Cette bibliothèque expose un point d’entrée `browser` pour être utilisée dans une application web.
+Afin de fonctionner dans un plus grand nombre de navigateurs, elle est *transpilée* avec `babel` – avec le plugin `@babel/plugin-transform-runtime`.
+
+Il sera donc nécessaire d’installer `@babel/runtime-corejs2` :
+
+```bash
+npm install @etalab/bal @babel/runtime-corejs2
+```
+
 ## Aide
 
 En cas de difficultés vous pourrez trouver de l'aide ici : [https://gitter.im/etalab/outils-bal](https://gitter.im/etalab/outils-bal)
