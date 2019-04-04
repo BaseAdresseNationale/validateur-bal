@@ -23,7 +23,7 @@
     "lint": "xo",
     "build": "pkg .",
     "transpile": "babel lib --out-dir browser",
-    "test": "ava",
+    "test": "nyc ava",
     "prepublishOnly": "npm run transpile"
   },
   "dependencies": {
@@ -41,6 +41,8 @@
     "@babel/plugin-transform-runtime": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
     "ava": "^1.4.1",
+    "codecov": "^3.3.0",
+    "nyc": "^13.3.0",
     "pkg": "^4.3.7",
     "xo": "^0.24.0"
   },
