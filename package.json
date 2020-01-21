@@ -22,7 +22,7 @@
   "scripts": {
     "lint": "xo",
     "build": "pkg --targets node12-linux-x64,node12-macos-x64,node12-win-x64 .",
-    "transpile": "babel lib --out-dir browser",
+    "transpile": "rm -rf browser && babel lib --out-dir browser",
     "test": "nyc ava",
     "prepublishOnly": "npm run transpile"
   },
