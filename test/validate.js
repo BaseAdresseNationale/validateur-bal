@@ -54,7 +54,7 @@ test('validate a file with aliases', async t => {
 
 test('validate a binary file', async t => {
   const buffer = await readAsBuffer('troll.png')
-  await t.throwsAsync(() => validate(buffer), 'Unable to detect encoding')
+  await t.throwsAsync(() => validate(buffer), {message: 'Unable to detect encoding'})
 })
 
 test('validate an arbitrary CSV file', async t => {
