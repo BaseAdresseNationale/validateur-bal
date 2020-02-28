@@ -68,14 +68,6 @@
     "ie 11",
     "Firefox ESR"
   ],
-  "ava": {
-    "babel": {
-      "testOptions": {
-        "babelrc": false,
-        "configFile": false
-      }
-    }
-  },
   "babel": {
     "presets": [
       "@babel/preset-env"
