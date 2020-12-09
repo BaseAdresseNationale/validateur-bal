@@ -27,23 +27,23 @@
     "prepublishOnly": "npm run transpile"
   },
   "dependencies": {
-    "blob-to-buffer": "^1.2.8",
-    "date-fns": "^2.10.0",
-    "debug": "^4.1.1",
+    "blob-to-buffer": "^1.2.9",
+    "date-fns": "^2.16.1",
+    "debug": "^4.3.1",
     "jschardet-french": "^0.0.1",
-    "lodash": "^4.17.15",
-    "papaparse": "^5.1.1",
-    "yargs": "^15.1.0"
+    "lodash": "^4.17.20",
+    "papaparse": "^5.3.0",
+    "yargs": "^16.2.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.1",
-    "@babel/core": "^7.10.2",
-    "@babel/plugin-transform-runtime": "^7.10.1",
-    "@babel/preset-env": "^7.10.2",
-    "ava": "^3.9.0",
-    "codecov": "^3.7.0",
+    "@babel/cli": "^7.12.8",
+    "@babel/core": "^7.12.9",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.7",
+    "ava": "^3.14.0",
+    "codecov": "^3.8.1",
     "nyc": "^15.1.0",
-    "pkg": "^4.4.8",
+    "pkg": "^4.4.9",
     "xo": "^0.27.2"
   },
   "engines": {
