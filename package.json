@@ -53,7 +53,10 @@
     "space": 2,
     "semicolon": false,
     "rules": {
-      "unicorn/prefer-string-slice": "off"
+      "unicorn/prefer-string-slice": "off",
+      "unicorn/import-style": "off",
+      "unicorn/prevent-abbreviations": "off",
+      "unicorn/no-reduce": "off"
     }
   },
   "pkg": {
