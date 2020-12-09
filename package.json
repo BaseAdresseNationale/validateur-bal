@@ -27,6 +27,7 @@
     "prepublishOnly": "npm run transpile"
   },
   "dependencies": {
+    "@etalab/decoupage-administratif": "^0.8.0",
     "blob-to-buffer": "^1.2.9",
     "date-fns": "^2.16.1",
     "debug": "^4.3.1",
