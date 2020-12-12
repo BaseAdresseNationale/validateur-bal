@@ -21,13 +21,13 @@
   },
   "scripts": {
     "lint": "xo",
+    "build-minicog": "node scripts/build-minicog",
     "build": "pkg --targets node12-linux-x64,node12-macos-x64,node12-win-x64 .",
     "transpile": "rm -rf browser && babel lib --out-dir browser",
     "test": "nyc ava",
-    "prepublishOnly": "npm run transpile"
+    "prepublishOnly": "yarn build-minicog && yarn transpile"
   },
   "dependencies": {
-    "@etalab/decoupage-administratif": "^0.8.0",
     "blob-to-buffer": "^1.2.9",
     "date-fns": "^2.16.1",
     "debug": "^4.3.1",
@@ -41,8 +41,10 @@
     "@babel/core": "^7.12.9",
     "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/preset-env": "^7.12.7",
+    "@etalab/decoupage-administratif": "^0.8.0",
     "ava": "^3.14.0",
     "codecov": "^3.8.1",
+    "fs-extra": "^9.0.1",
     "nyc": "^15.1.0",
     "pkg": "^4.4.9",
     "xo": "^0.36.1"
