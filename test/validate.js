@@ -26,6 +26,7 @@ test('validate a file with aliases', async t => {
   t.deepEqual(report.aliasedFields, {
     cle_interop: 'cle_intero',
     commune_nom: 'commune_no',
+    commune_insee: 'commune_in',
     date_der_maj: 'date_der_m',
     lat: 'lat_wgs84',
     long: 'long_wgs84',
@@ -60,5 +61,5 @@ test('validate a binary file', async t => {
 test('validate an arbitrary CSV file', async t => {
   const buffer = await readAsBuffer('junk.ascii.csv')
   const report = await validate(buffer)
-  t.is(report.notFoundFields.length, 13)
+  t.is(report.notFoundFields.length, 14)
 })
