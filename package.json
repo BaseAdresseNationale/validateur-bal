@@ -71,7 +71,6 @@
   "browserslist": [
     "> 1% in FR",
     "last 2 versions",
-    "ie 11",
     "Firefox ESR"
   ],
   "babel": {
