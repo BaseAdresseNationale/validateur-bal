@@ -87,6 +87,10 @@
           "regenerator": true
         }
       ]
+    ],
+    "ignore": [
+      "**/__tests__",
+      "**/commands"
     ]
   }
 }
