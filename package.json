@@ -42,7 +42,7 @@
     "@babel/plugin-transform-runtime": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "@etalab/decoupage-administratif": "^0.8.0",
-    "ava": "^3.14.0",
+    "ava": "^3.15.0",
     "codecov": "^3.8.1",
     "fs-extra": "^9.0.1",
     "nyc": "^15.1.0",
