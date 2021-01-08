@@ -45,10 +45,10 @@ Terminé !
 Cette bibliothèque expose un point d’entrée `browser` pour être utilisée dans une application web.
 Afin de fonctionner dans un plus grand nombre de navigateurs, elle est *transpilée* avec `babel` – avec le plugin `@babel/plugin-transform-runtime`.
 
-Il sera donc nécessaire d’installer `@babel/runtime-corejs2` :
+Il sera donc nécessaire d’installer `@babel/runtime` :
 
 ```bash
-npm install @etalab/bal @babel/runtime-corejs2
+npm install @etalab/bal @babel/runtime
 ```
 
 ## Aide
