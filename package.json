@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "blob-to-buffer": "^1.2.9",
+    "chalk": "^4.1.0",
     "date-fns": "^2.16.1",
     "iconv-lite": "^0.6.2",
     "jschardet-french": "^0.0.1",
