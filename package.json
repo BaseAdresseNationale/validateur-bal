@@ -68,7 +68,7 @@
   },
   "browser": {
     "./lib/index.js": "./browser/index.js",
-    "./browser/validate/index.js": "./browser/validate/parse/blob.js"
+    "./browser/validate/parse/index.js": "./browser/validate/parse/blob.js"
   },
   "browserslist": [
     "> 1% in FR",
