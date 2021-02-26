@@ -50,7 +50,3 @@ Il sera donc nécessaire d’installer `@babel/runtime` :
 ```bash
 npm install @etalab/bal @babel/runtime
 ```
-
-## Aide
-
-En cas de difficultés vous pourrez trouver de l'aide ici : [https://gitter.im/etalab/outils-bal](https://gitter.im/etalab/outils-bal)

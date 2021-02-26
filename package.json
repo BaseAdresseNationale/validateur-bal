@@ -2,7 +2,7 @@
   "name": "@etalab/bal",
   "version": "1.2.0",
   "description": "Outils permettant de manipuler les bases Adresse locales",
-  "repository": "git@github.com:etalab/bal.git",
+  "repository": "https://github.com/etalab/bal",
   "author": "Équipe Adresse <adresse@data.gouv.fr>",
   "license": "MIT",
   "private": false,
