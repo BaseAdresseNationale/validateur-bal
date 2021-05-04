@@ -40,13 +40,13 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.13.16",
-    "@babel/core": "^7.13.16",
+    "@babel/core": "^7.14.0",
     "@babel/plugin-transform-runtime": "^7.13.15",
-    "@babel/preset-env": "^7.13.15",
+    "@babel/preset-env": "^7.14.1",
     "@etalab/decoupage-administratif": "^0.8.0",
     "ava": "^3.15.0",
-    "codecov": "^3.8.1",
-    "fs-extra": "^9.1.0",
+    "codecov": "^3.8.2",
+    "fs-extra": "^10.0.0",
     "nyc": "^15.1.0",
     "pkg": "^5.1.0",
     "xo": "^0.39.1"
