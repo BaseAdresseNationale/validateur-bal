@@ -23,7 +23,7 @@
   "scripts": {
     "lint": "xo",
     "build-minicog": "node scripts/build-minicog",
-    "build": "pkg --targets node12-linux-x64,node12-macos-x64,node12-win-x64 .",
+    "build": "pkg --targets node14-linux-x64,node14-macos-x64,node14-win-x64 .",
     "transpile": "rm -rf browser && babel lib --out-dir browser",
     "test": "nyc ava",
     "prepublishOnly": "yarn build-minicog && yarn transpile"
@@ -48,7 +48,7 @@
     "codecov": "^3.8.2",
     "fs-extra": "^10.0.0",
     "nyc": "^15.1.0",
-    "pkg": "^5.1.0",
+    "pkg": "^5.3.1",
     "xo": "^0.39.1"
   },
   "engines": {

@@ -1917,13 +1917,6 @@ ava@^3.15.0:
     write-file-atomic "^3.0.3"
     yargs "^16.2.0"
 
-axios@^0.21.1:
-  version "0.21.1"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
-  integrity sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==
-  dependencies:
-    follow-redirects "^1.10.0"
-
 babel-plugin-dynamic-import-node@^2.3.3:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/babel-plugin-dynamic-import-node/-/babel-plugin-dynamic-import-node-2.3.3.tgz#84fda19c976ec5c6defef57f9427b3def66e17a3"
@@ -3702,11 +3695,6 @@ flatted@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.1.0.tgz#a5d06b4a8b01e3a63771daa5cb7a1903e2e57067"
   integrity sha512-tW+UkmtNg/jv9CSofAKvgVcO7c2URjhTdW1ZTkcAritblu8tajiYy7YisnIflEwtKssCtOxpnBRoCB7iap0/TA==
-
-follow-redirects@^1.10.0:
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.0.tgz#f5d260f95c5f8c105894491feee5dc8993b402fe"
-  integrity sha512-0vRwd7RKQBTt+mgu87mtYeofLFZpTas2S9zY+jIeuLJMNvudIgF52nr19q40HOwH5RrhWIPuj9puybzSJiRrVg==
 
 for-in@^1.0.2:
   version "1.0.2"
@@ -6008,22 +5996,23 @@ pkg-dir@^5.0.0:
   dependencies:
     find-up "^5.0.0"
 
-pkg-fetch@3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/pkg-fetch/-/pkg-fetch-3.0.4.tgz#8321eff936bf4eb088a333cf23494be0ded173b7"
-  integrity sha512-XgMXcco5hy0/Q7OXfQ/FbBnPvS4e7gWB9BCcUWUgaHYo3JretihmJjr62EZWmxAjvodoWLGMZ3E7XHf8Q2LfBg==
+pkg-fetch@3.2.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/pkg-fetch/-/pkg-fetch-3.2.2.tgz#33f391eb176c1844e93189a32f2279b36a1ec949"
+  integrity sha512-bLhFNT4cNnONxzbHo1H2mCCKuQkCR4dgQtv0gUZnWtp8TDP0v0UAXKHG7DXhAoTC5IYP3slLsFJtIda9ksny8g==
   dependencies:
-    axios "^0.21.1"
     chalk "^4.1.0"
     fs-extra "^9.1.0"
+    https-proxy-agent "^5.0.0"
+    node-fetch "^2.6.1"
     progress "^2.0.3"
     semver "^7.3.5"
     yargs "^16.2.0"
 
-pkg@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/pkg/-/pkg-5.1.0.tgz#25f92666a4164bbc5495c862de9370ed48788667"
-  integrity sha512-rWTwvLJakQnEVg03s97KNtGkhM3pPfxk7XinjR7H1bToMZQMNpBTwahrAPoFHdQyfn6odI76DP6vX3Br9VubNQ==
+pkg@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/pkg/-/pkg-5.3.1.tgz#8f81671613b9e5bb1d83c39b2eed4799e1e679fe"
+  integrity sha512-jT/sptM1ZG++FNk+jnJYNoWLDQXYd7hqpnBhd5j18SNW1jJzNYo55RahuCiD0KN0PX9mb53GWCqKM0ia/mJytA==
   dependencies:
     "@babel/parser" "7.13.13"
     "@babel/types" "7.13.12"
@@ -6034,7 +6023,7 @@ pkg@^5.1.0:
     into-stream "^6.0.0"
     minimist "^1.2.5"
     multistream "^4.1.0"
-    pkg-fetch "3.0.4"
+    pkg-fetch "3.2.2"
     prebuild-install "6.0.1"
     progress "^2.0.3"
     resolve "^1.20.0"
