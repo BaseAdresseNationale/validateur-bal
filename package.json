@@ -1,6 +1,6 @@
 {
   "name": "@etalab/bal",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Outils permettant de manipuler les bases Adresse locales",
   "repository": "https://github.com/etalab/bal",
   "author": "Équipe Adresse <adresse@data.gouv.fr>",
