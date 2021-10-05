@@ -49,7 +49,7 @@
     "fs-extra": "^10.0.0",
     "nyc": "^15.1.0",
     "pkg": "^5.3.3",
-    "xo": "^0.39.1"
+    "xo": "^0.45.0"
   },
   "engines": {
     "node": ">= 14"
@@ -58,10 +58,14 @@
     "space": 2,
     "semicolon": false,
     "rules": {
+      "comma-dangle": "off",
       "unicorn/prefer-string-slice": "off",
       "unicorn/import-style": "off",
       "unicorn/prevent-abbreviations": "off",
-      "unicorn/no-reduce": "off"
+      "unicorn/no-reduce": "off",
+      "unicorn/prefer-module": "off",
+      "import/extensions": "off",
+      "node/prefer-global/process": "off"
     }
   },
   "pkg": {
