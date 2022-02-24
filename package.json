@@ -41,14 +41,14 @@
     "yargs": "^17.3.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.17.3",
+    "@babel/cli": "^7.17.6",
     "@babel/core": "^7.17.5",
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "@etalab/decoupage-administratif": "^2.0.0",
     "ava": "^4.0.1",
     "codecov": "^3.8.3",
-    "fs-extra": "^10.0.0",
+    "fs-extra": "^10.0.1",
     "nyc": "^15.1.0",
     "pkg": "^5.5.2",
     "xo": "^0.48.0"
@@ -60,7 +60,10 @@
     "space": 2,
     "semicolon": false,
     "rules": {
-      "comma-dangle": ["error", "never"],
+      "comma-dangle": [
+        "error",
+        "never"
+      ],
       "unicorn/import-style": "off",
       "unicorn/prevent-abbreviations": "off",
       "unicorn/no-reduce": "off",
