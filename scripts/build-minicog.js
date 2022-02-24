@@ -8,7 +8,7 @@ const PLM = new Set(['75056', '69123', '13055'])
 async function main() {
   const communesActuelles = communes
     .filter(c => ['commune-actuelle', 'arrondissement-municipal'].includes(c.type) && !PLM.has(c.code))
-    .map(c => ({code: c.code, nom: c.nom}))
+    .map(c => ({code: c.code, nom: c.nom, anciensCodes: c.anciensCodes}))
 
   const communesDelegueesAssociees = communes
     .filter(c => ['commune-associee', 'commune-deleguee'].includes(c.type))
