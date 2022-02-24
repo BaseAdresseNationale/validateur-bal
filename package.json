@@ -51,7 +51,7 @@
     "fs-extra": "^10.0.0",
     "nyc": "^15.1.0",
     "pkg": "^5.5.2",
-    "xo": "^0.47.0"
+    "xo": "^0.48.0"
   },
   "engines": {
     "node": ">= 14"
@@ -60,8 +60,7 @@
     "space": 2,
     "semicolon": false,
     "rules": {
-      "comma-dangle": "off",
-      "unicorn/prefer-string-slice": "off",
+      "comma-dangle": ["error", "never"],
       "unicorn/import-style": "off",
       "unicorn/prevent-abbreviations": "off",
       "unicorn/no-reduce": "off",
