@@ -1,8 +1,8 @@
 {
   "name": "@etalab/bal",
   "version": "2.3.3",
-  "description": "Outils permettant de manipuler les bases Adresse locales",
-  "repository": "https://github.com/etalab/bal",
+  "description": "Validateur de référence pour le format BAL",
+  "repository": "https://github.com/BaseAdresseNationale/bal",
   "author": "Équipe Adresse <adresse@data.gouv.fr>",
   "license": "MIT",
   "private": false,

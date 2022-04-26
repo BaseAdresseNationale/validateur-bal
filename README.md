@@ -12,7 +12,7 @@ Une Base Adresse Locale est typiquement une base de données voies-adresses main
 Afin de normaliser la production de fichiers informatiques d'échange pour alimenter la [Base Adresse Nationale](https://adresse.data.gouv.fr/), un groupe de travail du [Groupe SIG et topographie de l'Association des Ingénieurs Territoriaux de France](http://aitf.fr/groupe-travail/sig-topographie) (AITF) a publié une proposition de modèle de données simple.
 Ce document est disponible [ici](assets/AITF-SIG-Topo-Adresse--Fichier-echange-modele-simple-v1.1.pdf).
 
-Le logiciel disponible en téléchargement [sur cette page](https://github.com/etalab/bal/releases) permet de contrôler et valider un fichier "Base Adresse Locale" (BAL) produit conformément au modèle de données ci-dessus.
+Le logiciel disponible en téléchargement [sur cette page](https://github.com/BaseAdresseNationale/bal/releases) permet de contrôler et valider un fichier "Base Adresse Locale" (BAL) produit conformément au modèle de données ci-dessus.
 
 
 ## Utilisation
