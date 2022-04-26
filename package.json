@@ -23,7 +23,7 @@
   "scripts": {
     "lint": "xo",
     "build-minicog": "node scripts/build-minicog",
-    "build": "pkg --targets node14-linux-x64,node14-macos-x64,node14-win-x64 .",
+    "build": "pkg --targets node16-linux-x64,node16-macos-x64,node16-win-x64 .",
     "transpile": "rm -rf browser && babel lib --out-dir browser",
     "test": "nyc ava",
     "prepublishOnly": "yarn build-minicog && yarn transpile"
