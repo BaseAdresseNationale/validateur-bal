@@ -67,4 +67,4 @@ bal-win.exe
 browser/
 minicog.json
 
-*.csv
+/*.csv
