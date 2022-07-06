@@ -1,6 +1,6 @@
 {
   "name": "@etalab/bal",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "Validateur de référence pour le format BAL",
   "repository": "https://github.com/BaseAdresseNationale/bal",
   "author": "Équipe Adresse <adresse@data.gouv.fr>",
@@ -29,6 +29,7 @@
     "prepublishOnly": "yarn build-minicog && yarn transpile"
   },
   "dependencies": {
+    "@etalab/project-legal": "^0.6.0",
     "blob-to-buffer": "^1.2.9",
     "bluebird": "^3.7.2",
     "chalk": "^4.1.2",
