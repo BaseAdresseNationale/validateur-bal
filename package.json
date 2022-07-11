@@ -1,8 +1,8 @@
 {
-  "name": "@etalab/bal",
-  "version": "2.6.0",
+  "name": "@ban-team/validateur-bal",
+  "version": "2.7.1",
   "description": "Validateur de référence pour le format BAL",
-  "repository": "https://github.com/BaseAdresseNationale/bal",
+  "repository": "https://github.com/BaseAdresseNationale/validateur-bal",
   "author": "Équipe Adresse <adresse@data.gouv.fr>",
   "license": "MIT",
   "private": false,
@@ -23,7 +23,7 @@
   "scripts": {
     "lint": "xo",
     "build-minicog": "node scripts/build-minicog",
-    "build": "pkg --targets node16-linux-x64,node16-macos-x64,node16-win-x64 .",
+    "build": "pkg --targets node16-linux-x64,node16-macos-x64,node16-win-x64 --output bal .",
     "transpile": "rm -rf browser && babel lib --out-dir browser",
     "test": "nyc ava",
     "prepublishOnly": "yarn build-minicog && yarn transpile"
