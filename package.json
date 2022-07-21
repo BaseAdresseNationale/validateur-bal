@@ -29,7 +29,7 @@
     "prepublishOnly": "yarn build-minicog && yarn transpile"
   },
   "dependencies": {
-    "@ban-team/shared-data": "^1.0.0",
+    "@ban-team/shared-data": "^1.0.1",
     "@etalab/project-legal": "^0.6.0",
     "blob-to-buffer": "^1.2.9",
     "bluebird": "^3.7.2",
@@ -40,7 +40,7 @@
     "iconv-lite": "^0.6.3",
     "lodash": "^4.17.21",
     "papaparse": "^5.3.2",
-    "yargs": "^17.5.0"
+    "yargs": "^17.5.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.10",
