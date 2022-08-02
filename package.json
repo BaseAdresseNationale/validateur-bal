@@ -29,7 +29,7 @@
     "prepublishOnly": "yarn build-minicog && yarn transpile"
   },
   "dependencies": {
-    "@ban-team/shared-data": "^1.1.0",
+    "@ban-team/shared-data": "^1.0.1",
     "@etalab/project-legal": "^0.6.0",
     "blob-to-buffer": "^1.2.9",
     "bluebird": "^3.7.2",
