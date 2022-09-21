@@ -43,9 +43,9 @@
     "yargs": "^17.5.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.17.10",
-    "@babel/core": "^7.17.10",
-    "@babel/preset-env": "^7.17.10",
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.19.1",
+    "@babel/preset-env": "^7.19.1",
     "@etalab/decoupage-administratif": "^2.0.0",
     "ava": "^4.2.0",
     "codecov": "^3.8.3",
