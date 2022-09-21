@@ -47,7 +47,7 @@
     "@babel/core": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
     "@etalab/decoupage-administratif": "^2.0.0",
-    "ava": "^4.2.0",
+    "ava": "^4.3.3",
     "codecov": "^3.8.3",
     "fs-extra": "^10.1.0",
     "nyc": "^15.1.0",
