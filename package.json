@@ -69,6 +69,7 @@
       "unicorn/prevent-abbreviations": "off",
       "unicorn/no-reduce": "off",
       "unicorn/prefer-module": "off",
+      "unicorn/text-encoding-identifier-case": "off",
       "import/extensions": "off",
       "node/prefer-global/process": "off"
     }
