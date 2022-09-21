@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const path = require('path')
+const process = require('process')
 const {outputJson} = require('fs-extra')
 const communes = require('@etalab/decoupage-administratif/data/communes.json')
 
