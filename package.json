@@ -1,6 +1,6 @@
 {
   "name": "@ban-team/validateur-bal",
-  "version": "2.18.0",
+  "version": "2.18.1",
   "description": "Validateur de référence pour le format BAL",
   "repository": "https://github.com/BaseAdresseNationale/validateur-bal",
   "author": "Équipe Adresse <adresse@data.gouv.fr>",
