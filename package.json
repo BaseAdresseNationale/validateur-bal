@@ -27,7 +27,11 @@
     "bal": "bin/bal"
   },
   "scripts": {
-    "lint": "xo",
+    "lint": "npx eslint lib scripts",
+    "lint:fix": "npx eslint --fix lib scripts",
+    "prettier": "npx prettier lib scripts --check",
+    "prettier:fix": "yarn run prettier --write",
+    "format": "yarn run prettier:fix && yarn run lint:fix",
     "build-minicog": "node scripts/build-minicog",
     "build": "pkg --targets node16-linux-x64,node16-macos-x64,node16-win-x64 --output bal .",
     "transpile": "rm -rf browser && babel lib --out-dir browser",
@@ -56,30 +60,15 @@
     "@etalab/decoupage-administratif": "^3.0.0",
     "ava": "^4.3.3",
     "codecov": "^3.8.3",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
     "fs-extra": "^10.1.0",
     "nyc": "^15.1.0",
     "pkg": "^5.8.0",
-    "xo": "^0.52.3"
+    "prettier": "^3.2.5"
   },
   "engines": {
     "node": ">= 14"
-  },
-  "xo": {
-    "space": 2,
-    "semicolon": false,
-    "rules": {
-      "comma-dangle": [
-        "error",
-        "never"
-      ],
-      "unicorn/import-style": "off",
-      "unicorn/prevent-abbreviations": "off",
-      "unicorn/no-reduce": "off",
-      "unicorn/prefer-module": "off",
-      "unicorn/text-encoding-identifier-case": "off",
-      "import/extensions": "off",
-      "node/prefer-global/process": "off"
-    }
   },
   "pkg": {
     "scripts": "lib/**/*.js"
