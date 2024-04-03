@@ -27,11 +27,8 @@
     "bal": "bin/bal"
   },
   "scripts": {
-    "lint": "npx eslint lib scripts",
-    "lint:fix": "npx eslint --fix lib scripts",
-    "prettier": "npx prettier lib scripts --check",
-    "prettier:fix": "yarn run prettier --write",
-    "format": "yarn run prettier:fix && yarn run lint:fix",
+    "lint": "npx eslint --fix lib scripts",
+    "format": "yarn run prettier --write \"lib/**/*.js\" \"scripts/**/*.js\"",
     "build-minicog": "node scripts/build-minicog",
     "build": "pkg --targets node16-linux-x64,node16-macos-x64,node16-win-x64 --output bal .",
     "transpile": "rm -rf browser && babel lib --out-dir browser",
