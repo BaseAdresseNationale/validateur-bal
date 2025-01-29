@@ -9,7 +9,7 @@ import {
 } from "../utils/cog";
 import { isUuid } from "uuidv4";
 
-interface FieldsSchema {
+export type FieldsSchema = {
   trim: boolean;
   required?: boolean;
   aliases?: string[];
@@ -25,7 +25,7 @@ interface FieldsSchema {
       setAdditionnalValues: (add: any) => void;
     }
   ) => any;
-}
+};
 
 function isValidFloat(str: string): boolean {
   return Boolean(/^-?(0|[1-9]\d*)(\.\d+)?\d?$/.test(str));

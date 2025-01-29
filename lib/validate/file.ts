@@ -25,7 +25,21 @@ function humanizeLinebreak(linebreak: string): string {
   return "Inconnu";
 }
 
-export function validateFile(detectedParams, { globalErrors }) {
+type ValueIsValid = {
+  value: string;
+  isValid: boolean;
+};
+
+export type ValidateFile = {
+  encoding: ValueIsValid;
+  delimiter: ValueIsValid;
+  linebreak: ValueIsValid;
+};
+
+export function validateFile(
+  detectedParams: { linebreak: string; encoding: string; delimiter: string },
+  { globalErrors }: { globalErrors: Set<String> }
+) {
   const humanizedLinebreak = humanizeLinebreak(detectedParams.linebreak);
 
   const encoding = {
@@ -65,7 +79,7 @@ export type ParseFileType = {
   originalFields: string[];
   parseOk: boolean;
   parseErrors: ParseError[];
-  parsedRows: Record<string, string>[];
+  parsedRows?: Record<string, string>[];
 };
 
 export async function parseFile(

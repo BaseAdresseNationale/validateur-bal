@@ -1,66 +1,37 @@
-const bluebird = require("bluebird");
-const { keyBy, mapValues, uniq } = require("lodash");
-const { getErrorLevel } = require("../utils/helpers");
-const { computeFields } = require("./fields");
-const { validateRow } = require("./row");
+import { mapValues } from "lodash";
 
 import profiles from "../schema/profiles/index";
-import { parseFile, ParseFileType, validateFile } from "./file";
+import { getErrorLevel } from "../utils/helpers";
+import { parseFile, ParseFileType, ValidateFile, validateFile } from "./file";
+import { computeFields, FieldType } from "./fields";
+import { computeRows, ValidateRowType } from "./rows";
 
-async function computeRows(parsedRows, { fields, rowsErrors }) {
-  const indexedFields = keyBy(fields, "name");
-  const computedRows = await bluebird.map(
-    parsedRows,
-    async (parsedRow, line) => {
-      const computedRow = await validateRow(parsedRow, {
-        indexedFields,
-        line: line + 1,
-      });
-      for (const e of computedRow.errors) {
-        rowsErrors.add(e.code);
-      }
+type ProfilesValidationType = {
+  code: string;
+  name: string;
+  isValid: boolean;
+};
 
-      return computedRow;
-    },
-    { concurrency: 4 }
-  );
-
-  return { rows: computedRows };
-}
-
-function checkUseBanIdsEveryRow(parsedRows, { globalErrors }) {
-  if (parsedRows.length > 0) {
-    const useBanIds = "id_ban_commune" in parsedRows[0];
-    for (const row of parsedRows) {
-      if (
-        (useBanIds && row.id_ban_commune === "") ||
-        (!useBanIds &&
-          row.id_ban_commune !== undefined &&
-          row.id_ban_commune !== "")
-      ) {
-        globalErrors.add("rows.ids_required_every");
-        return;
-      }
-    }
-  }
-}
-
-function validateRows(parsedRows, { globalErrors }) {
-  if (parsedRows.length <= 0) {
-    globalErrors.add("rows.empty");
-  }
-
-  checkUseBanIdsEveryRow(parsedRows, { globalErrors });
-}
+type PrevalidateType = ParseFileType & {
+  fields?: FieldType[];
+  notFoundFields?: string[];
+  rows?: ValidateRowType[];
+  fileValidation?: ValidateFile;
+  profilesValidation?: ProfilesValidationType[];
+  globalErrors?: string[];
+  rowsErrors?: string[];
+  uniqueErrors?: string[];
+};
 
 export async function prevalidate(
   file: Buffer,
   format: string,
   relaxFieldsDetection: boolean
-): Promise<ParseFileType> {
+): Promise<PrevalidateType> {
   const globalErrors = new Set<string>();
   const rowsErrors = new Set<string>();
 
+  // On parse le fichier avec Papaparse
   const {
     encoding,
     linebreak,
@@ -69,7 +40,7 @@ export async function prevalidate(
     parseOk,
     parseErrors,
     parsedRows,
-  } = await parseFile(file, relaxFieldsDetection);
+  }: ParseFileType = await parseFile(file, relaxFieldsDetection);
 
   if (!parseOk) {
     return {
@@ -83,26 +54,42 @@ export async function prevalidate(
     };
   }
 
-  const { fields, notFoundFields } = computeFields(originalFields, format, {
+  // On detecte les champ normaux, alias et lang
+  const {
+    fields,
+    notFoundFields,
+  }: { fields: FieldType[]; notFoundFields: Set<string> } = computeFields(
+    originalFields,
+    format,
+    {
+      globalErrors,
+      relaxFieldsDetection,
+    }
+  );
+
+  const rows: ValidateRowType[] = await computeRows(parsedRows, {
+    fields,
+    rowsErrors,
     globalErrors,
-    relaxFieldsDetection,
   });
-  const { rows } = await computeRows(parsedRows, { fields, rowsErrors });
-  const fileValidation = validateFile(
+
+  const fileValidation: ValidateFile = validateFile(
     { linebreak, encoding, delimiter },
     { globalErrors }
   );
-  validateRows(parsedRows, { globalErrors });
 
   const uniqueErrors = new Set([...globalErrors, ...rowsErrors]);
 
-  const profilesValidation = mapValues(profiles, (profile) => {
-    const { code, name } = profile;
-    const isValid = ![...uniqueErrors].some(
-      (e) => getErrorLevel(profile.code, e) === "E"
-    );
-    return { code, name, isValid };
-  });
+  const profilesValidation: ProfilesValidationType[] = mapValues(
+    profiles,
+    (profile) => {
+      const { code, name } = profile;
+      const isValid = ![...uniqueErrors].some(
+        (e) => getErrorLevel(profile.code, e) === "E"
+      );
+      return { code, name, isValid };
+    }
+  );
 
   return {
     encoding,
@@ -112,7 +99,7 @@ export async function prevalidate(
     parseOk,
     parseErrors,
     fields,
-    notFoundFields,
+    notFoundFields: [...notFoundFields],
     rows,
     fileValidation,
     profilesValidation,
