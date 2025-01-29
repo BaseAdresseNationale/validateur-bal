@@ -1,3 +1,5 @@
+import { Profile } from "./profile.interface";
+
 const errors = [
   "cle_interop.valeur_manquante",
   "cle_interop.casse_invalide",
@@ -82,7 +84,7 @@ const errors = [
 
 const warnings = ["position.enum_fuzzy"];
 
-module.exports = {
+const profile: Profile = {
   code: "1.3-strict",
   name: "BAL 1.3 Strict",
   isUsed: false,
@@ -91,3 +93,5 @@ module.exports = {
   warnings,
   format: "1.3",
 };
+
+export default profile;
