@@ -12,6 +12,6 @@
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
-  "include": ["lib/**/*"],
-  "exclude": ["lib/__tests__", "dist"]
+  "exclude": ["lib/__tests__/**/*", "dist"],
+  "include": ["lib/**/*"]
 }

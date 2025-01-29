@@ -56,6 +56,8 @@
     "@babel/core": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
     "@etalab/decoupage-administratif": "^4.0.0",
+    "@types/node": "^22.12.0",
+    "@types/papaparse": "^5.3.15",
     "ava": "^4.3.3",
     "codecov": "^3.8.3",
     "eslint": "^8.57.0",

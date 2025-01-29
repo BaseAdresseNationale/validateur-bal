@@ -1,39 +1,11 @@
 const bluebird = require("bluebird");
 const { keyBy, mapValues, uniq } = require("lodash");
 const { getErrorLevel } = require("../utils/helpers");
-const profiles = require("../schema/profiles");
 const { computeFields } = require("./fields");
-const { parse } = require("./parse");
 const { validateRow } = require("./row");
 
-const FATAL_PARSE_ERRORS = new Set([
-  "MissingQuotes",
-  "UndetectableDelimiter",
-  "TooFewFields",
-  "TooManyFields",
-]);
-
-async function parseFile(file, relaxFieldsDetection) {
-  const parseOptions = relaxFieldsDetection
-    ? { transformHeader: (h) => h.toLowerCase().trim() }
-    : {};
-
-  // Must be a Blob for browser or a Buffer for Node.js
-  const { meta, errors, data, encoding } = await parse(file, parseOptions);
-
-  const errorsKinds = uniq(errors.map((e) => e.code));
-  const parseOk = !errorsKinds.some((e) => FATAL_PARSE_ERRORS.has(e));
-
-  return {
-    encoding,
-    linebreak: meta.linebreak,
-    delimiter: meta.delimiter,
-    originalFields: meta.fields,
-    parseOk,
-    parseErrors: errors,
-    parsedRows: data,
-  };
-}
+import profiles from "../schema/profiles/index";
+import { parseFile, ParseFileType, validateFile } from "./file";
 
 async function computeRows(parsedRows, { fields, rowsErrors }) {
   const indexedFields = keyBy(fields, "name");
@@ -54,39 +26,6 @@ async function computeRows(parsedRows, { fields, rowsErrors }) {
   );
 
   return { rows: computedRows };
-}
-
-function validateFile(detectedParams, { globalErrors }) {
-  const humanizedLinebreak = humanizeLinebreak(detectedParams.linebreak);
-
-  const encoding = {
-    value: detectedParams.encoding,
-    isValid: detectedParams.encoding === "utf-8",
-  };
-
-  if (!encoding.isValid) {
-    globalErrors.add("file.encoding.non_standard");
-  }
-
-  const delimiter = {
-    value: detectedParams.delimiter,
-    isValid: detectedParams.delimiter === ";",
-  };
-
-  if (!delimiter.isValid) {
-    globalErrors.add("file.delimiter.non_standard");
-  }
-
-  const linebreak = {
-    value: humanizedLinebreak,
-    isValid: ["Unix", "Windows"].includes(humanizedLinebreak),
-  };
-
-  if (!linebreak.isValid) {
-    globalErrors.add("file.linebreak.non_standard");
-  }
-
-  return { encoding, delimiter, linebreak };
 }
 
 function checkUseBanIdsEveryRow(parsedRows, { globalErrors }) {
@@ -114,9 +53,13 @@ function validateRows(parsedRows, { globalErrors }) {
   checkUseBanIdsEveryRow(parsedRows, { globalErrors });
 }
 
-async function prevalidate(file, format, relaxFieldsDetection) {
-  const globalErrors = new Set();
-  const rowsErrors = new Set();
+export async function prevalidate(
+  file: Buffer,
+  format: string,
+  relaxFieldsDetection: boolean
+): Promise<ParseFileType> {
+  const globalErrors = new Set<string>();
+  const rowsErrors = new Set<string>();
 
   const {
     encoding,
@@ -210,7 +153,7 @@ function validateProfileNotFoundFields(notFoundFields, profileName) {
   }));
 }
 
-function validateProfile(prevalidateResult, profileName) {
+export function validateProfile(prevalidateResult, profileName) {
   if (!prevalidateResult.parseOk) {
     return prevalidateResult;
   }
@@ -232,7 +175,10 @@ function validateProfile(prevalidateResult, profileName) {
   };
 }
 
-async function validate(file, options = {}) {
+export async function validate(
+  file: Buffer,
+  options: { profile?: string; relaxFieldsDetection?: boolean } = {}
+) {
   const profile = options.profile || "1.3";
   let { relaxFieldsDetection } = options;
 
@@ -248,21 +194,3 @@ async function validate(file, options = {}) {
   );
   return validateProfile(prevalidateResult, profile);
 }
-
-function humanizeLinebreak(linebreak) {
-  if (linebreak === "\n") {
-    return "Unix";
-  }
-
-  if (linebreak === "\r\n") {
-    return "Windows";
-  }
-
-  if (linebreak === "\r") {
-    return "Old Mac/BSD";
-  }
-
-  return "Inconnu";
-}
-
-module.exports = { validate, validateProfile, prevalidate };

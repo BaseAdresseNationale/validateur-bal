@@ -1,5 +1,5 @@
-const chardet = require("chardet");
-const fileType = require("file-type");
+import chardet from "chardet";
+import fileType from "file-type";
 
 const CHARDET_TO_NORMALIZED_ENCODINGS = {
   "iso-8859-1": "windows-1252",
@@ -17,7 +17,7 @@ function normalizeEncodingName(encoding) {
   return CHARDET_TO_NORMALIZED_ENCODINGS[lcEncoding];
 }
 
-function detectBufferEncoding(buffer) {
+export function detectBufferEncoding(buffer: Buffer): string {
   if (fileType(buffer)) {
     throw new Error("Non-text file cannot be processed");
   }
@@ -41,5 +41,3 @@ function detectBufferEncoding(buffer) {
 
   return normalizeEncodingName(analyseResults[0].name);
 }
-
-module.exports = { normalizeEncodingName, detectBufferEncoding };
