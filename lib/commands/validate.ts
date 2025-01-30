@@ -2,6 +2,7 @@ import { readFile } from "fs-extra";
 import chalk from "chalk";
 import { validate, getLabel } from "../index";
 import { ValidateProfile } from "../validate/profiles";
+import { PrevalidateType } from "../validate";
 
 module.exports = {
   command: "validate [options] <file>",
@@ -23,10 +24,10 @@ module.exports = {
   async handler(argv) {
     const file = await readFile(argv.file);
     try {
-      const report = await validate(file, {
+      const report: ValidateProfile = (await validate(file, {
         relaxFieldsDetection: argv.relaxFieldsDetection,
         profile: argv.profile,
-      });
+      })) as ValidateProfile;
       printReport(report);
     } catch (error) {
       console.error(error);
@@ -152,21 +153,21 @@ function printReport(report: ValidateProfile) {
   console.log("* Validation des données");
   console.log("");
 
-  const rowsWithIssues = rows.filter((r) => r.errors.length > 0);
-  if (rowsWithIssues.length > 0) {
-    for (const row of rowsWithIssues) {
-      if (row.errors) {
-        console.log(row.errors);
-        for (const err of row.errors) {
-          console.log(
-            `[${printSeverity(err.level)}] #${row.line} ${getLabel(err.code)}`
-          );
-        }
-      }
-    }
+  // const rowsWithIssues = rows.filter((r) => r.errors.length > 0);
+  // if (rowsWithIssues.length > 0) {
+  //   for (const row of rowsWithIssues) {
+  //     if (row.errors) {
+  //       console.log(row.errors);
+  //       for (const err of row.errors) {
+  //         console.log(
+  //           `[${printSeverity(err.level)}] #${row.line} ${getLabel(err.code)}`
+  //         );
+  //       }
+  //     }
+  //   }
 
-    console.log("");
-  }
+  //   console.log("");
+  // }
 
   console.log(`${rows.length} données vérifiées !`);
 

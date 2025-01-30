@@ -113,7 +113,11 @@ export async function validateRow(
   const parsedValues: Record<string, string | boolean | number> = {};
   const additionalValues: Record<string, any> = {};
   const localizedValues: Record<string, any> = {};
-  const errors: { code: string; schemaName?: string }[] = [];
+  const errors: {
+    code: string;
+    schemaName?: string;
+    level?: ErrorLevelEnum;
+  }[] = [];
 
   await Promise.all(
     Object.keys(row).map(async (fieldName: string) => {
