@@ -1,5 +1,6 @@
 import proj from "@etalab/project-legal";
 import { getCommuneActuelle } from "../utils/cog";
+import { ValidateRowType } from "../validate/rows";
 
 function harmlessProj(coordinates) {
   try {
@@ -80,7 +81,10 @@ function checkBanIds(row, addError) {
   }
 }
 
-export default (row, { addError }) => {
+function validateRow(
+  row: ValidateRowType,
+  { addError }: { addError: (code: string) => void }
+) {
   if (row.parsedValues.cle_interop && row.parsedValues.numero) {
     const { numeroVoie } = row.additionalValues.cle_interop;
     if (Number.parseInt(numeroVoie, 10) !== row.parsedValues.numero) {
@@ -112,7 +116,7 @@ export default (row, { addError }) => {
   ) {
     const codeCommune = row.parsedValues.commune_insee;
     const codeAncienneCommune = row.parsedValues.commune_deleguee_insee;
-    const communeActuelle = getCommuneActuelle(codeAncienneCommune);
+    const communeActuelle = getCommuneActuelle(codeAncienneCommune as string);
 
     if (communeActuelle && communeActuelle.code !== codeCommune) {
       addError("chef_lieu_invalide");
@@ -120,4 +124,6 @@ export default (row, { addError }) => {
   }
 
   checkBanIds(row, addError);
-};
+}
+
+export default validateRow;

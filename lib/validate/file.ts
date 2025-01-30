@@ -9,20 +9,27 @@ const FATAL_PARSE_ERRORS = new Set([
   "TooManyFields",
 ]);
 
-function humanizeLinebreak(linebreak: string): string {
+export enum HumaneLinebreakEnum {
+  UNIX = "Unix",
+  WINDOWS = "Windows",
+  MAC = "Old Mac/BSD",
+  INCONNU = "Inconnu",
+}
+
+function humanizeLinebreak(linebreak: string): HumaneLinebreakEnum {
   if (linebreak === "\n") {
-    return "Unix";
+    return HumaneLinebreakEnum.UNIX;
   }
 
   if (linebreak === "\r\n") {
-    return "Windows";
+    return HumaneLinebreakEnum.WINDOWS;
   }
 
   if (linebreak === "\r") {
-    return "Old Mac/BSD";
+    return HumaneLinebreakEnum.MAC;
   }
 
-  return "Inconnu";
+  return HumaneLinebreakEnum.INCONNU;
 }
 
 type ValueIsValid = {
@@ -62,7 +69,9 @@ export function validateFile(
 
   const linebreak = {
     value: humanizedLinebreak,
-    isValid: ["Unix", "Windows"].includes(humanizedLinebreak),
+    isValid: [HumaneLinebreakEnum.UNIX, HumaneLinebreakEnum.WINDOWS].includes(
+      humanizedLinebreak
+    ),
   };
 
   if (!linebreak.isValid) {

@@ -30,7 +30,11 @@ export async function computeRows(
     { concurrency: 4 }
   );
 
-  validateRows(parsedRows, { globalErrors });
+  Schema.rows(parsedRows, {
+    addError(code: string) {
+      globalErrors.add(code);
+    },
+  });
 
   return computedRows;
 }
@@ -102,9 +106,9 @@ export type ValidateRowType = {
   parsedValues: Record<string, string | boolean | number>;
   additionalValues: Record<string, any>;
   localizedValues: Record<string, any>;
-  errors: { code: string; schemaName?: string; level?: ErrorLevelEnum }[];
+  errors?: { code: string; schemaName?: string; level?: ErrorLevelEnum }[];
   isValid?: boolean;
-  line: number;
+  line?: number;
 };
 
 export async function validateRow(
@@ -167,7 +171,7 @@ export async function validateRow(
   Schema.row(
     { rawValues, parsedValues, additionalValues, localizedValues },
     {
-      addError(code) {
+      addError(code: string) {
         errors.push({ code: `row.${code}` });
       },
     }
@@ -181,28 +185,4 @@ export async function validateRow(
     errors,
     line,
   };
-}
-
-function validateRows(
-  parsedRows: Record<string, string>[],
-  { globalErrors }: { globalErrors: Set<String> }
-) {
-  if (parsedRows.length <= 0) {
-    globalErrors.add("rows.empty");
-  }
-
-  if (parsedRows.length > 0) {
-    const useBanIds = "id_ban_commune" in parsedRows[0];
-    for (const row of parsedRows) {
-      if (
-        (useBanIds && row.id_ban_commune === "") ||
-        (!useBanIds &&
-          row.id_ban_commune !== undefined &&
-          row.id_ban_commune !== "")
-      ) {
-        globalErrors.add("rows.ids_required_every");
-        return;
-      }
-    }
-  }
 }
