@@ -1,6 +1,7 @@
 import { readFile } from "fs-extra";
 import chalk from "chalk";
 import { validate, getLabel } from "../index";
+import { ValidateProfile } from "../validate/profiles";
 
 module.exports = {
   command: "validate [options] <file>",
@@ -65,7 +66,7 @@ function printSeverity(severity) {
   }
 }
 
-function printReport(report) {
+function printReport(report: ValidateProfile) {
   const {
     fileValidation,
     parseOk,
@@ -155,6 +156,7 @@ function printReport(report) {
   if (rowsWithIssues.length > 0) {
     for (const row of rowsWithIssues) {
       if (row.errors) {
+        console.log(row.errors);
         for (const err of row.errors) {
           console.log(
             `[${printSeverity(err.level)}] #${row.line} ${getLabel(err.code)}`

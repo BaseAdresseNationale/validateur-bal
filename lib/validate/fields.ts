@@ -2,6 +2,11 @@
 import Schema from "../schema";
 import { allowedRegionalLangs } from "../utils/helpers";
 
+export type NotFoundFieldType = {
+  schemaName: string;
+  level?: string;
+};
+
 export type FieldType = {
   name: string;
   schemaName?: string;
@@ -18,7 +23,7 @@ export function computeFields(
   }: { relaxFieldsDetection: boolean; globalErrors: Set<string> }
 ): {
   fields;
-  notFoundFields: Set<string>;
+  notFoundFields: NotFoundFieldType[];
 } {
   const fields: FieldType[] = originalFields.map((field) => ({ name: field }));
   const foundFields = new Set<string>();
@@ -90,9 +95,10 @@ export function computeFields(
       }
     }
   }
-
   return {
     fields,
-    notFoundFields,
+    notFoundFields: Array.from(notFoundFields).map((schemaName) => ({
+      schemaName,
+    })),
   };
 }

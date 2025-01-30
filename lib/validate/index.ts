@@ -3,8 +3,9 @@ import { mapValues } from "lodash";
 import profiles from "../schema/profiles/index";
 import { getErrorLevel } from "../utils/helpers";
 import { parseFile, ParseFileType, ValidateFile, validateFile } from "./file";
-import { computeFields, FieldType } from "./fields";
+import { computeFields, FieldType, NotFoundFieldType } from "./fields";
 import { computeRows, ValidateRowType } from "./rows";
+import { validateProfile } from "./profiles";
 
 type ProfilesValidationType = {
   code: string;
@@ -12,9 +13,9 @@ type ProfilesValidationType = {
   isValid: boolean;
 };
 
-type PrevalidateType = ParseFileType & {
+export type PrevalidateType = ParseFileType & {
   fields?: FieldType[];
-  notFoundFields?: string[];
+  notFoundFields?: NotFoundFieldType[];
   rows?: ValidateRowType[];
   fileValidation?: ValidateFile;
   profilesValidation?: ProfilesValidationType[];
@@ -58,14 +59,11 @@ export async function prevalidate(
   const {
     fields,
     notFoundFields,
-  }: { fields: FieldType[]; notFoundFields: Set<string> } = computeFields(
-    originalFields,
-    format,
-    {
+  }: { fields: FieldType[]; notFoundFields: NotFoundFieldType[] } =
+    computeFields(originalFields, format, {
       globalErrors,
       relaxFieldsDetection,
-    }
-  );
+    });
 
   const rows: ValidateRowType[] = await computeRows(parsedRows, {
     fields,
@@ -109,59 +107,6 @@ export async function prevalidate(
   };
 }
 
-function validateProfileRows(computedRows, profileName) {
-  return computedRows.map((row) => {
-    const errors = row.errors.map((e) => ({
-      ...e,
-      level: getErrorLevel(profileName, e.code),
-    }));
-
-    const isValid = !errors.some((e) => e.level === "E");
-
-    return {
-      ...row,
-      errors,
-      isValid,
-    };
-  });
-}
-
-function validateProfileUniqueErrors(uniqueErrors, profileName) {
-  return uniqueErrors.map((code) => ({
-    code,
-    level: getErrorLevel(profileName, code),
-  }));
-}
-
-function validateProfileNotFoundFields(notFoundFields, profileName) {
-  return notFoundFields.map((f) => ({
-    ...f,
-    level: getErrorLevel(profileName, `field.${f.schemaName}.missing`),
-  }));
-}
-
-export function validateProfile(prevalidateResult, profileName) {
-  if (!prevalidateResult.parseOk) {
-    return prevalidateResult;
-  }
-
-  const rows = validateProfileRows(prevalidateResult.rows, profileName);
-  const profilErrors = validateProfileUniqueErrors(
-    prevalidateResult.uniqueErrors,
-    profileName
-  );
-  const notFoundFields = validateProfileNotFoundFields(
-    prevalidateResult.notFoundFields,
-    profileName
-  );
-  return {
-    ...prevalidateResult,
-    rows,
-    notFoundFields,
-    profilErrors,
-  };
-}
-
 export async function validate(
   file: Buffer,
   options: { profile?: string; relaxFieldsDetection?: boolean } = {}
@@ -174,7 +119,7 @@ export async function validate(
   }
 
   const { format } = profiles[profile];
-  const prevalidateResult = await prevalidate(
+  const prevalidateResult: PrevalidateType = await prevalidate(
     file,
     format,
     relaxFieldsDetection

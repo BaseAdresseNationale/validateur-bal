@@ -3,6 +3,7 @@ import { keyBy } from "lodash";
 import { FieldType } from "./fields";
 import Schema from "../schema";
 import { FieldsSchema } from "../schema/fields";
+import { ErrorLevelEnum } from "../utils/error-level.enum";
 
 export async function computeRows(
   parsedRows: Record<string, string>[],
@@ -16,7 +17,7 @@ export async function computeRows(
   const computedRows: ValidateRowType[] = await bluebird.map(
     parsedRows,
     async (parsedRow: Record<string, string>) => {
-      const computedRow = await validateRow(parsedRow, {
+      const computedRow: ValidateRowType = await validateRow(parsedRow, {
         indexedFields,
       });
       for (const e of computedRow.errors) {
@@ -100,7 +101,8 @@ export type ValidateRowType = {
   parsedValues: Record<string, string | boolean | number>;
   additionalValues: Record<string, any>;
   localizedValues: Record<string, any>;
-  errors: { code: string; schemaName?: string }[];
+  errors: { code: string; schemaName?: string; level?: ErrorLevelEnum }[];
+  isValid?: boolean;
 };
 
 export async function validateRow(
