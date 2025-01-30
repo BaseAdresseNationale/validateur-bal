@@ -153,21 +153,20 @@ function printReport(report: ValidateProfile) {
   console.log("* Validation des données");
   console.log("");
 
-  // const rowsWithIssues = rows.filter((r) => r.errors.length > 0);
-  // if (rowsWithIssues.length > 0) {
-  //   for (const row of rowsWithIssues) {
-  //     if (row.errors) {
-  //       console.log(row.errors);
-  //       for (const err of row.errors) {
-  //         console.log(
-  //           `[${printSeverity(err.level)}] #${row.line} ${getLabel(err.code)}`
-  //         );
-  //       }
-  //     }
-  //   }
+  const rowsWithIssues = rows.filter((r) => r.errors.length > 0);
+  if (rowsWithIssues.length > 0) {
+    for (const row of rowsWithIssues) {
+      if (row.errors) {
+        for (const err of row.errors) {
+          console.log(
+            `[${printSeverity(err.level)}] #${row.line} ${getLabel(err.code)}`
+          );
+        }
+      }
+    }
 
-  //   console.log("");
-  // }
+    console.log("");
+  }
 
   console.log(`${rows.length} données vérifiées !`);
 

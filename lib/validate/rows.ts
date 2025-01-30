@@ -16,9 +16,10 @@ export async function computeRows(
   const indexedFields: Record<string, FieldType> = keyBy(fields, "name");
   const computedRows: ValidateRowType[] = await bluebird.map(
     parsedRows,
-    async (parsedRow: Record<string, string>) => {
+    async (parsedRow: Record<string, string>, line: number) => {
       const computedRow: ValidateRowType = await validateRow(parsedRow, {
         indexedFields,
+        line,
       });
       for (const e of computedRow.errors) {
         rowsErrors.add(e.code);
@@ -103,11 +104,15 @@ export type ValidateRowType = {
   localizedValues: Record<string, any>;
   errors: { code: string; schemaName?: string; level?: ErrorLevelEnum }[];
   isValid?: boolean;
+  line: number;
 };
 
 export async function validateRow(
   row: Record<string, string>,
-  { indexedFields }: { indexedFields: Record<string, FieldType> }
+  {
+    indexedFields,
+    line,
+  }: { indexedFields: Record<string, FieldType>; line: number }
 ): Promise<ValidateRowType> {
   const rawValues: Record<string, string> = {};
   const parsedValues: Record<string, string | boolean | number> = {};
@@ -174,6 +179,7 @@ export async function validateRow(
     additionalValues,
     localizedValues,
     errors,
+    line,
   };
 }
 

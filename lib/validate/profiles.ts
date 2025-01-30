@@ -43,7 +43,6 @@ function validateProfileNotFoundFields(
   notFoundFields: NotFoundFieldType[],
   profileName: string
 ): NotFoundFieldType[] {
-  console.log(notFoundFields);
   return notFoundFields.map(({ schemaName }) => ({
     schemaName,
     level: getErrorLevel(profileName, `field.${schemaName}.missing`),
