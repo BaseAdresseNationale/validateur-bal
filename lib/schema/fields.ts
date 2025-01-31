@@ -1,5 +1,5 @@
 import { format, parseISO } from "date-fns";
-import { trim, trimStart } from "lodash";
+import { trim, trimStart, deburr } from "lodash";
 
 import {
   isCommune,
@@ -8,6 +8,17 @@ import {
   isCommuneDeleguee,
 } from "../utils/cog";
 import { isUuid } from "uuidv4";
+
+export enum PositionTypeEnum {
+  ENTREE = "entrée",
+  BATIMENT = "bâtiment",
+  CAGE_ESCALIER = "cage d’escalier",
+  LOGEMENT = "logement",
+  SERVICE_TECHNIQUE = "service technique",
+  DELIVRANCE_POSTALE = "délivrance postale",
+  PARCELLE = "parcelle",
+  SEGMENT = "segment",
+}
 
 export type FieldsSchema = {
   trim: boolean;
@@ -37,6 +48,20 @@ function isValidFrenchFloat(str: string): boolean {
 
 function includesInvalidChar(str: string): boolean {
   return str.includes("�");
+}
+
+function getNormalizedEnumValue(value) {
+  return deburr(value.normalize())
+    .replace(/\W+/g, " ")
+    .trim()
+    .toLowerCase()
+    .normalize();
+}
+
+const enumPositionMap = new Map();
+
+for (const value of Object.values(PositionTypeEnum)) {
+  enumPositionMap.set(getNormalizedEnumValue(value), value.normalize());
 }
 
 const fields: Record<string, FieldsSchema> = {
@@ -330,16 +355,19 @@ const fields: Record<string, FieldsSchema> = {
   position: {
     formats: ["1.1", "1.2", "1.3", "1.4"],
     trim: true,
-    // enum: [
-    //   "délivrance postale",
-    //   "entrée",
-    //   "bâtiment",
-    //   "cage d’escalier",
-    //   "logement",
-    //   "parcelle",
-    //   "segment",
-    //   "service technique",
-    // ],
+    parse(v, { addError }) {
+      const normalizedValue = getNormalizedEnumValue(v);
+
+      if (enumPositionMap.has(normalizedValue)) {
+        const schemaValue = enumPositionMap.get(normalizedValue);
+        if (schemaValue !== v.normalize()) {
+          addError("enum_fuzzy");
+        }
+        return schemaValue;
+      } else {
+        addError("valeur_invalide");
+      }
+    },
   },
 
   x: {

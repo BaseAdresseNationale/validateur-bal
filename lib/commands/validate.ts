@@ -2,7 +2,6 @@ import { readFile } from "fs-extra";
 import chalk from "chalk";
 import { validate, getLabel } from "../index";
 import { ValidateProfile } from "../validate/profiles";
-import { PrevalidateType } from "../validate";
 
 module.exports = {
   command: "validate [options] <file>",
