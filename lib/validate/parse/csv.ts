@@ -1,4 +1,4 @@
-const Papa = require("papaparse");
+import Papa, { ParseResult } from "papaparse";
 
 const PAPA_OPTIONS = {
   delimitersToGuess: [",", "\t", ";"],
@@ -6,9 +6,12 @@ const PAPA_OPTIONS = {
   header: true,
 };
 
-function parseCsv(file, options = {}) {
+export function parseCsv(
+  file: string,
+  options = {}
+): Promise<ParseResult<Record<string, string>>> {
   return new Promise((resolve, reject) => {
-    Papa.parse(file, {
+    Papa.parse<Record<string, string>>(file, {
       ...PAPA_OPTIONS,
       ...options,
       complete: (res) => resolve(res),
@@ -16,5 +19,3 @@ function parseCsv(file, options = {}) {
     });
   });
 }
-
-module.exports = { parseCsv };

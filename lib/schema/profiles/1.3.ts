@@ -1,3 +1,5 @@
+import { Profile } from "./profile.interface";
+
 const errors = [
   "cle_interop.structure_invalide",
   "cle_interop.commune_invalide",
@@ -42,13 +44,6 @@ const errors = [
   "file.delimiter.non_standard",
   "file.linebreak.non_standard",
   "rows.empty",
-
-  "id_ban_commune.type_invalide",
-  "id_ban_toponyme.type_invalide",
-  "id_ban_adresse.type_invalide",
-  "row.incoherence_ids_ban",
-  "row.id_ban_adresses_required",
-  "rows.ids_required_every",
 ];
 
 const warnings = [
@@ -107,22 +102,21 @@ const warnings = [
   "source.espaces_debut_fin",
   "date_der_maj.espaces_debut_fin",
   // ID BAN
-  "field.id_ban_commune.missing",
-  "field.id_ban_toponyme.missing",
-  "field.id_ban_adresse.missing",
   "uid_adresse.type_invalide",
   "uid_adresse.incoherence_ids_ban",
 ];
 
 const infos = ["cle_interop.voie_non_renseignee"];
 
-module.exports = {
-  code: "1.4",
-  name: "BAL 1.4 (beta)",
+const profile: Profile = {
+  code: "1.3",
+  name: "BAL 1.3 (défaut)",
   isUsed: true,
   relax: false,
   errors,
   warnings,
   infos,
-  format: "1.4",
+  format: "1.3",
 };
+
+export default profile;

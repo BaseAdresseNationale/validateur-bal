@@ -1,3 +1,5 @@
+import { Profile } from "./profile.interface";
+
 const errors = [
   "cle_interop.structure_invalide",
   "cle_interop.commune_invalide",
@@ -109,7 +111,7 @@ const warnings = [
 
 const infos = ["cle_interop.voie_non_renseignee"];
 
-module.exports = {
+const profile: Profile = {
   code: "1.4-relax",
   name: "BAL 1.4 Relax (beta)",
   isUsed: false,
@@ -119,3 +121,5 @@ module.exports = {
   infos,
   format: "1.4",
 };
+
+export default profile;

@@ -1,6 +1,6 @@
 /* eslint capitalized-comments: off */
 
-module.exports = {
+const errorLabels: Record<string, string> = {
   // *
   "*.valeur_manquante": "Le champ {} ne doit pas être vide",
   "*.valeur_invalide": "La valeur du champ {} est incorrecte",
@@ -125,3 +125,5 @@ module.exports = {
   "rows.ids_required_every":
     "Les ids ban sont requis pour toutes les lignes si ils sont utlisés",
 };
+
+export default errorLabels;

@@ -1,6 +1,7 @@
-const { readFile } = require("fs-extra");
-const chalk = require("chalk");
-const { validate, getLabel } = require("..");
+import { readFile } from "fs-extra";
+import chalk from "chalk";
+import { validate, getLabel } from "../index";
+import { ValidateProfile } from "../validate/profiles";
 
 module.exports = {
   command: "validate [options] <file>",
@@ -22,10 +23,10 @@ module.exports = {
   async handler(argv) {
     const file = await readFile(argv.file);
     try {
-      const report = await validate(file, {
+      const report: ValidateProfile = (await validate(file, {
         relaxFieldsDetection: argv.relaxFieldsDetection,
         profile: argv.profile,
-      });
+      })) as ValidateProfile;
       printReport(report);
     } catch (error) {
       console.error(error);
@@ -65,7 +66,7 @@ function printSeverity(severity) {
   }
 }
 
-function printReport(report) {
+function printReport(report: ValidateProfile) {
   const {
     fileValidation,
     parseOk,
@@ -90,7 +91,7 @@ function printReport(report) {
   if (!parseOk) {
     console.log("");
     console.log(
-      "Le fichier n’est pas structuré correctement. La validation est abandonnée.",
+      "Le fichier n’est pas structuré correctement. La validation est abandonnée."
     );
     console.log("");
     return;
@@ -103,13 +104,13 @@ function printReport(report) {
   console.log("* Validation de la structure du fichier");
   console.log("");
   console.log(
-    `Encodage : ${encoding.value.toUpperCase()} => ${encoding.isValid ? "OK" : "Pas OK !"}`,
+    `Encodage : ${encoding.value.toUpperCase()} => ${encoding.isValid ? "OK" : "Pas OK !"}`
   );
   console.log(
-    `Séparateur de ligne : ${linebreak.value} => ${linebreak.isValid ? "OK" : "Pas OK"}`,
+    `Séparateur de ligne : ${linebreak.value} => ${linebreak.isValid ? "OK" : "Pas OK"}`
   );
   console.log(
-    `Séparateur de colonne : ${getDelimiterName(delimiter.value)} => ${delimiter.isValid ? "OK" : "Pas OK"}`,
+    `Séparateur de colonne : ${getDelimiterName(delimiter.value)} => ${delimiter.isValid ? "OK" : "Pas OK"}`
   );
 
   // Validation des champs
@@ -135,13 +136,13 @@ function printReport(report) {
   }
 
   const aliasedFields = fields.filter(
-    (f) => f.schemaName && f.schemaName !== f.name && !f.localizedSchemaName,
+    (f) => f.schemaName && f.schemaName !== f.name && !f.localizedSchemaName
   );
   if (aliasedFields.length > 0) {
     console.log("");
     for (const f of aliasedFields) {
       console.log(
-        `/!\\ Le champ ${f.schemaName} est mal orthographié mais a été pris en compte`,
+        `/!\\ Le champ ${f.schemaName} est mal orthographié mais a été pris en compte`
       );
     }
   }
@@ -157,7 +158,7 @@ function printReport(report) {
       if (row.errors) {
         for (const err of row.errors) {
           console.log(
-            `[${printSeverity(err.level)}] #${row.line} ${getLabel(err.code)}`,
+            `[${printSeverity(err.level)}] #${row.line} ${getLabel(err.code)}`
           );
         }
       }
@@ -183,7 +184,7 @@ function printReport(report) {
   console.log("* Validité");
   for (const profileValidation of Object.values(profilesValidation)) {
     console.log(
-      ` - ${profileValidation.name} : ${profileValidation.isValid ? "✅" : "❌"}`,
+      ` - ${(profileValidation as any).name} : ${(profileValidation as any).isValid ? "✅" : "❌"}`
     );
   }
 

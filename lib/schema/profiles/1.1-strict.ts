@@ -1,3 +1,5 @@
+import { Profile } from "./profile.interface";
+
 const errors = [
   "cle_interop.valeur_manquante",
   "cle_interop.casse_invalide",
@@ -14,8 +16,6 @@ const errors = [
   "numero.contient_prefixe",
   "numero.type_invalide",
   "suffixe.debut_invalide",
-  "commune_insee.commune_invalide",
-  "commune_deleguee_insee.commune_invalide",
   "position.valeur_invalide",
   "x.valeur_invalide",
   "x.separateur_decimal_invalide",
@@ -25,8 +25,6 @@ const errors = [
   "long.separateur_decimal_invalide",
   "lat.valeur_invalide",
   "lat.separateur_decimal_invalide",
-  "cad_parcelles.valeur_invalide",
-  "cad_parcelles.pipe_debut_fin",
   "source.valeur_manquante",
   "date_der_maj.valeur_manquante",
   "date_der_maj.date_invalide",
@@ -35,13 +33,9 @@ const errors = [
   "row.adresse_incomplete",
 
   "field.cle_interop.missing",
-  "field.commune_insee.missing",
   "field.commune_nom.missing",
-  "field.commune_deleguee_insee.missing",
-  "field.commune_deleguee_nom.missing",
   "field.uid_adresse.missing",
   "field.voie_nom.missing",
-  "field.lieudit_complement_nom.missing",
   "field.numero.missing",
   "field.suffixe.missing",
   "field.position.missing",
@@ -49,18 +43,13 @@ const errors = [
   "field.lat.missing",
   "field.x.missing",
   "field.y.missing",
-  "field.cad_parcelles.missing",
   "field.source.missing",
   "field.date_der_maj.missing",
 
   "field.cle_interop.fuzzy",
-  "field.commune_insee.fuzzy",
   "field.commune_nom.fuzzy",
-  "field.commune_deleguee_insee.fuzzy",
-  "field.commune_deleguee_nom.fuzzy",
   "field.uid_adresse.fuzzy",
   "field.voie_nom.fuzzy",
-  "field.lieudit_complement_nom.fuzzy",
   "field.numero.fuzzy",
   "field.suffixe.fuzzy",
   "field.position.fuzzy",
@@ -68,7 +57,6 @@ const errors = [
   "field.lat.fuzzy",
   "field.x.fuzzy",
   "field.y.fuzzy",
-  "field.cad_parcelles.fuzzy",
   "field.source.fuzzy",
   "field.date_der_maj.fuzzy",
 
@@ -79,12 +67,14 @@ const errors = [
 
 const warnings = ["position.enum_fuzzy"];
 
-module.exports = {
-  code: "1.2-strict",
-  name: "BAL 1.2 Strict",
+const profile: Profile = {
+  code: "1.1-strict",
+  name: "BAL 1.1 Strict",
   isUsed: false,
   relax: false,
   errors,
   warnings,
-  format: "1.2",
+  format: "1.1",
 };
+
+export default profile;
