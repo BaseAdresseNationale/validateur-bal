@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["node", "jest"],
     "target": "ES2021",
     "module": "CommonJS",
     "forceConsistentCasingInFileNames": false,
@@ -12,6 +13,5 @@
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
-  "exclude": ["**/__tests__", "dist"],
   "include": ["lib/**/*"]
 }

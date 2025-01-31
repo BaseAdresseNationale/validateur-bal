@@ -11,7 +11,7 @@ async function main() {
     .filter(
       (c) =>
         ["commune-actuelle", "arrondissement-municipal"].includes(c.type) &&
-        !PLM.has(c.code),
+        !PLM.has(c.code)
     )
     .map((c) => ({ code: c.code, nom: c.nom, anciensCodes: c.anciensCodes }));
 
