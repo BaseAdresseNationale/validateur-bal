@@ -50,6 +50,7 @@ export function parseErrorCode(code: string): {
   code?: string;
   schemaName?: string;
   locale?: string;
+  fieldName?: string;
   fieldError?: string;
 } {
   const parts = code.split(".");
@@ -78,7 +79,7 @@ export function parseErrorCode(code: string): {
   const localizedField = parseLocalizedField(fieldName);
 
   if (localizedField) {
-    return { fieldError, ...localizedField };
+    return { fieldName, fieldError, ...localizedField };
   }
 
   if (!Schema.fields[fieldName]) {
