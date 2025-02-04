@@ -5,7 +5,7 @@ import { getErrorLevel } from "../utils/helpers";
 import { parseFile, ParseFileType, ValidateFile, validateFile } from "./file";
 import { computeFields, FieldType, NotFoundFieldType } from "./fields";
 import { computeRows, ValidateRowType } from "./rows";
-import { validateProfile } from "./profiles";
+import { ValidateProfile, validateProfile } from "./profiles";
 
 type ProfilesValidationType = {
   code: string;
@@ -110,7 +110,7 @@ export async function prevalidate(
 export async function validate(
   file: Buffer,
   options: { profile?: string; relaxFieldsDetection?: boolean } = {}
-) {
+): Promise<PrevalidateType | ValidateProfile> {
   const profile = options.profile || "1.3";
   let { relaxFieldsDetection } = options;
 
