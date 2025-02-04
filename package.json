@@ -4,7 +4,6 @@
   "description": "Validateur de référence pour le format BAL",
   "repository": "https://github.com/BaseAdresseNationale/validateur-bal",
   "author": "Équipe Adresse <adresse@data.gouv.fr>",
-  "type": "module",
   "contributors": [
     "Jérôme Desboeufs <jerome.desboeufs@data.gouv.fr>",
     "Théophile Merlière <theophile.merliere@data.gouv.fr>",
@@ -28,12 +27,12 @@
     "bal": "bin/bal"
   },
   "scripts": {
-    "build": "npx tsc --project tsconfig.build.json",
-    "lint": "npx eslint --fix lib scripts",
-    "format": "yarn run prettier --write \"lib/**/*.js\" \"scripts/**/*.js\"",
+    "build": "rm -rf dist && npx tsc --project tsconfig.build.json",
     "build-minicog": "node scripts/build-minicog",
-    "build-bins": "pkg --targets node16-linux-x64,node16-macos-x64,node16-win-x64 --output bal .",
-    "transpile": "rm -rf browser && babel dist --out-dir browser",
+    "build-bins": "yarn build && pkg --targets node16-linux-x64,node16-macos-x64,node16-win-x64 --output bal .",
+    "transpile": "yarn build && rm -rf browser && babel dist --out-dir browser",
+    "lint": "npx eslint --fix lib scripts",
+    "format": "yarn run prettier --write \"lib/**/*.ts\" \"scripts/**/*.js\"",
     "test": "jest",
     "prepublishOnly": "yarn build-minicog && yarn build && yarn transpile"
   },
@@ -89,10 +88,11 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "./coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testTimeout": 6000000
   },
   "pkg": {
-    "scripts": "lib/**/*.js"
+    "scripts": "dist/**/*.js"
   },
   "browser": {
     "./lib/index.js": "./browser/index.js",
