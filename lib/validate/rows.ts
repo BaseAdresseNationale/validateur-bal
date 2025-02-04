@@ -85,20 +85,6 @@ export async function readValue(
   }
 
   return result;
-
-  // else if (def.enum) {
-  //   const normalizedValue = getNormalizedEnumValue(trimmedValue);
-  //   if (def.enumFuzzyMap.has(normalizedValue)) {
-  //     const schemaValue = def.enumFuzzyMap.get(normalizedValue);
-  //     if (schemaValue !== trimmedValue.normalize()) {
-  //       result.errors.push("enum_fuzzy");
-  //     }
-
-  //     result.parsedValue = schemaValue;
-  //   } else {
-  //     result.errors.push("valeur_invalide");
-  //   }
-  // }
 }
 
 export type ValidateRowType = {
