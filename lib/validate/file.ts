@@ -1,31 +1,31 @@
-import { ParseError } from "papaparse";
-import parse from "./parse";
-import { uniq } from "lodash";
+import { ParseError } from 'papaparse';
+import parse from './parse';
+import { uniq } from 'lodash';
 
 const FATAL_PARSE_ERRORS = new Set([
-  "MissingQuotes",
-  "UndetectableDelimiter",
-  "TooFewFields",
-  "TooManyFields",
+  'MissingQuotes',
+  'UndetectableDelimiter',
+  'TooFewFields',
+  'TooManyFields',
 ]);
 
 export enum HumaneLinebreakEnum {
-  UNIX = "Unix",
-  WINDOWS = "Windows",
-  MAC = "Old Mac/BSD",
-  INCONNU = "Inconnu",
+  UNIX = 'Unix',
+  WINDOWS = 'Windows',
+  MAC = 'Old Mac/BSD',
+  INCONNU = 'Inconnu',
 }
 
 function humanizeLinebreak(linebreak: string): HumaneLinebreakEnum {
-  if (linebreak === "\n") {
+  if (linebreak === '\n') {
     return HumaneLinebreakEnum.UNIX;
   }
 
-  if (linebreak === "\r\n") {
+  if (linebreak === '\r\n') {
     return HumaneLinebreakEnum.WINDOWS;
   }
 
-  if (linebreak === "\r") {
+  if (linebreak === '\r') {
     return HumaneLinebreakEnum.MAC;
   }
 
@@ -45,37 +45,37 @@ export type ValidateFile = {
 
 export function validateFile(
   detectedParams: { linebreak: string; encoding: string; delimiter: string },
-  { globalErrors }: { globalErrors: Set<String> }
+  { globalErrors }: { globalErrors: Set<string> },
 ) {
   const humanizedLinebreak = humanizeLinebreak(detectedParams.linebreak);
 
   const encoding = {
     value: detectedParams.encoding,
-    isValid: detectedParams.encoding === "utf-8",
+    isValid: detectedParams.encoding === 'utf-8',
   };
 
   if (!encoding.isValid) {
-    globalErrors.add("file.encoding.non_standard");
+    globalErrors.add('file.encoding.non_standard');
   }
 
   const delimiter = {
     value: detectedParams.delimiter,
-    isValid: detectedParams.delimiter === ";",
+    isValid: detectedParams.delimiter === ';',
   };
 
   if (!delimiter.isValid) {
-    globalErrors.add("file.delimiter.non_standard");
+    globalErrors.add('file.delimiter.non_standard');
   }
 
   const linebreak = {
     value: humanizedLinebreak,
     isValid: [HumaneLinebreakEnum.UNIX, HumaneLinebreakEnum.WINDOWS].includes(
-      humanizedLinebreak
+      humanizedLinebreak,
     ),
   };
 
   if (!linebreak.isValid) {
-    globalErrors.add("file.linebreak.non_standard");
+    globalErrors.add('file.linebreak.non_standard');
   }
 
   return { encoding, delimiter, linebreak };
@@ -93,7 +93,7 @@ export type ParseFileType = {
 
 export async function parseFile(
   file: Buffer,
-  relaxFieldsDetection: boolean
+  relaxFieldsDetection: boolean,
 ): Promise<ParseFileType> {
   const parseOptions = relaxFieldsDetection
     ? { transformHeader: (h) => h.toLowerCase().trim() }

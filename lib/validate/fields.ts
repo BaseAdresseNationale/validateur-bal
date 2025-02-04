@@ -1,6 +1,6 @@
 /* eslint no-inner-declarations: off */
-import Schema from "../schema";
-import { allowedRegionalLangs } from "../utils/helpers";
+import Schema from '../schema';
+import { allowedRegionalLangs } from '../utils/helpers';
 
 export type NotFoundFieldType = {
   schemaName: string;
@@ -20,7 +20,7 @@ export function computeFields(
   {
     relaxFieldsDetection,
     globalErrors,
-  }: { relaxFieldsDetection: boolean; globalErrors: Set<string> }
+  }: { relaxFieldsDetection: boolean; globalErrors: Set<string> },
 ): {
   fields;
   notFoundFields: NotFoundFieldType[];
@@ -74,7 +74,7 @@ export function computeFields(
       const localizedSchemaName = `${schemaName}_${locale}`;
       if (!foundFields.has(localizedSchemaName)) {
         const candidate = fields.find(
-          (f) => f.name === localizedSchemaName && !f.schemaName
+          (f) => f.name === localizedSchemaName && !f.schemaName,
         );
         if (candidate) {
           candidate.schemaName = schemaName;

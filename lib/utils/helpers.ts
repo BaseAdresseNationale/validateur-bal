@@ -1,14 +1,14 @@
-import languesRegionales from "@ban-team/shared-data/langues-regionales.json";
+import languesRegionales from '@ban-team/shared-data/langues-regionales.json';
 
-import profiles from "../schema/profiles";
-import errorLabels from "../schema/error-labels";
-import Schema from "../schema/index";
-import { Profile } from "../schema/profiles/profile.interface";
-import { ErrorLevelEnum } from "./error-level.enum";
+import profiles from '../schema/profiles';
+import errorLabels from '../schema/error-labels';
+import Schema from '../schema/index';
+import { Profile } from '../schema/profiles/profile.interface';
+import { ErrorLevelEnum } from './error-level.enum';
 
 // On fait une liste des langues régional que l'on peut utiliser
 export const allowedRegionalLangs: string[] = languesRegionales.map(
-  (l) => l.code
+  (l) => l.code,
 );
 
 // On fait une map pour faire correspondre les erreur générique
@@ -16,10 +16,10 @@ const endsWithErrorLabels: Record<string, (submittedCode: string) => string> =
   {};
 
 for (const c of Object.keys(errorLabels)) {
-  if (c.includes("*") && c.startsWith("*.")) {
+  if (c.includes('*') && c.startsWith('*.')) {
     endsWithErrorLabels[c.slice(2)] = (submittedCode) => {
-      const [value] = submittedCode.split(".");
-      return errorLabels[c].replace("{}", value);
+      const [value] = submittedCode.split('.');
+      return errorLabels[c].replace('{}', value);
     };
   }
 }
@@ -29,7 +29,7 @@ export function parseLocalizedField(fieldName: string): {
   schemaName: string;
 } {
   // On cherche si le fieldName termine par _lang
-  const locale = allowedRegionalLangs.find((l) => fieldName.endsWith("_" + l));
+  const locale = allowedRegionalLangs.find((l) => fieldName.endsWith('_' + l));
 
   if (!locale) {
     return;
@@ -53,23 +53,23 @@ export function parseErrorCode(code: string): {
   fieldName?: string;
   fieldError?: string;
 } {
-  const parts = code.split(".");
+  const parts = code.split('.');
 
   // On détermine si l'erreur vient du fichier, de la lignes, d'un champ ou de plusieurs lignes
-  if (parts[0] === "file") {
-    return { prefix: "file", code };
+  if (parts[0] === 'file') {
+    return { prefix: 'file', code };
   }
 
-  if (parts[0] === "row") {
-    return { prefix: "row", code };
+  if (parts[0] === 'row') {
+    return { prefix: 'row', code };
   }
 
-  if (parts[0] === "field") {
-    return { prefix: "field", code };
+  if (parts[0] === 'field') {
+    return { prefix: 'field', code };
   }
 
-  if (parts[0] === "rows") {
-    return { prefix: "rows", code };
+  if (parts[0] === 'rows') {
+    return { prefix: 'rows', code };
   }
 
   // On recupère le nom du champ et l'erreur
@@ -83,7 +83,7 @@ export function parseErrorCode(code: string): {
   }
 
   if (!Schema.fields[fieldName]) {
-    throw new Error("Unknown fieldName: " + fieldName);
+    throw new Error('Unknown fieldName: ' + fieldName);
   }
 
   return { schemaName: fieldName, fieldError };
@@ -91,7 +91,7 @@ export function parseErrorCode(code: string): {
 
 export function getErrorLevel(
   profileName: string,
-  code: string
+  code: string,
 ): ErrorLevelEnum {
   const profile: Profile = profiles[profileName];
   const { schemaName, locale, fieldError } = parseErrorCode(code);
@@ -110,8 +110,8 @@ export function getErrorLevel(
 }
 
 function getIfMissingColumn(code: string): string | null {
-  const parts = code.split(".");
-  if (parts[0] === "field" && parts[2] === "missing") {
+  const parts = code.split('.');
+  if (parts[0] === 'field' && parts[2] === 'missing') {
     return `La colonne ${parts[1]} n’existe pas`;
   }
 
@@ -125,12 +125,12 @@ export function getLabel(code: string) {
 
   // Si le code corrspond a un errorLabel on le retourne
   if (codeToUser in errorLabels) {
-    return errorLabels[codeToUser] + (locale ? ` [${locale}]` : "");
+    return errorLabels[codeToUser] + (locale ? ` [${locale}]` : '');
   }
 
   // On vérifie si c'est un errorLabel générique (pour plusieurs code erreurs)
   const endsWithCandidate = Object.keys(endsWithErrorLabels).find((pattern) =>
-    codeToUser.endsWith(pattern)
+    codeToUser.endsWith(pattern),
   );
 
   // On le retourne si c'est le cas

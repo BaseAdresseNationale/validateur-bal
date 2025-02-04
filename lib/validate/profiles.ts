@@ -1,12 +1,12 @@
-import { PrevalidateType } from ".";
-import { ErrorLevelEnum } from "../utils/error-level.enum";
-import { getErrorLevel } from "../utils/helpers";
-import { NotFoundFieldType } from "./fields";
-import { ValidateRowType } from "./rows";
+import { PrevalidateType } from '.';
+import { ErrorLevelEnum } from '../utils/error-level.enum';
+import { getErrorLevel } from '../utils/helpers';
+import { NotFoundFieldType } from './fields';
+import { ValidateRowType } from './rows';
 
 function validateProfileRows(
   computedRows: ValidateRowType[],
-  profileName: string
+  profileName: string,
 ): ValidateRowType[] {
   return computedRows.map((row) => {
     const errors = row.errors.map((e) => ({
@@ -31,7 +31,7 @@ type ProfileErrorType = {
 
 function validateProfileUniqueErrors(
   uniqueErrors: string[],
-  profileName: string
+  profileName: string,
 ): ProfileErrorType[] {
   return uniqueErrors.map((code) => ({
     code,
@@ -41,7 +41,7 @@ function validateProfileUniqueErrors(
 
 function validateProfileNotFoundFields(
   notFoundFields: NotFoundFieldType[],
-  profileName: string
+  profileName: string,
 ): NotFoundFieldType[] {
   return notFoundFields.map(({ schemaName }) => ({
     schemaName,
@@ -55,7 +55,7 @@ export type ValidateProfile = PrevalidateType & {
 
 export function validateProfile(
   prevalidateResult: PrevalidateType,
-  profileName: string
+  profileName: string,
 ): PrevalidateType | ValidateProfile {
   if (!prevalidateResult.parseOk) {
     return prevalidateResult;
@@ -64,12 +64,12 @@ export function validateProfile(
   const rows = validateProfileRows(prevalidateResult.rows, profileName);
   const profilErrors: ProfileErrorType[] = validateProfileUniqueErrors(
     prevalidateResult.uniqueErrors,
-    profileName
+    profileName,
   );
 
   const notFoundFields = validateProfileNotFoundFields(
     prevalidateResult.notFoundFields,
-    profileName
+    profileName,
   );
 
   return {

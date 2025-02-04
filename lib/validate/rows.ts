@@ -1,9 +1,9 @@
-import bluebird = require("bluebird");
-import { keyBy } from "lodash";
-import { FieldType } from "./fields";
-import Schema from "../schema";
-import { FieldsSchema } from "../schema/fields";
-import { ErrorLevelEnum } from "../utils/error-level.enum";
+import bluebird from 'bluebird';
+import { keyBy } from 'lodash';
+import { FieldType } from './fields';
+import Schema from '../schema';
+import { FieldsSchema } from '../schema/fields';
+import { ErrorLevelEnum } from '../utils/error-level.enum';
 
 export async function computeRows(
   parsedRows: Record<string, string>[],
@@ -11,9 +11,13 @@ export async function computeRows(
     fields,
     rowsErrors,
     globalErrors,
-  }: { fields: FieldType[]; rowsErrors: Set<string>; globalErrors: Set<string> }
+  }: {
+    fields: FieldType[];
+    rowsErrors: Set<string>;
+    globalErrors: Set<string>;
+  },
 ): Promise<ValidateRowType[]> {
-  const indexedFields: Record<string, FieldType> = keyBy(fields, "name");
+  const indexedFields: Record<string, FieldType> = keyBy(fields, 'name');
   const computedRows: ValidateRowType[] = await bluebird.map(
     parsedRows,
     async (parsedRow: Record<string, string>, line: number) => {
@@ -27,7 +31,7 @@ export async function computeRows(
 
       return computedRow;
     },
-    { concurrency: 4 }
+    { concurrency: 4 },
   );
 
   Schema.rows(parsedRows, {
@@ -47,7 +51,7 @@ type ReadValueType = {
 
 export async function readValue(
   fieldName: string,
-  rawValue: string
+  rawValue: string,
 ): Promise<ReadValueType> {
   if (!(fieldName in Schema.fields)) {
     throw new Error(`Unknown field name: ${fieldName}`);
@@ -64,11 +68,11 @@ export async function readValue(
   const trimmedValue = fieldSchema.trim ? rawValue.trim() : rawValue;
 
   if (fieldSchema.trim && trimmedValue !== rawValue) {
-    result.errors.push("espaces_debut_fin");
+    result.errors.push('espaces_debut_fin');
   }
 
   if (fieldSchema.required && !trimmedValue) {
-    result.errors.push("valeur_manquante");
+    result.errors.push('valeur_manquante');
   } else if (!trimmedValue) {
     // Ne rien faire
   } else if (fieldSchema.parse) {
@@ -102,7 +106,7 @@ export async function validateRow(
   {
     indexedFields,
     line,
-  }: { indexedFields: Record<string, FieldType>; line: number }
+  }: { indexedFields: Record<string, FieldType>; line: number },
 ): Promise<ValidateRowType> {
   const rawValues: Record<string, string> = {};
   const parsedValues: Record<string, string | boolean | number> = {};
@@ -151,7 +155,7 @@ export async function validateRow(
           localizedValues[field.schemaName][field.locale] = result.parsedValue;
         }
       }
-    })
+    }),
   );
 
   Schema.row(
@@ -160,7 +164,7 @@ export async function validateRow(
       addError(code: string) {
         errors.push({ code: `row.${code}` });
       },
-    }
+    },
   );
 
   return {

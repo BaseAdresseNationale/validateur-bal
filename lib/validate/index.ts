@@ -1,11 +1,11 @@
-import { mapValues } from "lodash";
+import { mapValues } from 'lodash';
 
-import profiles from "../schema/profiles/index";
-import { getErrorLevel } from "../utils/helpers";
-import { parseFile, ParseFileType, ValidateFile, validateFile } from "./file";
-import { computeFields, FieldType, NotFoundFieldType } from "./fields";
-import { computeRows, ValidateRowType } from "./rows";
-import { ValidateProfile, validateProfile } from "./profiles";
+import profiles from '../schema/profiles/index';
+import { getErrorLevel } from '../utils/helpers';
+import { parseFile, ParseFileType, ValidateFile, validateFile } from './file';
+import { computeFields, FieldType, NotFoundFieldType } from './fields';
+import { computeRows, ValidateRowType } from './rows';
+import { ValidateProfile, validateProfile } from './profiles';
 
 type ProfilesValidationType = {
   code: string;
@@ -27,7 +27,7 @@ export type PrevalidateType = ParseFileType & {
 export async function prevalidate(
   file: Buffer,
   format: string,
-  relaxFieldsDetection: boolean
+  relaxFieldsDetection: boolean,
 ): Promise<PrevalidateType> {
   const globalErrors = new Set<string>();
   const rowsErrors = new Set<string>();
@@ -73,7 +73,7 @@ export async function prevalidate(
 
   const fileValidation: ValidateFile = validateFile(
     { linebreak, encoding, delimiter },
-    { globalErrors }
+    { globalErrors },
   );
 
   const uniqueErrors = new Set([...globalErrors, ...rowsErrors]);
@@ -83,10 +83,10 @@ export async function prevalidate(
     (profile) => {
       const { code, name } = profile;
       const isValid = ![...uniqueErrors].some(
-        (e) => getErrorLevel(profile.code, e) === "E"
+        (e) => getErrorLevel(profile.code, e) === 'E',
       );
       return { code, name, isValid };
-    }
+    },
   );
 
   return {
@@ -109,9 +109,9 @@ export async function prevalidate(
 
 export async function validate(
   file: Buffer,
-  options: { profile?: string; relaxFieldsDetection?: boolean } = {}
+  options: { profile?: string; relaxFieldsDetection?: boolean } = {},
 ): Promise<PrevalidateType | ValidateProfile> {
-  const profile = options.profile || "1.3";
+  const profile = options.profile || '1.3';
   let { relaxFieldsDetection } = options;
 
   if (options.relaxFieldsDetection === undefined) {
@@ -122,7 +122,7 @@ export async function validate(
   const prevalidateResult: PrevalidateType = await prevalidate(
     file,
     format,
-    relaxFieldsDetection
+    relaxFieldsDetection,
   );
   return validateProfile(prevalidateResult, profile);
 }

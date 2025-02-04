@@ -1,4 +1,4 @@
-import communes from "../../minicog.json";
+import communes from '../../minicog.json';
 
 interface CommuneActuelle {
   code: string;
@@ -6,17 +6,11 @@ interface CommuneActuelle {
   anciensCodes?: string;
 }
 
-interface CommuneDeleguee {
-  code: string;
-  nom: string;
-  chefLieu?: string;
-}
-
 const codesCommunesActuelles = new Set<string>(
-  communes.filter((c) => !c.chefLieu).map((c) => c.code)
+  communes.filter((c) => !c.chefLieu).map((c) => c.code),
 );
 const codesCommunesDeleguees = new Set<string>(
-  communes.filter((c) => c.chefLieu).map((c) => c.code)
+  communes.filter((c) => c.chefLieu).map((c) => c.code),
 );
 
 const anciensCodesIndex = new Map<string, CommuneActuelle>();

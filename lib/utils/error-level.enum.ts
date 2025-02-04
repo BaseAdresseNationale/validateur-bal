@@ -1,5 +1,5 @@
 export enum ErrorLevelEnum {
-  ERROR = "E",
-  WARNING = "W",
-  INFO = "I",
+  ERROR = 'E',
+  WARNING = 'W',
+  INFO = 'I',
 }
