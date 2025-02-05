@@ -95,7 +95,7 @@ export const warnings: string[] = [
   'cad_parcelles.espaces_debut_fin',
   'source.espaces_debut_fin',
   'date_der_maj.espaces_debut_fin',
-  // ID BAN
+  // BAN IDS
   'uid_adresse.type_invalide',
   'uid_adresse.incoherence_ids_ban',
 ];
