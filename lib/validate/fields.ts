@@ -9,9 +9,9 @@ export type NotFoundFieldType = {
 
 export type FieldType = {
   name: string;
-  schemaName?: string;
-  localizedSchemaName?: string;
-  locale?: string;
+  schemaName?: string; // voie_nom
+  localizedSchemaName?: string; // voie_nom_bre
+  locale?: string; // bre
 };
 
 export function computeFields(

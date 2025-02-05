@@ -6,8 +6,6 @@ const errorLabels: Record<string, string> = {
   '*.valeur_invalide': 'La valeur du champ {} est incorrecte',
   '*.espaces_debut_fin':
     'La valeur du champ {} ne doit pas avoir d’espaces en début ou en fin de chaîne de caractère',
-  '*.enum_fuzzy':
-    'La valeur du champ {} a été acceptée mais n’est pas conforme à la spécification',
   '*.caractere_invalide': 'Le champ {} contient des caractères non valides',
 
   // cle_interop
@@ -77,6 +75,10 @@ const errorLabels: Record<string, string> = {
     'Le code INSEE renseigné correspond au code d’une commune actuelle dont le chef lieu n’est pas une commune déléguée',
   'commune_deleguee_insee.commune_ancienne_non_deleguee':
     'Le code INSEE renseigné correspond au code d’une commune ancienne qui n’a pas le statut de commune déléguée',
+
+  // position
+  'position.enum_fuzzy':
+    'La valeur de la position a été acceptée mais n’est pas conforme à la spécification',
 
   // x
   'x.separateur_decimal_invalide':
