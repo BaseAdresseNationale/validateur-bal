@@ -135,18 +135,6 @@ function printReport(report: ValidateProfile) {
     }
   }
 
-  const aliasedFields = fields.filter(
-    (f) => f.schemaName && f.schemaName !== f.name && !f.localizedSchemaName,
-  );
-  if (aliasedFields.length > 0) {
-    console.log('');
-    for (const f of aliasedFields) {
-      console.log(
-        `/!\\ Le champ ${f.schemaName} est mal orthographié mais a été pris en compte`,
-      );
-    }
-  }
-
   // Validation des données
   console.log('');
   console.log('* Validation des données');

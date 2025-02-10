@@ -33,9 +33,10 @@ describe("VALIDATE 1.4 TEST", () => {
   test("Valid file 1.4 with relaxFieldsDetection", async () => {
     const buffer = await readAsBuffer("1.4-valid-relax.csv");
     const report = await validate(buffer, { relaxFieldsDetection: true });
+
     expect(report.encoding).toBe("utf-8");
     expect(report.parseOk).toBe(true);
-    expect(report.profilesValidation["1.4"].isValid).toBe(true);
+    expect(report.profilesValidation["1.4"].isValid).toBe(false);
     expect(report.profilesValidation["1.4-relax"].isValid).toBe(true);
   });
 
@@ -48,7 +49,7 @@ describe("VALIDATE 1.4 TEST", () => {
 
     expect(report.encoding).toBe("utf-8");
     expect(report.parseOk).toBe(true);
-    expect(report.profilesValidation["1.4"].isValid).toBe(true);
+    expect(report.profilesValidation["1.4"].isValid).toBe(false);
     expect(report.profilesValidation["1.4-relax"].isValid).toBe(true);
   });
 
@@ -62,7 +63,7 @@ describe("VALIDATE 1.4 TEST", () => {
     expect(report.encoding).toBe("utf-8");
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation["1.4"].isValid).toBe(false);
-    expect(report.profilesValidation["1.4-relax"].isValid).toBe(false);
+    expect(report.profilesValidation["1.4-relax"].isValid).toBe(true);
   });
 
   test("Error file 1.4 with profile 1.4", async () => {
@@ -72,7 +73,7 @@ describe("VALIDATE 1.4 TEST", () => {
     expect(report.encoding).toBe("utf-8");
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation["1.4"].isValid).toBe(false);
-    expect(report.profilesValidation["1.4-relax"].isValid).toBe(false);
+    expect(report.profilesValidation["1.4-relax"].isValid).toBe(true);
   });
 
   test("Error bad id ban adresses (file 1.4)", async () => {

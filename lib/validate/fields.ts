@@ -18,9 +18,8 @@ export function computeFields(
   originalFields: string[],
   format: string,
   {
-    relaxFieldsDetection,
     globalErrors,
-  }: { relaxFieldsDetection: boolean; globalErrors: Set<string> },
+  }: { globalErrors: Set<string> },
 ): {
   fields;
   notFoundFields: NotFoundFieldType[];
@@ -48,17 +47,6 @@ export function computeFields(
 
     // Exact match
     findField(schemaName);
-
-    // Alias match
-    if (
-      relaxFieldsDetection &&
-      !foundFields.has(schemaName) &&
-      Schema.fields[schemaName].aliases
-    ) {
-      for (const alias of Schema.fields[schemaName].aliases) {
-        findField(alias);
-      }
-    }
 
     // Si le champ n'est pas trouvé on créé des erreurs
     if (

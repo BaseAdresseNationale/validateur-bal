@@ -62,7 +62,6 @@ export async function prevalidate(
   }: { fields: FieldType[]; notFoundFields: NotFoundFieldType[] } =
     computeFields(originalFields, format, {
       globalErrors,
-      relaxFieldsDetection,
     });
 
   const rows: ValidateRowType[] = await computeRows(parsedRows, {

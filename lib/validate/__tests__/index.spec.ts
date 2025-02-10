@@ -21,124 +21,31 @@ describe("VALIDATE TEST", () => {
     expect(report.encoding).toBe("utf-8");
   });
 
-  it("validate a file with aliases / relaxFieldsDetection true", async () => {
+  it("No validate a file with aliases / relaxFieldsDetection true", async () => {
     const buffer = await readAsBuffer("aliases.csv");
     const { fields, notFoundFields } = await validate(buffer, {
       relaxFieldsDetection: true,
     });
 
-    const aliasedFields = {
-      cle_interop: "cle_intero",
-      commune_nom: "commune_no",
-      commune_insee: "commune_in",
-      date_der_maj: "date_der_m",
-      lat: "lat_wgs84",
-      long: "long_wgs84",
-      uid_adresse: "uid_adress",
-      x: "x_l93",
-      y: "y_l93",
-    };
-
-    for (const schemaName of Object.keys(aliasedFields)) {
-      const originalName = aliasedFields[schemaName];
-      expect(
-        fields.find(
-          (f) => f.name === originalName && f.schemaName === schemaName
-        )
-      ).toBeTruthy();
-    }
-
+    expect(notFoundFields.length).toBe(14);
     for (const field of [
       "cle_interop",
       "uid_adresse",
-      "voie_nom",
-      "numero",
-      "suffixe",
+      "lieudit_complement_nom",
+      "commune_insee",
       "commune_nom",
-      "position",
+      "commune_deleguee_insee",
+      "commune_deleguee_nom",
       "x",
       "y",
       "long",
       "lat",
-      "source",
-      "date_der_maj",
-    ]) {
-      expect(fields.some((f) => f.schemaName === field)).toBeTruthy();
-    }
-
-    expect(notFoundFields.length).toBe(5);
-
-    for (const field of [
-      "lieudit_complement_nom",
-      "commune_deleguee_insee",
-      "commune_deleguee_nom",
       "cad_parcelles",
-    ]) {
-      expect(notFoundFields.some((f) => f.schemaName === field)).toBeTruthy();
-    }
-
-    // Unknown fields
-    expect(fields.filter((f) => !f.schemaName).length).toBe(0);
-  });
-
-  it("validate a file with aliases with 1.3-relax", async () => {
-    const buffer = await readAsBuffer("aliases.csv");
-    const { fields, notFoundFields } = await validate(buffer, {
-      profile: "1.3-relax",
-    });
-
-    const aliasedFields = {
-      cle_interop: "cle_intero",
-      commune_nom: "commune_no",
-      commune_insee: "commune_in",
-      date_der_maj: "date_der_m",
-      lat: "lat_wgs84",
-      long: "long_wgs84",
-      uid_adresse: "uid_adress",
-      x: "x_l93",
-      y: "y_l93",
-    };
-
-    for (const schemaName of Object.keys(aliasedFields)) {
-      const originalName = aliasedFields[schemaName];
-      expect(
-        fields.find(
-          (f) => f.name === originalName && f.schemaName === schemaName
-        )
-      ).toBeTruthy();
-    }
-
-    for (const field of [
-      "cle_interop",
-      "uid_adresse",
-      "voie_nom",
-      "numero",
-      "suffixe",
-      "commune_nom",
-      "position",
-      "x",
-      "y",
-      "long",
-      "lat",
-      "source",
       "date_der_maj",
+      "certification_commune"
     ]) {
-      expect(fields.some((f) => f.schemaName === field)).toBeTruthy();
+      expect(notFoundFields.some(({schemaName}) => schemaName === field)).toBeTruthy()
     }
-
-    expect(notFoundFields.length === 5).toBeTruthy();
-
-    for (const field of [
-      "lieudit_complement_nom",
-      "commune_deleguee_insee",
-      "commune_deleguee_nom",
-      "cad_parcelles",
-    ]) {
-      expect(notFoundFields.some((f) => f.schemaName === field)).toBeTruthy();
-    }
-
-    // Unknown fields
-    expect(fields.filter((f) => !f.schemaName).length === 0).toBeTruthy();
   });
 
   it("validate a file with aliases / profile relax and relaxFieldsDetection false", async () => {
