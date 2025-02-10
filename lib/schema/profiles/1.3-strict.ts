@@ -9,8 +9,6 @@ export const errors: string[] = [
   'certification_commune.valeur_invalide',
 
   'field.certification_commune.missing',
-
-  'field.certification_commune.fuzzy',
 ];
 
 export const warnings: string[] = [...Warnings12Strict];
