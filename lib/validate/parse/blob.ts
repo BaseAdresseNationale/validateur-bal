@@ -1,6 +1,6 @@
-import toBuffer from "blob-to-buffer";
-import { detectBufferEncoding } from "./detect-encoding";
-import { parseCsv } from "./csv";
+import toBuffer from 'blob-to-buffer';
+import { detectBufferEncoding } from './detect-encoding';
+import { parseCsv } from './csv';
 
 function detectBlobEncoding(blob) {
   return new Promise((resolve, reject) => {

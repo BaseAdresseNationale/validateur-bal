@@ -17,9 +17,7 @@ export type FieldType = {
 export function computeFields(
   originalFields: string[],
   format: string,
-  {
-    globalErrors,
-  }: { globalErrors: Set<string> },
+  { globalErrors }: { globalErrors: Set<string> },
 ): {
   fields;
   notFoundFields: NotFoundFieldType[];

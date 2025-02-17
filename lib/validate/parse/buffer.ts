@@ -1,7 +1,7 @@
-import iconv from "iconv-lite";
-import { detectBufferEncoding } from "./detect-encoding";
+import iconv from 'iconv-lite';
+import { detectBufferEncoding } from './detect-encoding';
 
-import { parseCsv } from "./csv";
+import { parseCsv } from './csv';
 
 // Copied from strip-bom package which contains ES6 syntax
 function stripBom(str: string): string {

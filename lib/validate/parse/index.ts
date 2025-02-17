@@ -1,3 +1,3 @@
-import { parse } from "./buffer";
+import { parse } from './buffer';
 
 export default parse;

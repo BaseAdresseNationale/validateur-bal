@@ -16,7 +16,6 @@ export const errors: string[] = [
   'field.commune_deleguee_nom.missing',
   'field.lieudit_complement_nom.missing',
   'field.cad_parcelles.missing',
-
 ];
 
 export const warnings: string[] = [...Warnings11Strict];
