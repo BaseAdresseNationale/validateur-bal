@@ -1148,10 +1148,10 @@
     "@babel/helper-validator-identifier" "^7.22.20"
     to-fast-properties "^2.0.0"
 
-"@ban-team/shared-data@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@ban-team/shared-data/-/shared-data-1.4.0.tgz#3071dbec5e042676ecab11502df243aa0f1dc806"
-  integrity sha512-XJ3B6t2+0tFZ79sxN1VOLDNhSA/aB2qdiR6O3NacaMe753GRS7tuX2/rbsRShU85d+Qb0eNqcLwtddqi8qtl6Q==
+"@ban-team/shared-data@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@ban-team/shared-data/-/shared-data-1.4.1.tgz#befd80777dd8a5f80262d65730f92c3a1c8a0116"
+  integrity sha512-dcbwb+6xUE3O/5e7Gz5XrMw6rkI7XvTAXqfSzpFPkf5yteuy8nkLZc8EK4hX3G2nSvOx/hh8mVVCpo+OAZuOwA==
 
 "@eslint-community/eslint-utils@^4.2.0":
   version "4.4.0"
