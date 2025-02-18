@@ -32,8 +32,6 @@ jobs:
         run: yarn build
       - name: Transpile code
         run: yarn transpile
-      - name: Binaires
-        run: yarn build-bins
 
   scan:
     name: gitleaks
