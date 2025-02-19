@@ -1,49 +1,28 @@
 import { Profile } from './profile.interface';
+import { errors as Errors13Relax } from './1.3-relax';
 
+// Les erreurs du profile 1.3 sont les erreurs 1.3-relax avec quelques unes en plus
 export const errors: string[] = [
-  'cle_interop.structure_invalide',
-  'cle_interop.commune_invalide',
-  'cle_interop.numero_invalide',
+  ...Errors13Relax,
+  // MORE THAN 1.3 RELAX
   'cle_interop.valeur_manquante',
   'cle_interop.numero_prefixe_manquant',
   'cle_interop.casse_invalide',
-  'voie_nom.valeur_manquante',
-  'voie_nom.trop_court',
-  'voie_nom.trop_long',
-  'voie_nom.caractere_invalide',
-  'numero.valeur_manquante',
-  'numero.type_invalide',
-  'numero.trop_grand',
+  'suffixe.espaces_debut_fin',
   'numero.contient_prefixe',
-  'suffixe.debut_invalide',
-  'suffixe.trop_long',
-  'date_der_maj.date_invalide',
-  'commune_insee.commune_invalide',
   'commune_insee.valeur_manquante',
   'commune_insee.espaces_debut_fin',
-  'x.valeur_invalide',
-  'y.valeur_invalide',
   'x.separateur_decimal_invalide',
   'y.separateur_decimal_invalide',
-  'long.valeur_invalide',
-  'lat.valeur_invalide',
   'long.separateur_decimal_invalide',
   'lat.separateur_decimal_invalide',
-  'row.incoherence_numero',
-  'row.commune_manquante',
-  'row.longlat_vides',
-  'row.longlat_invalides',
-  'row.adresse_incomplete',
+  'date_der_maj.date_invalide',
   'field.commune_insee.missing',
-  'field.voie_nom.missing',
-  'field.numero.missing',
   'field.long.missing',
   'field.lat.missing',
-  'suffixe.espaces_debut_fin',
   'file.encoding.non_standard',
   'file.delimiter.non_standard',
   'file.linebreak.non_standard',
-  'rows.empty',
 ];
 
 export const warnings: string[] = [
@@ -82,7 +61,6 @@ export const warnings: string[] = [
   'field.source.missing',
   'field.date_der_maj.missing',
   'field.certification_commune.missing',
-
   'cle_interop.espaces_debut_fin',
   'commune_nom.espaces_debut_fin',
   'commune_deleguee_insee.espaces_debut_fin',
@@ -101,7 +79,6 @@ export const warnings: string[] = [
   'cad_parcelles.espaces_debut_fin',
   'source.espaces_debut_fin',
   'date_der_maj.espaces_debut_fin',
-  // ID BAN
   'uid_adresse.type_invalide',
   'uid_adresse.incoherence_ids_ban',
 ];

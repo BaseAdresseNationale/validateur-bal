@@ -28,13 +28,10 @@ export const errors: string[] = [
   'rows.empty',
 ];
 
+// Les warnings 1.3-relax sont les warnings 1.3 avec les erreurs rajouter dans le 1.3 également
 export const warnings: string[] = [
-  'cle_interop.valeur_manquante',
-  'cle_interop.casse_invalide',
   'cle_interop.voie_invalide',
-  'cle_interop.numero_prefixe_manquant',
   'cle_interop.commune_ancienne',
-  'numero.contient_prefixe',
   'voie_nom.casse_incorrecte',
   'voie_nom.contient_tiret_bas',
   'voie_nom_@@.casse_incorrecte',
@@ -48,15 +45,10 @@ export const warnings: string[] = [
   'commune_deleguee_insee.commune_ancienne_non_deleguee',
   'position.enum_fuzzy',
   'position.valeur_invalide',
-  'x.separateur_decimal_invalide',
-  'y.separateur_decimal_invalide',
-  'long.separateur_decimal_invalide',
-  'lat.separateur_decimal_invalide',
   'cad_parcelles.valeur_invalide',
   'cad_parcelles.pipe_debut_fin',
   'source.valeur_manquante',
   'date_der_maj.valeur_manquante',
-  'date_der_maj.date_invalide',
   'date_der_maj.date_ancienne',
   'date_der_maj.date_future',
   'certification_commune.valeur_invalide',
@@ -65,7 +57,6 @@ export const warnings: string[] = [
   'row.longlat_xy_incoherents',
   'field.suffixe.missing',
   'field.cle_interop.missing',
-  'field.commune_insee.missing',
   'field.position.missing',
   'field.long.missing',
   'field.lat.missing',
@@ -74,9 +65,7 @@ export const warnings: string[] = [
   'field.source.missing',
   'field.date_der_maj.missing',
   'field.certification_commune.missing',
-
   'cle_interop.espaces_debut_fin',
-  'commune_insee.espaces_debut_fin',
   'commune_nom.espaces_debut_fin',
   'commune_deleguee_insee.espaces_debut_fin',
   'commune_deleguee_nom.espaces_debut_fin',
@@ -86,7 +75,6 @@ export const warnings: string[] = [
   'lieudit_complement_nom.espaces_debut_fin',
   'lieudit_complement_nom_@@.espaces_debut_fin',
   'numero.espaces_debut_fin',
-  'suffixe.espaces_debut_fin',
   'position.espaces_debut_fin',
   'long.espaces_debut_fin',
   'lat.espaces_debut_fin',
@@ -95,9 +83,28 @@ export const warnings: string[] = [
   'cad_parcelles.espaces_debut_fin',
   'source.espaces_debut_fin',
   'date_der_maj.espaces_debut_fin',
-  // BAN IDS
   'uid_adresse.type_invalide',
   'uid_adresse.incoherence_ids_ban',
+  // ERROR IN PROFILE 1.3
+  'cle_interop.valeur_manquante',
+  'cle_interop.numero_prefixe_manquant',
+  'cle_interop.casse_invalide',
+  'suffixe.espaces_debut_fin',
+  'numero.contient_prefixe',
+  'commune_insee.espaces_debut_fin',
+  'x.separateur_decimal_invalide',
+  'y.separateur_decimal_invalide',
+  'long.separateur_decimal_invalide',
+  'lat.separateur_decimal_invalide',
+  'date_der_maj.date_invalide',
+  'field.commune_insee.missing',
+  'field.long.missing',
+  'field.lat.missing',
+  // ERROR IN PROFILE 1.3 NOT WARNING
+  // 'commune_insee.valeur_manquante',
+  // 'file.encoding.non_standard',
+  // 'file.delimiter.non_standard',
+  // 'file.linebreak.non_standard',
 ];
 
 const infos = ['cle_interop.voie_non_renseignee'];
