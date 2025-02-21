@@ -71,7 +71,7 @@
     "scripts": "lib/**/*.js"
   },
   "browser": {
-    "./dist/index.js": "./browser/index.js",
+    "./lib/index.js": "./browser/index.js",
     "./browser/validate/parse/index.js": "./browser/validate/parse/blob.js"
   },
   "browserslist": "> 0.5% in FR, last 2 versions, Firefox ESR, not ie 11, not dead",
