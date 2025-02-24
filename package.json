@@ -76,6 +76,7 @@
   "engines": {
     "node": ">= 14"
   },
+  "types": "dist/index.d.ts",
   "jest": {
     "moduleFileExtensions": [
       "js",
