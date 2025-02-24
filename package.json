@@ -49,8 +49,7 @@
     "lodash": "^4.17.21",
     "papaparse": "^5.3.2",
     "uuidv4": "^6.2.13",
-    "yargs": "^17.5.1",
-    "@types/papaparse": "^5.3.15"
+    "yargs": "^17.5.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.18.10",
@@ -59,6 +58,7 @@
     "@etalab/decoupage-administratif": "^4.0.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.12.0",
+    "@types/papaparse": "^5.3.15",
     "@typescript-eslint/eslint-plugin": "^8.23.0",
     "@typescript-eslint/parser": "^8.23.0",
     "codecov": "^3.8.3",
@@ -76,7 +76,6 @@
   "engines": {
     "node": ">= 14"
   },
-  "types": "dist/index.d.ts",
   "jest": {
     "moduleFileExtensions": [
       "js",

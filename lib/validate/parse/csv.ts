@@ -1,5 +1,4 @@
-import type { ParseResult } from 'papaparse';
-import Papa from 'papaparse';
+import Papa, { ParseResult } from 'papaparse';
 
 const PAPA_OPTIONS = {
   delimitersToGuess: [',', '\t', ';'],

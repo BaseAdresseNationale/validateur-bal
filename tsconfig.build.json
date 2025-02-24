@@ -1,8 +1,4 @@
 {
-  "compilerOptions": {
-    "emitDeclarationOnly": true,
-    "skipLibCheck": false
-  },
   "extends": "./tsconfig.json",
   "exclude": ["**/__tests__"]
 }
