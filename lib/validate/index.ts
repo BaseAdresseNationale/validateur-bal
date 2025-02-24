@@ -18,7 +18,7 @@ export type PrevalidateType = ParseFileType & {
   notFoundFields?: NotFoundFieldType[];
   rows?: ValidateRowType[];
   fileValidation?: ValidateFile;
-  profilesValidation?: ProfilesValidationType[];
+  profilesValidation?: Record<string, ProfilesValidationType>;
   globalErrors?: string[];
   rowsErrors?: string[];
   uniqueErrors?: string[];
@@ -77,7 +77,7 @@ export async function prevalidate(
 
   const uniqueErrors = new Set([...globalErrors, ...rowsErrors]);
 
-  const profilesValidation: ProfilesValidationType[] = mapValues(
+  const profilesValidation: Record<string, ProfilesValidationType> = mapValues(
     profiles,
     (profile) => {
       const { code, name } = profile;
