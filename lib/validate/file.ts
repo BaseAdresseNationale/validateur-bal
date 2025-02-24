@@ -1,6 +1,7 @@
 import { ParseError } from 'papaparse';
 import parse from './parse';
 import { uniq } from 'lodash';
+import { ParseReturn } from './parse/buffer';
 
 const FATAL_PARSE_ERRORS = new Set([
   'MissingQuotes',
@@ -100,7 +101,10 @@ export async function parseFile(
     : {};
 
   // Must be a Blob for browser or a Buffer for Node.js
-  const { meta, errors, data, encoding } = await parse(file, parseOptions);
+  const { meta, errors, data, encoding }: ParseReturn = await parse(
+    file,
+    parseOptions,
+  );
 
   const errorsKinds: string[] = uniq(errors.map((e: ParseError) => e.code));
   const parseOk: boolean = !errorsKinds.some((e) => FATAL_PARSE_ERRORS.has(e));
