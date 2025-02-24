@@ -12,7 +12,9 @@
     "rootDir": "./lib",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "declaration": true
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true
   },
   "include": ["lib/**/*"]
 }
