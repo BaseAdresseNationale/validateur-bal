@@ -4,6 +4,7 @@ import { readValue } from './validate/rows';
 import { getErrorLevel, getLabel } from './utils/helpers';
 import profiles from './schema/profiles';
 import { Profile } from './schema/profiles/profile.interface';
+import { ErrorLevelEnum } from './utils/error-level.enum';
 
 export {
   validate,
@@ -13,7 +14,6 @@ export {
   readValue,
   getErrorLevel,
   profiles,
-  PrevalidateType,
-  ValidateProfile,
-  Profile,
 };
+
+export type { PrevalidateType, ValidateProfile, Profile, ErrorLevelEnum };
