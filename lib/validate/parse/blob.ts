@@ -16,7 +16,7 @@ function detectBlobEncoding(blob): Promise<string> {
   });
 }
 
-export default async function parse(blob, options = {}): Promise<ParseReturn> {
+export async function parse(blob, options = {}): Promise<ParseReturn> {
   const encoding: string = await detectBlobEncoding(blob);
   const parseResult: ParseResult<Record<string, string>> = await parseCsv(
     blob,

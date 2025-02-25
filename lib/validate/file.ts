@@ -1,5 +1,5 @@
 import { ParseError } from 'papaparse';
-import parse from './parse';
+import { parse } from './parse';
 import { uniq } from 'lodash';
 import { ParseReturn } from './parse/buffer';
 
