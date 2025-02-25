@@ -93,7 +93,7 @@ export async function readValue(
 
 export type ValidateRowType = {
   rawValues: Record<string, string>;
-  parsedValues: Record<string, string | boolean | number>;
+  parsedValues: Record<string, string | string[] | boolean | number>;
   additionalValues: Record<string, any>;
   localizedValues: Record<string, any>;
   errors?: { code: string; schemaName?: string; level?: ErrorLevelEnum }[];
@@ -109,7 +109,7 @@ export async function validateRow(
   }: { indexedFields: Record<string, FieldType>; line: number },
 ): Promise<ValidateRowType> {
   const rawValues: Record<string, string> = {};
-  const parsedValues: Record<string, string | boolean | number> = {};
+  const parsedValues: Record<string, string | string[] | boolean | number> = {};
   const additionalValues: Record<string, any> = {};
   const localizedValues: Record<string, any> = {};
   const errors: {

@@ -34,7 +34,7 @@ export type FieldsSchema = {
       addError: (error: string) => void;
       setAdditionnalValues: (add: any) => void;
     },
-  ) => any;
+  ) => string | string[] | boolean | number | void;
 };
 
 function isValidFloat(str: string): boolean {
@@ -447,7 +447,7 @@ const fields: Record<string, FieldsSchema> = {
         return;
       }
 
-      const parcelles = pTrimmedValue.includes('|')
+      const parcelles: string[] = pTrimmedValue.includes('|')
         ? pTrimmedValue.split('|')
         : [pTrimmedValue];
 
