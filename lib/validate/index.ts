@@ -7,7 +7,7 @@ import { computeFields, FieldType, NotFoundFieldType } from './fields';
 import { computeRows, ValidateRowType } from './rows';
 import { ValidateProfile, validateProfile } from './profiles';
 
-type ProfilesValidationType = {
+export type ProfilesValidationType = {
   code: string;
   name: string;
   isValid: boolean;

@@ -33,7 +33,7 @@ function humanizeLinebreak(linebreak: string): HumaneLinebreakEnum {
   return HumaneLinebreakEnum.INCONNU;
 }
 
-type ValueIsValid = {
+export type ValueIsValid = {
   value: string;
   isValid: boolean;
 };

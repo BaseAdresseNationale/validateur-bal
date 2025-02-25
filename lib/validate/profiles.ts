@@ -24,7 +24,7 @@ function validateProfileRows(
   });
 }
 
-type ProfileErrorType = {
+export type ProfileErrorType = {
   code: string;
   level: ErrorLevelEnum;
 };
