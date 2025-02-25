@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "types": ["node", "jest"],
+    "target": "ES2021",
+    "module": "CommonJS",
+    "forceConsistentCasingInFileNames": false,
+    "strict": false,
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "allowJs": true,
+    "outDir": "./dist",
+    "rootDir": "./lib",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "declaration": true
+  },
+  "include": ["lib/**/*"]
+}

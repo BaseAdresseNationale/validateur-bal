@@ -1,0 +1,32 @@
+import iconv from 'iconv-lite';
+import { detectBufferEncoding } from './detect-encoding';
+
+import { parseCsv } from './csv';
+import { ParseError, ParseMeta, ParseResult } from 'papaparse';
+
+// Copied from strip-bom package which contains ES6 syntax
+function stripBom(str: string): string {
+  // Catches EFBBBF (UTF-8 BOM) because the buffer-to-string
+  // conversion translates it to FEFF (UTF-16 BOM)
+  return str.codePointAt(0) === 0xfe_ff ? str.slice(1) : str;
+}
+
+function decodeBuffer(buffer: Buffer) {
+  const encoding: string = detectBufferEncoding(buffer);
+  const decodedString: string = stripBom(iconv.decode(buffer, encoding));
+  return { encoding, decodedString };
+}
+
+export type ParseReturn = ParseResult<Record<string, string>> & {
+  encoding: string;
+};
+
+export async function parse(
+  buffer: Buffer,
+  options = {},
+): Promise<ParseReturn> {
+  const { encoding, decodedString } = decodeBuffer(buffer);
+  const { data, errors, meta }: ParseResult<Record<string, string>> =
+    await parseCsv(decodedString, options);
+  return { data, errors, meta, encoding };
+}

@@ -15,7 +15,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "./lib/index.js",
+  "main": "./dist/index.js",
   "files": [
     "bin",
     "lib",
@@ -27,13 +27,14 @@
     "bal": "bin/bal"
   },
   "scripts": {
-    "lint": "npx eslint --fix lib scripts",
-    "format": "yarn run prettier --write \"lib/**/*.js\" \"scripts/**/*.js\"",
+    "build": "rm -rf dist && npx tsc --project tsconfig.build.json",
     "build-minicog": "node scripts/build-minicog",
-    "build": "pkg --targets node16-linux-x64,node16-macos-x64,node16-win-x64 --output bal .",
-    "transpile": "rm -rf browser && babel lib --out-dir browser",
-    "test": "nyc ava",
-    "prepublishOnly": "yarn build-minicog && yarn transpile"
+    "build-bins": "yarn build && pkg --targets node16-linux-x64,node16-macos-x64,node16-win-x64 --output bal .",
+    "transpile": "yarn build && rm -rf browser && babel dist --out-dir browser",
+    "lint": "npx eslint lib/**/*.ts --fix",
+    "format": "yarn run prettier --write \"lib/**/*.ts\" \"scripts/**/*.js\"",
+    "test": "jest",
+    "prepublishOnly": "yarn build-minicog && yarn build && yarn transpile"
   },
   "dependencies": {
     "@ban-team/shared-data": "^1.4.1",
@@ -55,23 +56,48 @@
     "@babel/core": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
     "@etalab/decoupage-administratif": "^4.0.0",
-    "ava": "^4.3.3",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.12.0",
+    "@types/papaparse": "^5.3.15",
+    "@typescript-eslint/eslint-plugin": "^8.23.0",
+    "@typescript-eslint/parser": "^8.23.0",
     "codecov": "^3.8.3",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.3",
     "fs-extra": "^10.1.0",
+    "jest": "^29.7.0",
     "nyc": "^15.1.0",
     "pkg": "^5.8.0",
-    "prettier": "^3.2.5"
+    "prettier": "^3.2.5",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.7.3"
   },
   "engines": {
     "node": ">= 14"
   },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "lib",
+    "testRegex": "spec.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node"
+  },
   "pkg": {
-    "scripts": "lib/**/*.js"
+    "scripts": "dist/**/*.js"
   },
   "browser": {
-    "./lib/index.js": "./browser/index.js",
+    "./dist/index.js": "./browser/index.js",
     "./browser/validate/parse/index.js": "./browser/validate/parse/blob.js"
   },
   "browserslist": "> 0.5% in FR, last 2 versions, Firefox ESR, not ie 11, not dead",
