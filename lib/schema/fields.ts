@@ -7,7 +7,7 @@ import {
   isCommuneAncienne,
   isCommuneDeleguee,
 } from '../utils/cog';
-import { isUuid } from 'uuidv4';
+import { validate as isUuid } from 'uuid';
 
 export enum PositionTypeEnum {
   ENTREE = 'entrée',
