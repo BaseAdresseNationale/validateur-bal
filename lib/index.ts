@@ -23,14 +23,13 @@ export {
   readValue,
   getErrorLevel,
   profiles,
-  ProfileErrorType,
+  ErrorLevelEnum,
 };
 
 export type {
   PrevalidateType,
   ValidateProfile,
   Profile,
-  ErrorLevelEnum,
   FieldType,
   NotFoundFieldType,
   ValidateRowType,
@@ -38,4 +37,5 @@ export type {
   ValidateFile,
   ProfilesValidationType,
   ParseFileType,
+  ProfileErrorType,
 };
