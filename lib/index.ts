@@ -23,6 +23,7 @@ export {
   readValue,
   getErrorLevel,
   profiles,
+  ProfileErrorType,
 };
 
 export type {
@@ -36,6 +37,5 @@ export type {
   ValueIsValid,
   ValidateFile,
   ProfilesValidationType,
-  ProfileErrorType,
   ParseFileType,
 };
