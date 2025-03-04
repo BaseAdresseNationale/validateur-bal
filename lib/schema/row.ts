@@ -2,15 +2,20 @@ import proj from '@etalab/project-legal';
 import { getCommuneActuelle } from '../utils/cog';
 import { ValidateRowType } from '../validate/rows';
 
-function harmlessProj(coordinates) {
+function harmlessProj(coordinates: [number, number]) {
   try {
     return proj(coordinates);
   } catch {
     // empty
+    console.log('ERROR LONG LAT');
   }
 }
 
-function validateCoords(row, { addError }) {
+function validateCoords(
+  row: ValidateRowType,
+  { addError }: { addError: (code: string) => void },
+) {
+  // VERIFIE QU'IL Y AI LONG/LAT SI C'EST UN NUMERO (NON TOPONYME)
   if (
     row.parsedValues.numero &&
     row.parsedValues.numero !== 99_999 &&
@@ -19,11 +24,13 @@ function validateCoords(row, { addError }) {
     addError('longlat_vides');
   }
 
-  const { long, lat, x, y } = row.parsedValues;
+  const long: number = row.parsedValues.long as number;
+  const lat: number = row.parsedValues.lat as number;
+  const x: number = row.parsedValues.x as number;
+  const y: number = row.parsedValues.y as number;
 
   if (long !== undefined && lat !== undefined) {
     const projectedCoordInMeters = harmlessProj([long, lat]);
-
     if (projectedCoordInMeters) {
       if (x !== undefined && y !== undefined) {
         const distance = Math.sqrt(
@@ -32,18 +39,22 @@ function validateCoords(row, { addError }) {
         );
         const tolerance = 10;
 
+        // ON VERIFIE QUE LES COORDONEE long/lat SONT COHERENTE AVEC x/y
         if (distance > tolerance) {
           addError('longlat_xy_incoherents');
         }
       }
     } else {
-      // Not in France or error
+      // LES COORDONEE NE SONT PAS EN FRANCE
       addError('longlat_invalides');
     }
   }
 }
 
-function checkBanIds(row, addError) {
+function validateBanIds(
+  row: ValidateRowType,
+  { addError }: { addError: (code: string) => void },
+) {
   // SI IL Y A UN id_ban_toponyme, IL Y A UN id_ban_commune
   // SI IL Y A UN id_ban_adresse, IL Y A UN id_ban_toponyme ET DONC IL Y A IL Y A UN id_ban_commune
   if (
@@ -81,7 +92,7 @@ function checkBanIds(row, addError) {
   }
 }
 
-function validateRow(
+function validateCleInterop(
   row: ValidateRowType,
   { addError }: { addError: (code: string) => void },
 ) {
@@ -95,7 +106,13 @@ function validateRow(
   if (!row.parsedValues.cle_interop && !row.parsedValues.commune_insee) {
     addError('commune_manquante');
   }
+}
 
+function validatePositionType(
+  row: ValidateRowType,
+  { addError }: { addError: (code: string) => void },
+) {
+  // VERIFIE QU'IL Y A UN TYPE POSITION SI C'EST BIEN UN NUMERO (NON UN TOPONYME)
   if (
     row.parsedValues.numero &&
     row.parsedValues.numero !== 99_999 &&
@@ -103,13 +120,23 @@ function validateRow(
   ) {
     addError('position_manquante');
   }
+}
 
-  validateCoords(row, { addError });
-
+function validateMinimalAdress(
+  row: ValidateRowType,
+  { addError }: { addError: (code: string) => void },
+) {
+  // VERIFIE QU'IL Y AI UN NUMERO ET UN NOM DE VOIE
   if (row.parsedValues.numero === undefined || !row.parsedValues.voie_nom) {
     addError('adresse_incomplete');
   }
+}
 
+function validateCommuneDelegueeInsee(
+  row: ValidateRowType,
+  { addError }: { addError: (code: string) => void },
+) {
+  // VERIFIE QUE LE commune_insee_deleguee SOIT UNE ANCIEN COMMUNE DU commune_insee
   if (
     row.parsedValues.commune_deleguee_insee &&
     row.parsedValues.commune_insee
@@ -122,8 +149,18 @@ function validateRow(
       addError('chef_lieu_invalide');
     }
   }
+}
 
-  checkBanIds(row, addError);
+function validateRow(
+  row: ValidateRowType,
+  { addError }: { addError: (code: string) => void },
+) {
+  validateCleInterop(row, { addError });
+  validatePositionType(row, { addError });
+  validateCoords(row, { addError });
+  validateMinimalAdress(row, { addError });
+  validateCommuneDelegueeInsee(row, { addError });
+  validateBanIds(row, { addError });
 }
 
 export default validateRow;

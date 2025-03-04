@@ -43,10 +43,13 @@ export async function computeRows(
   return computedRows;
 }
 
+export type ParseValueType = string | string[] | number | boolean | undefined;
+
 type ReadValueType = {
-  parsedValue: string | number | boolean;
+  parsedValue: ParseValueType;
   additionalValues: any;
   errors: string[];
+  remediation: ParseValueType;
 };
 
 export async function readValue(
@@ -57,10 +60,11 @@ export async function readValue(
     throw new Error(`Unknown field name: ${fieldName}`);
   }
 
-  const result = {
+  const result: ReadValueType = {
     parsedValue: undefined,
     additionalValues: undefined,
     errors: [],
+    remediation: undefined,
   };
 
   const fieldSchema: FieldsSchema = Schema.fields[fieldName];
@@ -77,10 +81,13 @@ export async function readValue(
     // Ne rien faire
   } else if (fieldSchema.parse) {
     result.parsedValue = await fieldSchema.parse(trimmedValue, {
-      setAdditionnalValues(values) {
+      setAdditionnalValues(values: any) {
         result.additionalValues = values;
       },
-      addError(code) {
+      setRemediation(values: ParseValueType) {
+        result.remediation = values;
+      },
+      addError(code: string) {
         result.errors.push(code);
       },
     });
@@ -93,7 +100,8 @@ export async function readValue(
 
 export type ValidateRowType = {
   rawValues: Record<string, string>;
-  parsedValues: Record<string, string | string[] | boolean | number>;
+  parsedValues: Record<string, ParseValueType>;
+  remediations: Record<string, ParseValueType>;
   additionalValues: Record<string, any>;
   localizedValues: Record<string, any>;
   errors?: { code: string; schemaName?: string; level?: ErrorLevelEnum }[];
@@ -109,9 +117,10 @@ export async function validateRow(
   }: { indexedFields: Record<string, FieldType>; line: number },
 ): Promise<ValidateRowType> {
   const rawValues: Record<string, string> = {};
-  const parsedValues: Record<string, string | string[] | boolean | number> = {};
+  const parsedValues: Record<string, ParseValueType> = {};
   const additionalValues: Record<string, any> = {};
   const localizedValues: Record<string, any> = {};
+  const remediations: Record<string, ParseValueType> = {};
   const errors: {
     code: string;
     schemaName?: string;
@@ -144,6 +153,10 @@ export async function validateRow(
         additionalValues[normalizedFieldName] = result.additionalValues;
       }
 
+      if (result.remediation) {
+        remediations[normalizedFieldName] = result.remediation;
+      }
+
       if (result.parsedValue !== undefined) {
         parsedValues[normalizedFieldName] = result.parsedValue;
 
@@ -158,21 +171,20 @@ export async function validateRow(
     }),
   );
 
-  Schema.row(
-    { rawValues, parsedValues, additionalValues, localizedValues },
-    {
-      addError(code: string) {
-        errors.push({ code: `row.${code}` });
-      },
-    },
-  );
-
-  return {
+  const validateRow: ValidateRowType = {
     rawValues,
     parsedValues,
     additionalValues,
     localizedValues,
+    remediations,
     errors,
-    line,
   };
+
+  Schema.row(validateRow, {
+    addError(code: string) {
+      errors.push({ code: `row.${code}` });
+    },
+  });
+
+  return validateRow;
 }

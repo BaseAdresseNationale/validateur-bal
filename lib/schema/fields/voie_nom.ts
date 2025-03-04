@@ -179,15 +179,15 @@ export function parseVoieNom(
   // SI CELA FAIT MOINS DE 3 OU PLUS QUE 200 CARACTERES
   if (value.length < 3) {
     addError('trop_court');
-    return;
+    return undefined;
   } else if (value.length > 200) {
     addError('trop_long');
-    return;
+    return undefined;
   }
   // SI CARACTERE INVALIDE
   if (value.includes('�')) {
     addError('caractere_invalide');
-    return;
+    return undefined;
   }
 
   // AUTOFIX _
