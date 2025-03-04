@@ -1,4 +1,5 @@
 import { trim, flatten } from 'lodash';
+import { ParseFunctionArg } from '../fields';
 
 // const OVNI_WORDS = ['lieudit', 'lieu-dit'];
 
@@ -140,16 +141,17 @@ function fixAbbreviation(str: string): string {
   return capitalize(
     getWords(str)
       .map((w, i) => {
+        const wLowerCase = w.toLowerCase();
         if (i !== 0) {
-          if (Object.keys(EXPAND_WORD_TABLE).includes(w)) {
-            return EXPAND_WORD_TABLE[w];
+          if (Object.keys(EXPAND_WORD_TABLE).includes(wLowerCase)) {
+            return EXPAND_WORD_TABLE[wLowerCase];
           }
 
           return w;
         }
 
-        if (Object.keys(EXPAND_FIRST_WORD_TABLE).includes(w)) {
-          return EXPAND_FIRST_WORD_TABLE[w];
+        if (Object.keys(EXPAND_FIRST_WORD_TABLE).includes(wLowerCase)) {
+          return EXPAND_FIRST_WORD_TABLE[wLowerCase];
         }
 
         return w;
@@ -161,6 +163,7 @@ function fixAbbreviation(str: string): string {
 function getWords(str: string): string[] {
   return flatten(
     str
+      .replace(/�/g, '')
       .replace(/[.,/#!$%^&*;:{}=\_~()"?«»…]/g, '')
       .replace(/('|’)\s*/g, '’ ')
       .split(' ')
@@ -171,8 +174,7 @@ function getWords(str: string): string[] {
 
 export function parseVoieNom(
   value: string,
-  addError: (error: string) => void,
-  addRemed: (error: string) => void,
+  { addError, setRemediation }: ParseFunctionArg,
 ) {
   // SI CELA FAIT MOINS DE 3 OU PLUS QUE 200 CARACTERES
   if (value.length < 3) {
@@ -182,18 +184,24 @@ export function parseVoieNom(
     addError('trop_long');
     return;
   }
+  // SI CARACTERE INVALIDE
+  if (value.includes('�')) {
+    addError('caractere_invalide');
+    return;
+  }
+
+  // AUTOFIX _
+  if (value.includes('_')) {
+    addError('contient_tiret_bas');
+    value = value.replace(/_/g, ' ');
+  }
+
   let remed: string = value;
 
   // SI CELA COMMENCE PAR ESPACE ' ou -
   if (trim(value, " '-") !== value) {
     addError('bad_caractere_start_end');
     remed = trim(remed, " '-");
-  }
-
-  // SI CARACTERE INVALIDE
-  if (value.includes('�')) {
-    addError('caractere_invalide');
-    remed = remed.replace(/�/g, '');
   }
 
   if (value.match(/[.,/#!$%^&*;:{}=\~()"?«»…]/g)) {
@@ -214,7 +222,6 @@ export function parseVoieNom(
   //     remed = remed.replaceAll(ovni, '');
   //   }
   // }
-
   const words: string[] = getWords(value);
   // SI TOUT EST EN MAJUSCULE OU SI IL Y A UN MOT TOUT EN MAJUSCULE
   if (value.toUpperCase() === value) {
@@ -229,13 +236,13 @@ export function parseVoieNom(
     )
   ) {
     addError('word_all_uppercase');
-    remed = fixCapitalize(value);
+    remed = fixCapitalize(remed);
   }
 
   // SI TOUT EST EN MINUSCULE SI IL Y A UN MOT TOUT EN MAJUSCULE
   if (value.toLowerCase() === value) {
     addError('casse_incorrecte');
-    remed = fixCapitalize(value);
+    remed = fixCapitalize(remed);
   } else if (
     words.some(
       (w) =>
@@ -243,7 +250,7 @@ export function parseVoieNom(
     )
   ) {
     addError('word_all_lowercase');
-    remed = fixCapitalize(value);
+    remed = fixCapitalize(remed);
   }
 
   // SI IL Y A UNE ABREVATiON
@@ -258,14 +265,8 @@ export function parseVoieNom(
     remed = fixAbbreviation(remed);
   }
 
-  if (remed !== value) {
-    addRemed(remed);
-  }
-
-  // AUTOFIX _
-  if (value.includes('_')) {
-    addError('contient_tiret_bas');
-    value = value.replace(/_/g, ' ');
+  if (remed !== value && setRemediation) {
+    setRemediation(remed);
   }
 
   return value;

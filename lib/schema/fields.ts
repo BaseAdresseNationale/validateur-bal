@@ -8,6 +8,7 @@ import {
   isCommuneDeleguee,
 } from '../utils/cog';
 import { validate as isUuid } from 'uuid';
+import { parseVoieNom } from './fields/voie_nom';
 
 export enum PositionTypeEnum {
   ENTREE = 'entrée',
@@ -19,22 +20,23 @@ export enum PositionTypeEnum {
   PARCELLE = 'parcelle',
   SEGMENT = 'segment',
 }
+export type ParseFunctionArg = {
+  addError: (error: string) => void;
+  setAdditionnalValues?: (add: any) => void;
+  setRemediation?: (remed: any) => void;
+};
+
+export type ParseFunction = (
+  value: any,
+  { addError, setAdditionnalValues, setRemediation }: ParseFunctionArg,
+) => string | string[] | boolean | number | void;
 
 export type FieldsSchema = {
   trim: boolean;
   required?: boolean;
   formats?: string[];
   allowRegionalLang?: boolean;
-  parse?: (
-    value: any,
-    {
-      addError,
-      setAdditionnalValues,
-    }: {
-      addError: (error: string) => void;
-      setAdditionnalValues: (add: any) => void;
-    },
-  ) => string | string[] | boolean | number | void;
+  parse?: ParseFunction;
 };
 
 function isValidFloat(str: string): boolean {
@@ -43,10 +45,6 @@ function isValidFloat(str: string): boolean {
 
 function isValidFrenchFloat(str: string): boolean {
   return Boolean(/^-?(0|[1-9]\d*)(,\d+)?\d?$/.test(str));
-}
-
-function includesInvalidChar(str: string): boolean {
-  return str.includes('�');
 }
 
 function getNormalizedEnumValue(value) {
@@ -218,30 +216,7 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.1', '1.2', '1.3', '1.4'],
     trim: true,
     allowRegionalLang: true,
-    parse(v, { addError }) {
-      if (v.length < 3) {
-        return addError('trop_court');
-      }
-
-      if (v.length > 200) {
-        return addError('trop_long');
-      }
-
-      if (includesInvalidChar(v)) {
-        return addError('caractere_invalide');
-      }
-
-      if (v.includes('_')) {
-        addError('contient_tiret_bas');
-        v = v.replace(/_/g, ' ');
-      }
-
-      if (v.toUpperCase() === v) {
-        addError('casse_incorrecte');
-      }
-
-      return v;
-    },
+    parse: parseVoieNom,
   },
 
   lieudit_complement_nom: {
@@ -343,6 +318,7 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.2', '1.3', '1.4'],
     trim: true,
     allowRegionalLang: true,
+    parse: parseVoieNom,
   },
 
   position: {
