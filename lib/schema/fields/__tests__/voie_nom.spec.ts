@@ -7,7 +7,7 @@ import { promisify } from 'util';
 import { parseVoieNom } from '../voie_nom';
 
 describe('PARSE voie_nom', () => {
-  it('without error', async () => {
+  it('TEST without error', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -21,7 +21,7 @@ describe('PARSE voie_nom', () => {
     expect(res).toBe('Rue de la Mouche');
   });
 
-  it('trop_court', async () => {
+  it('TEST trop_court', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -34,7 +34,7 @@ describe('PARSE voie_nom', () => {
     expect(res).toBeUndefined();
   });
 
-  it('trop_long', async () => {
+  it('TEST trop_long', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -55,7 +55,7 @@ describe('PARSE voie_nom', () => {
     expect(res).toBeUndefined();
   });
 
-  it('caractere_invalide', async () => {
+  it('TEST caractere_invalide', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -68,7 +68,7 @@ describe('PARSE voie_nom', () => {
     expect(res).toBeUndefined();
   });
 
-  it('bad_caractere_start_end', async () => {
+  it('TEST bad_caractere_start_end', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -81,7 +81,7 @@ describe('PARSE voie_nom', () => {
     expect(remed).toBe('Rue');
   });
 
-  it('ponctuation_invalide', async () => {
+  it('TEST ponctuation_invalide', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -94,7 +94,7 @@ describe('PARSE voie_nom', () => {
     expect(remed).toBe('Rue de la Gare');
   });
 
-  it('ponctuation_invalide', async () => {
+  it('TEST ponctuation_invalide', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -107,7 +107,7 @@ describe('PARSE voie_nom', () => {
     expect(remed).toBe('Rue de la Gare');
   });
 
-  it('casse_incorrecte', async () => {
+  it('TEST casse_incorrecte', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -120,7 +120,7 @@ describe('PARSE voie_nom', () => {
     expect(remed).toBe('Les Prebasque');
   });
 
-  it('casse_incorrecte', async () => {
+  it('TEST casse_incorrecte', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -133,7 +133,7 @@ describe('PARSE voie_nom', () => {
     expect(remed).toBe('Les Prebasque');
   });
 
-  it('casse_incorrecte', async () => {
+  it('TEST casse_incorrecte', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -146,7 +146,7 @@ describe('PARSE voie_nom', () => {
     expect(remed).toBe('Les Prebasque');
   });
 
-  it('casse_incorrecte', async () => {
+  it('TEST casse_incorrecte', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -159,7 +159,7 @@ describe('PARSE voie_nom', () => {
     expect(remed).toBe('Les Prebasque');
   });
 
-  it('no_abbreviation', async () => {
+  it('TEST no_abbreviation', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -172,7 +172,7 @@ describe('PARSE voie_nom', () => {
     expect(remed).toBe('Avenue Les Prebasque');
   });
 
-  it('contient_tiret_bas', async () => {
+  it('TEST contient_tiret_bas', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -185,7 +185,7 @@ describe('PARSE voie_nom', () => {
     expect(remed).toBeUndefined();
   });
 
-  it('multi errors', async () => {
+  it('TEST multi errors', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
