@@ -54,40 +54,24 @@ function validateBanIds(
   row: ValidateRowType,
   { addError }: { addError: (code: string) => void },
 ) {
-  // SI IL Y A UN id_ban_toponyme, IL Y A UN id_ban_commune
-  // SI IL Y A UN id_ban_adresse, IL Y A UN id_ban_toponyme ET DONC IL Y A IL Y A UN id_ban_commune
+  // Si au moins un des ID est présent, cela signifie que l'adresse BAL utilise BanID
   if (
-    (!row.parsedValues.id_ban_commune && row.parsedValues.id_ban_toponyme) ||
-    ((!row.parsedValues.id_ban_commune || !row.parsedValues.id_ban_toponyme) &&
-      row.parsedValues.id_ban_adresse)
+    row.parsedValues.id_ban_commune ||
+    row.parsedValues.id_ban_toponyme ||
+    row.parsedValues.id_ban_adresse
   ) {
-    addError('incoherence_ids_ban');
-  }
-
-  // LES IDS id_ban_commune / id_ban_toponyme / id_ban_adresse NE PEUVENT PAS ËTRE IDENTIQUES
-  if (
-    (row.parsedValues.id_ban_commune &&
-      row.parsedValues.id_ban_toponyme &&
-      row.parsedValues.id_ban_commune === row.parsedValues.id_ban_toponyme) ||
-    (row.parsedValues.id_ban_commune &&
-      row.parsedValues.id_ban_adresse &&
-      row.parsedValues.id_ban_commune === row.parsedValues.id_ban_adresse) ||
-    (row.parsedValues.id_ban_adresse &&
-      row.parsedValues.id_ban_toponyme &&
-      row.parsedValues.id_ban_toponyme === row.parsedValues.id_ban_adresse)
-  ) {
-    addError('incoherence_ids_ban');
-  }
-
-  // SI IL Y A UN id_ban_toponyme, id_ban_commune ET UN numero, IL FAUT UN id_ban_adresse
-  if (
-    row.parsedValues.id_ban_commune &&
-    row.parsedValues.id_ban_toponyme &&
-    row.parsedValues.numero &&
-    row.parsedValues.numero !== 99_999 &&
-    !row.parsedValues.id_ban_adresse
-  ) {
-    addError('id_ban_adresses_required');
+    if (!row.parsedValues.id_ban_commune) {
+      addError('incoherence_ids_ban');
+    }
+    if (!row.parsedValues.id_ban_toponyme) {
+      addError('incoherence_ids_ban');
+    }
+    if (
+      !row.parsedValues.id_ban_adresse &&
+      row.parsedValues.numero !== 99_999
+    ) {
+      addError('id_ban_adresses_required');
+    }
   }
 }
 

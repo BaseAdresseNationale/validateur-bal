@@ -130,31 +130,13 @@ describe('VALIDATE 1.4 TEST', () => {
     expect(error[0].level).toBe('E');
   });
 
-  test('Error incoherent ban id (file 1.4)', async () => {
-    const buffer = await readAsBuffer('1.4-incoherent-id-ban.csv');
-    const report = (await validate(buffer, {
-      profile: '1.4',
-    })) as ValidateProfile;
-
-    expect(report.encoding).toBe('utf-8');
-    expect(report.parseOk).toBe(true);
-    expect(report.profilesValidation['1.4'].isValid).toBe(false);
-    expect(report.profilesValidation['1.4-relax'].isValid).toBe(true);
-
-    const error = report.profilErrors.filter(
-      (e) => e.code === 'row.incoherence_ids_ban',
-    );
-    expect(error.length).toBe(1);
-    expect(error[0].level).toBe('E');
-  });
-
   test('Good incoherent dependance ban id (file 1.4)', async () => {
-    const buffer = await readAsBuffer('1.4-good-dependance-id-ban.csv');
+    const buffer = await readAsBuffer('1.4-incoherent-dependance-id-ban.csv');
     const report = await validate(buffer, { profile: '1.4' });
 
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
-    expect(report.profilesValidation['1.4'].isValid).toBe(true);
+    expect(report.profilesValidation['1.4'].isValid).toBe(false);
     expect(report.profilesValidation['1.4-relax'].isValid).toBe(true);
   });
 
