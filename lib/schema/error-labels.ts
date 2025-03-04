@@ -25,7 +25,7 @@ const errorLabels: Record<string, string> = {
 
   // uid_adresse
   'uid_adresse.type_invalide': 'La valeur de uid_adresse n’est pas valide',
-  'uid_adresse.incoherence_ids_ban':
+  'uid_adresse.incoherence_id_ban':
     'Les ids ban renseignés ne sont pas cohérents',
 
   // id_ban_commune
@@ -119,8 +119,8 @@ const errorLabels: Record<string, string> = {
     'Les coordonnées long/lat et x/y ne sont pas cohérentes',
   'row.adresse_incomplete':
     'L’adresse est incomplète (numéro ou nom de la voie non renseignés)',
-  'row.incoherence_ids_ban': 'Les ids ban renseignés ne sont pas cohérents',
-  'row.id_ban_adresses_required':
+  'row.incoherence_id_ban': 'Les ids ban renseignés ne sont pas cohérents',
+  'row.adresses_required_id_ban':
     'id_ban_adresses est requis les ids ban et le numero sont renseigné',
   // rows
   'rows.empty': 'Aucune ligne détecté',

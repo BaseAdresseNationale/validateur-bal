@@ -154,7 +154,7 @@ const fields: Record<string, FieldsSchema> = {
       }
 
       if (!idBanCommune || !idBanToponyme) {
-        addError('incoherence_ids_ban');
+        addError('incoherence_id_ban');
       }
 
       // LES IDS id_ban_commune / id_ban_toponyme / id_ban_adresse NE PEUVENT PAS ËTRE IDENTIQUES
@@ -163,7 +163,7 @@ const fields: Record<string, FieldsSchema> = {
         (idBanCommune && idBanAdresse && idBanCommune === idBanAdresse) ||
         (idBanAdresse && idBanToponyme && idBanToponyme === idBanAdresse)
       ) {
-        addError('incoherence_ids_ban');
+        addError('incoherence_id_ban');
       }
 
       // SI IL Y A UN id_ban_toponyme, IL Y A UN id_ban_commune

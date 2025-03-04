@@ -15,11 +15,11 @@ const warnings: string[] = [
   'id_ban_commune.type_invalide',
   'id_ban_toponyme.type_invalide',
   'id_ban_adresse.type_invalide',
-  'row.incoherence_ids_ban',
-  'row.id_ban_adresses_required',
-  'rows.ids_required_every',
+  'row.incoherence_id_ban',
+  'row.adresses_required_id_ban',
+  'rows.every_line_required_id_ban',
   'uid_adresse.type_invalide',
-  'uid_adresse.incoherence_ids_ban',
+  'uid_adresse.incoherence_id_ban',
 ];
 
 const infos = ['cle_interop.voie_non_renseignee'];

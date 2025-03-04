@@ -61,16 +61,16 @@ function validateBanIds(
     row.parsedValues.id_ban_adresse
   ) {
     if (!row.parsedValues.id_ban_commune) {
-      addError('incoherence_ids_ban');
+      addError('incoherence_id_ban');
     }
     if (!row.parsedValues.id_ban_toponyme) {
-      addError('incoherence_ids_ban');
+      addError('incoherence_id_ban');
     }
     if (
       !row.parsedValues.id_ban_adresse &&
       row.parsedValues.numero !== 99_999
     ) {
-      addError('id_ban_adresses_required');
+      addError('adresses_required_id_ban');
     }
   }
 }
