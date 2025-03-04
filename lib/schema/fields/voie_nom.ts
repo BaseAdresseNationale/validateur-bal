@@ -235,7 +235,7 @@ export function parseVoieNom(
         !ALWAYS_UPPER.includes(w),
     )
   ) {
-    addError('word_all_uppercase');
+    addError('word_uppercase');
     remed = fixCapitalize(remed);
   }
 
@@ -249,7 +249,7 @@ export function parseVoieNom(
         w.match(/[a-zA-Z]/) && w.toLowerCase() === w && !STOP_WORDS.includes(w),
     )
   ) {
-    addError('word_all_lowercase');
+    addError('word_lowercase');
     remed = fixCapitalize(remed);
   }
 
@@ -261,7 +261,7 @@ export function parseVoieNom(
         Object.keys(EXPAND_FIRST_WORD_TABLE).includes(w),
     )
   ) {
-    addError('no_abbreviation');
+    addError('abbreviation_invalid');
     remed = fixAbbreviation(remed);
   }
 

@@ -29,10 +29,10 @@ describe('HELPERS TEST', () => {
 
   it('getLabel', () => {
     expect(getLabel('voie_nom.trop_court')).toBe(
-      'Le nom de la voie est trop court (3 caractères minimum)',
+      'Le champ voie_nom est trop court (3 caractères minimum)',
     );
     expect(getLabel('voie_nom_bre.trop_court')).toBe(
-      'Le nom de la voie est trop court (3 caractères minimum) [bre]',
+      'Le champ voie_nom est trop court (3 caractères minimum) [bre]',
     );
     expect(() => getLabel('voie_nom_toto.trop_court')).toThrow(
       Error('Unknown fieldName: voie_nom_toto'),

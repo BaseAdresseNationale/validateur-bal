@@ -120,7 +120,7 @@ describe('PARSE voie_nom', () => {
     expect(remed).toBe('Les Prebasque');
   });
 
-  it('TEST casse_incorrecte', async () => {
+  it('TEST word_uppercase', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -128,7 +128,7 @@ describe('PARSE voie_nom', () => {
       addError: (e: string) => errors.push(e),
       setRemediation: (r: any) => (remed = r),
     });
-    expect(errors).toEqual(['word_all_uppercase']);
+    expect(errors).toEqual(['word_uppercase']);
     expect(res).toBe('les PREBASQUE');
     expect(remed).toBe('Les Prebasque');
   });
@@ -146,7 +146,7 @@ describe('PARSE voie_nom', () => {
     expect(remed).toBe('Les Prebasque');
   });
 
-  it('TEST casse_incorrecte', async () => {
+  it('TEST word_lowercase', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -154,12 +154,12 @@ describe('PARSE voie_nom', () => {
       addError: (e: string) => errors.push(e),
       setRemediation: (r: any) => (remed = r),
     });
-    expect(errors).toEqual(['word_all_lowercase']);
+    expect(errors).toEqual(['word_lowercase']);
     expect(res).toBe('Les prebasque');
     expect(remed).toBe('Les Prebasque');
   });
 
-  it('TEST no_abbreviation', async () => {
+  it('TEST abbreviation_invalid', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -167,7 +167,7 @@ describe('PARSE voie_nom', () => {
       addError: (e: string) => errors.push(e),
       setRemediation: (r: any) => (remed = r),
     });
-    expect(errors).toEqual(['no_abbreviation']);
+    expect(errors).toEqual(['abbreviation_invalid']);
     expect(res).toBe('av Les Prebasque');
     expect(remed).toBe('Avenue Les Prebasque');
   });
@@ -197,8 +197,8 @@ describe('PARSE voie_nom', () => {
     expect(errors).toContain('bad_caractere_start_end');
     expect(errors).toContain('ponctuation_invalide');
     expect(errors).toContain('multi_space_caractere');
-    expect(errors).toContain('word_all_lowercase');
-    expect(errors).toContain('no_abbreviation');
+    expect(errors).toContain('word_lowercase');
+    expect(errors).toContain('abbreviation_invalid');
     expect(res).toBe("' - av  (Des prebasque) ");
     expect(remed).toBe('Avenue des Prebasque');
   });
