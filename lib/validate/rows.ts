@@ -178,6 +178,7 @@ export async function validateRow(
     localizedValues,
     remediations,
     errors,
+    line,
   };
 
   Schema.row(validateRow, {
