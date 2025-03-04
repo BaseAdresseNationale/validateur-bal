@@ -7,7 +7,6 @@ function harmlessProj(coordinates: [number, number]) {
     return proj(coordinates);
   } catch {
     // empty
-    console.log('ERROR LONG LAT');
   }
 }
 
