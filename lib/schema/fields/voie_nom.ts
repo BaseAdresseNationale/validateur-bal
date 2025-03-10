@@ -1,7 +1,8 @@
-import { trim, flatten } from 'lodash';
+import { trim, words as getWords } from 'lodash';
 import { ParseFunctionArg } from '../fields';
 
-// const OVNI_WORDS = ['lieudit', 'lieu-dit'];
+const LIEU_WORD = 'lieu';
+const DIT_WORD = 'dit';
 
 const EXPAND_FIRST_WORD_TABLE = {
   pl: 'place',
@@ -119,63 +120,83 @@ function eventuallyCapitalize(word: string): string {
   return capitalize(word);
 }
 
-function fixCapitalize(str: string): string {
-  return capitalize(
-    str
-      .toLowerCase()
-      .replace(/('|’)\s*/g, '’ ') // Ajoute un espace après toutes les '
-      .split(' ')
-      .filter((s) => Boolean(s))
-      .map((word) =>
-        word
-          .split('-')
-          .map((w) => eventuallyCapitalize(w))
-          .join('-'),
-      )
-      .join(' ')
-      .replace(/’\s/g, '’'),
+function fixCapitalize(words: string[]): string[] {
+  return words.map((word) =>
+    word
+      .split('-')
+      .map((w) => eventuallyCapitalize(w))
+      .join('-'),
   );
 }
 
-function fixAbbreviation(str: string): string {
-  return capitalize(
-    getWords(str)
-      .map((w, i) => {
-        const wLowerCase = w.toLowerCase();
-        if (i !== 0) {
-          if (Object.keys(EXPAND_WORD_TABLE).includes(wLowerCase)) {
-            return EXPAND_WORD_TABLE[wLowerCase];
-          }
+function fixAbbreviation(words: string[]): string[] {
+  return words.map((w, i) => {
+    if (i !== 0) {
+      if (Object.keys(EXPAND_WORD_TABLE).includes(w)) {
+        return EXPAND_WORD_TABLE[w];
+      }
+      return w;
+    }
 
-          return w;
-        }
+    if (Object.keys(EXPAND_FIRST_WORD_TABLE).includes(w)) {
+      return EXPAND_FIRST_WORD_TABLE[w];
+    }
 
-        if (Object.keys(EXPAND_FIRST_WORD_TABLE).includes(wLowerCase)) {
-          return EXPAND_FIRST_WORD_TABLE[wLowerCase];
-        }
-
-        return w;
-      })
-      .join(' '),
-  );
+    return w;
+  });
 }
 
-function getWords(str: string): string[] {
-  return flatten(
+function fixWordLieuDit(words: string[]) {
+  if (words.length < 2) {
+    return words;
+  } else if (words[0] === `${LIEU_WORD}${DIT_WORD}`) {
+    return words.slice(1);
+  } else if (words[0] === LIEU_WORD && words[1] === DIT_WORD) {
+    return words.slice(2);
+  }
+
+  return words;
+}
+
+function fixMultiWordRue(words: string[]) {
+  if (words.length === 1) {
+    return words;
+  } else if (
+    words[0] === 'rue' &&
+    words.slice(1).some((w) => w.endsWith('rue'))
+  ) {
+    return words.slice(1);
+  }
+
+  return words;
+}
+
+export function remediationVoieNom(str: string): string {
+  const strBeautify: string = trim(
     str
       .replace(/�/g, '')
+      .replace(/\s\s+/g, ' ')
       .replace(/[.,/#!$%^&*;:{}=\_~()"?«»…]/g, '')
-      .replace(/('|’)\s*/g, '’ ')
-      .split(' ')
-      .filter((s) => Boolean(s))
-      .map((word) => word.split('-')),
+      .replace(/('|’)\s*/g, '’ '),
+    " '-",
   );
+
+  let words: string[] = getWords(strBeautify).map((w) => w.toLowerCase());
+
+  words = fixMultiWordRue(words);
+  words = fixWordLieuDit(words);
+  words = fixAbbreviation(words);
+  words = fixCapitalize(words);
+
+  return capitalize(words.join(' '));
 }
 
 export function parseVoieNom(
   value: string,
   { addError, setRemediation }: ParseFunctionArg,
 ) {
+  const errors: string[] = [];
+
   // SI CELA FAIT MOINS DE 3 OU PLUS QUE 200 CARACTERES
   if (value.length < 3) {
     addError('trop_court');
@@ -192,41 +213,45 @@ export function parseVoieNom(
 
   // AUTOFIX _
   if (value.includes('_')) {
-    addError('contient_tiret_bas');
+    errors.push('contient_tiret_bas');
     value = value.replace(/_/g, ' ');
   }
 
-  let remed: string = value;
-
   // SI CELA COMMENCE PAR ESPACE ' ou -
   if (trim(value, " '-") !== value) {
-    addError('bad_caractere_start_end');
-    remed = trim(remed, " '-");
+    errors.push('bad_caractere_start_end');
   }
 
   if (value.match(/[.,/#!$%^&*;:{}=\~()"?«»…]/g)) {
-    addError('ponctuation_invalide');
-    remed = remed.replace(/[.,/#!$%^&*;:{}=\~()"?«»…]/g, '');
+    errors.push('ponctuation_invalide');
   }
 
   // SI PLUSIEURS ESPACE DE SUITE
   if (value.match(/\s\s+/g)) {
-    addError('multi_space_caractere');
-    remed = remed.replace(/\s\s+/g, ' ');
+    errors.push('multi_space_caractere');
   }
 
-  // // SI MOT OVNI
-  // if (OVNI_WORDS.some((word) => value.toLowerCase().includes(word))) {
-  //   addError('word_ovni');
-  //   for (const ovni of OVNI_WORDS) {
-  //     remed = remed.replaceAll(ovni, '');
-  //   }
-  // }
   const words: string[] = getWords(value);
+  const lowerWords: string[] = words.map((w) => w.toLowerCase());
+  // SI CELA COMMENCE PAR LIEU DIT
+  if (
+    lowerWords.length > 1 &&
+    (lowerWords[0] === `${LIEU_WORD}${DIT_WORD}` ||
+      (lowerWords[0] === LIEU_WORD && lowerWords[1] === DIT_WORD))
+  ) {
+    errors.push('bad_word_lieudit');
+  }
+  // SI IL Y A PLUSIEURS FOIS LE MOT RUE
+  if (
+    lowerWords.length > 1 &&
+    lowerWords[0] === 'rue' &&
+    lowerWords.slice(1).some((w) => w.endsWith('rue'))
+  ) {
+    errors.push('bad_multi_word_rue');
+  }
   // SI TOUT EST EN MAJUSCULE OU SI IL Y A UN MOT TOUT EN MAJUSCULE
   if (value.toUpperCase() === value) {
-    addError('casse_incorrecte');
-    remed = fixCapitalize(value);
+    errors.push('casse_incorrecte');
   } else if (
     words.some(
       (w) =>
@@ -235,38 +260,38 @@ export function parseVoieNom(
         !ALWAYS_UPPER.includes(w),
     )
   ) {
-    addError('word_uppercase');
-    remed = fixCapitalize(remed);
+    errors.push('word_uppercase');
   }
 
   // SI TOUT EST EN MINUSCULE SI IL Y A UN MOT TOUT EN MAJUSCULE
   if (value.toLowerCase() === value) {
-    addError('casse_incorrecte');
-    remed = fixCapitalize(remed);
+    errors.push('casse_incorrecte');
   } else if (
     words.some(
       (w) =>
         w.match(/[a-zA-Z]/) && w.toLowerCase() === w && !STOP_WORDS.includes(w),
     )
   ) {
-    addError('word_lowercase');
-    remed = fixCapitalize(remed);
+    errors.push('word_lowercase');
   }
 
   // SI IL Y A UNE ABREVATiON
   if (
-    words.some(
+    lowerWords.some(
       (w, i) =>
         (i !== 0 && Object.keys(EXPAND_WORD_TABLE).includes(w)) ||
         Object.keys(EXPAND_FIRST_WORD_TABLE).includes(w),
     )
   ) {
-    addError('abbreviation_invalid');
-    remed = fixAbbreviation(remed);
+    errors.push('abbreviation_invalid');
   }
 
-  if (remed !== value && setRemediation) {
-    setRemediation(remed);
+  if (errors.length > 0) {
+    const remediation = remediationVoieNom(value);
+    setRemediation(remediation);
+    for (const error of errors) {
+      addError(error);
+    }
   }
 
   return value;

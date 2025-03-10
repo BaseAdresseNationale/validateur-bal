@@ -1,9 +1,3 @@
-/* eslint camelcase: off */
-
-import { join } from 'path';
-import fs from 'fs';
-import { promisify } from 'util';
-
 import { parseVoieNom } from '../voie_nom';
 
 describe('PARSE voie_nom', () => {
@@ -169,7 +163,47 @@ describe('PARSE voie_nom', () => {
     });
     expect(errors).toEqual(['abbreviation_invalid']);
     expect(res).toBe('av Les Prebasque');
-    expect(remed).toBe('Avenue Les Prebasque');
+    expect(remed).toBe('Avenue les Prebasque');
+  });
+
+  it('TEST bad_word_lieudit one word', async () => {
+    const errors: string[] = [];
+    let remed: string = undefined;
+
+    const res = await parseVoieNom('Lieu-Dit Les Prebasque', {
+      addError: (e: string) => errors.push(e),
+      setRemediation: (r: any) => (remed = r),
+    });
+
+    expect(errors).toEqual(['bad_word_lieudit']);
+    expect(res).toBe('Lieu-Dit Les Prebasque');
+    expect(remed).toBe('Les Prebasque');
+  });
+
+  it('TEST bad_word_lieudit multi words', async () => {
+    const errors: string[] = [];
+    let remed: string = undefined;
+
+    const res = await parseVoieNom('Lieu Dit Les Prebasque', {
+      addError: (e: string) => errors.push(e),
+      setRemediation: (r: any) => (remed = r),
+    });
+    expect(errors).toEqual(['bad_word_lieudit']);
+    expect(res).toBe('Lieu Dit Les Prebasque');
+    expect(remed).toBe('Les Prebasque');
+  });
+
+  it('TEST bad_multi_word_rue', async () => {
+    const errors: string[] = [];
+    let remed: string = undefined;
+
+    const res = await parseVoieNom('Rue Grande Rue', {
+      addError: (e: string) => errors.push(e),
+      setRemediation: (r: any) => (remed = r),
+    });
+    expect(errors).toEqual(['bad_multi_word_rue']);
+    expect(res).toBe('Rue Grande Rue');
+    expect(remed).toBe('Grande Rue');
   });
 
   it('TEST contient_tiret_bas', async () => {
@@ -182,7 +216,7 @@ describe('PARSE voie_nom', () => {
     });
     expect(errors).toEqual(['contient_tiret_bas']);
     expect(res).toBe('Les Prebasque');
-    expect(remed).toBeUndefined();
+    expect(remed).toBe('Les Prebasque');
   });
 
   it('TEST multi errors', async () => {
