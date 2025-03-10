@@ -75,20 +75,33 @@ describe('PARSE voie_nom', () => {
     expect(remed).toBe('Rue');
   });
 
+  it('TEST no_words_in_parentheses', async () => {
+    const errors: string[] = [];
+    let remed: string = undefined;
+
+    const res = await parseVoieNom('Rue Marcelle (de la Gare)', {
+      addError: (e: string) => errors.push(e),
+      setRemediation: (r: any) => (remed = r),
+    });
+    expect(errors).toEqual(['no_words_in_parentheses', 'ponctuation_invalide']);
+    expect(res).toBe('Rue Marcelle (de la Gare)');
+    expect(remed).toBe('Rue Marcelle');
+  });
+
   it('TEST ponctuation_invalide', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
-    const res = await parseVoieNom('Rue (de la Gare)', {
+    const res = await parseVoieNom('Rue "de la Gare"', {
       addError: (e: string) => errors.push(e),
       setRemediation: (r: any) => (remed = r),
     });
     expect(errors).toEqual(['ponctuation_invalide']);
-    expect(res).toBe('Rue (de la Gare)');
+    expect(res).toBe('Rue "de la Gare"');
     expect(remed).toBe('Rue de la Gare');
   });
 
-  it('TEST ponctuation_invalide', async () => {
+  it('TEST multi_space_caractere', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
@@ -275,7 +288,7 @@ describe('PARSE voie_nom', () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
-    const res = await parseVoieNom("' - av  (Des_prebasque) ", {
+    const res = await parseVoieNom("' - av  Des_prebasque (de la mare) ", {
       addError: (e: string) => errors.push(e),
       setRemediation: (r: any) => (remed = r),
     });
@@ -285,7 +298,7 @@ describe('PARSE voie_nom', () => {
     expect(errors).toContain('multi_space_caractere');
     expect(errors).toContain('word_lowercase');
     expect(errors).toContain('abbreviation_invalid');
-    expect(res).toBe("' - av  (Des prebasque) ");
+    expect(res).toBe("' - av  Des prebasque (de la mare) ");
     expect(remed).toBe('Avenue des Prebasque');
   });
 });

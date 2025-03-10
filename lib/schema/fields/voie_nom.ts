@@ -176,17 +176,21 @@ function fixMultiWordRue(words: string[]) {
 function getWords(str: string, lowerCase: boolean = false): string[] {
   const strTrimmed = trim(str, " '-");
 
-  const strBeautify = strTrimmed
-    // SUPPRIME LES CARACTERE INCONNUE
-    .replace(/�/g, '')
-    // SUPPRIME LES ESPACES SUCCESSIF
-    .replace(/\s\s+/g, ' ')
-    // SUPPRIME LA PONCTUATION
-    .replace(/[.,/#!$%^&*;:{}=\_~()"?«»…]/g, '')
-    // RAJOUTE UN ESPACE DERRIERE LES '
-    .replace(/('|’)\s*/g, '’ ')
-    // SUPPRIME LE POINT A LA FIN
-    .replace(/\.$/, '');
+  const strBeautify = trim(
+    strTrimmed
+      // SUPPRIME LES CARACTERE INCONNUE
+      .replace(/�/g, '')
+      // SUPPRIME LES ESPACES SUCCESSIF
+      .replace(/\s\s+/g, ' ')
+      // SUPPRIME CE QUI EST ENTRE PARENTHESE
+      .replace(/\([^()]*\)/g, '')
+      // SUPPRIME LA PONCTUATION
+      .replace(/[,/#!$%^&*;:{}=\~()"?«»…]/g, '')
+      // RAJOUTE UN ESPACE DERRIERE LES '
+      .replace(/('|’)\s*/g, '’ ')
+      // SUPPRIME LE POINT A LA FIN
+      .replace(/\.$/, ''),
+  );
 
   const words = strBeautify.split(' ');
 
@@ -237,6 +241,10 @@ export function parseVoieNom(
   // SI CELA COMMENCE PAR ESPACE ' ou -
   if (trim(value, " '-") !== value) {
     errors.push('bad_caractere_start_end');
+  }
+
+  if (value.match(/\([^()]*\)/g)) {
+    errors.push('no_words_in_parentheses');
   }
 
   if (value.match(/[,/#!$%^&*;:{}=\~()"?«»…]/g)) {
