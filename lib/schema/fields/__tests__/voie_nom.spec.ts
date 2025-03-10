@@ -101,6 +101,32 @@ describe('PARSE voie_nom', () => {
     expect(remed).toBe('Rue de la Gare');
   });
 
+  it('TEST point valid', async () => {
+    const errors: string[] = [];
+    let remed: string = undefined;
+
+    const res = await parseVoieNom('Rue 2.3', {
+      addError: (e: string) => errors.push(e),
+      setRemediation: (r: any) => (remed = r),
+    });
+    expect(errors).toEqual([]);
+    expect(res).toBe('Rue 2.3');
+    expect(remed).toBeUndefined();
+  });
+
+  it('TEST bad_point_at_the_end', async () => {
+    const errors: string[] = [];
+    let remed: string = undefined;
+
+    const res = await parseVoieNom('Rue de la Gare.', {
+      addError: (e: string) => errors.push(e),
+      setRemediation: (r: any) => (remed = r),
+    });
+    expect(errors).toEqual(['bad_point_at_the_end']);
+    expect(res).toBe('Rue de la Gare.');
+    expect(remed).toBe('Rue de la Gare');
+  });
+
   it('TEST casse_incorrecte', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
@@ -140,6 +166,19 @@ describe('PARSE voie_nom', () => {
     expect(remed).toBe('Les Prebasque');
   });
 
+  it('TEST casse_incorrecte', async () => {
+    const errors: string[] = [];
+    let remed: string = undefined;
+
+    const res = await parseVoieNom("l'arabesque", {
+      addError: (e: string) => errors.push(e),
+      setRemediation: (r: any) => (remed = r),
+    });
+    expect(errors).toEqual(['casse_incorrecte']);
+    expect(res).toBe("l'arabesque");
+    expect(remed).toBe('L’Arabesque');
+  });
+
   it('TEST word_lowercase', async () => {
     const errors: string[] = [];
     let remed: string = undefined;
@@ -151,6 +190,19 @@ describe('PARSE voie_nom', () => {
     expect(errors).toEqual(['word_lowercase']);
     expect(res).toBe('Les prebasque');
     expect(remed).toBe('Les Prebasque');
+  });
+
+  it('TEST word_lowercase', async () => {
+    const errors: string[] = [];
+    let remed: string = undefined;
+
+    const res = await parseVoieNom('Rue de l’arabesque', {
+      addError: (e: string) => errors.push(e),
+      setRemediation: (r: any) => (remed = r),
+    });
+    expect(errors).toEqual(['word_lowercase']);
+    expect(res).toBe('Rue de l’arabesque');
+    expect(remed).toBe('Rue de l’Arabesque');
   });
 
   it('TEST abbreviation_invalid', async () => {
@@ -170,14 +222,14 @@ describe('PARSE voie_nom', () => {
     const errors: string[] = [];
     let remed: string = undefined;
 
-    const res = await parseVoieNom('Lieu-Dit Les Prebasque', {
+    const res = await parseVoieNom('Lieu-Dit La Baignoire', {
       addError: (e: string) => errors.push(e),
       setRemediation: (r: any) => (remed = r),
     });
 
     expect(errors).toEqual(['bad_word_lieudit']);
-    expect(res).toBe('Lieu-Dit Les Prebasque');
-    expect(remed).toBe('Les Prebasque');
+    expect(res).toBe('Lieu-Dit La Baignoire');
+    expect(remed).toBe('La Baignoire');
   });
 
   it('TEST bad_word_lieudit multi words', async () => {

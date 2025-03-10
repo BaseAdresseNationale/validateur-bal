@@ -1,8 +1,10 @@
-import { trim, words as getWords } from 'lodash';
+import { trim } from 'lodash';
 import { ParseFunctionArg } from '../fields';
 
 const LIEU_WORD = 'lieu';
 const DIT_WORD = 'dit';
+
+const LIEU_DIT_WORDS = [`${LIEU_WORD}${DIT_WORD}`, `${LIEU_WORD}-${DIT_WORD}`];
 
 const EXPAND_FIRST_WORD_TABLE = {
   pl: 'place',
@@ -149,7 +151,7 @@ function fixAbbreviation(words: string[]): string[] {
 function fixWordLieuDit(words: string[]) {
   if (words.length < 2) {
     return words;
-  } else if (words[0] === `${LIEU_WORD}${DIT_WORD}`) {
+  } else if (LIEU_DIT_WORDS.includes(words[0])) {
     return words.slice(1);
   } else if (words[0] === LIEU_WORD && words[1] === DIT_WORD) {
     return words.slice(2);
@@ -171,24 +173,39 @@ function fixMultiWordRue(words: string[]) {
   return words;
 }
 
-export function remediationVoieNom(str: string): string {
-  const strBeautify: string = trim(
-    str
-      .replace(/�/g, '')
-      .replace(/\s\s+/g, ' ')
-      .replace(/[.,/#!$%^&*;:{}=\_~()"?«»…]/g, '')
-      .replace(/('|’)\s*/g, '’ '),
-    " '-",
-  );
+function getWords(str: string, lowerCase: boolean = false): string[] {
+  const strTrimmed = trim(str, " '-");
 
-  let words: string[] = getWords(strBeautify).map((w) => w.toLowerCase());
+  const strBeautify = strTrimmed
+    // SUPPRIME LES CARACTERE INCONNUE
+    .replace(/�/g, '')
+    // SUPPRIME LES ESPACES SUCCESSIF
+    .replace(/\s\s+/g, ' ')
+    // SUPPRIME LA PONCTUATION
+    .replace(/[.,/#!$%^&*;:{}=\_~()"?«»…]/g, '')
+    // RAJOUTE UN ESPACE DERRIERE LES '
+    .replace(/('|’)\s*/g, '’ ')
+    // SUPPRIME LE POINT A LA FIN
+    .replace(/\.$/, '');
+
+  const words = strBeautify.split(' ');
+
+  if (lowerCase) {
+    return words.map((w) => w.toLowerCase());
+  }
+
+  return words;
+}
+
+export function remediationVoieNom(str: string): string {
+  let words: string[] = getWords(str, true);
 
   words = fixMultiWordRue(words);
   words = fixWordLieuDit(words);
   words = fixAbbreviation(words);
   words = fixCapitalize(words);
 
-  return capitalize(words.join(' '));
+  return capitalize(words.join(' ').replace(/’\s/g, '’'));
 }
 
 export function parseVoieNom(
@@ -222,8 +239,12 @@ export function parseVoieNom(
     errors.push('bad_caractere_start_end');
   }
 
-  if (value.match(/[.,/#!$%^&*;:{}=\~()"?«»…]/g)) {
+  if (value.match(/[,/#!$%^&*;:{}=\~()"?«»…]/g)) {
     errors.push('ponctuation_invalide');
+  }
+
+  if (value.match(/\.$/)) {
+    errors.push('bad_point_at_the_end');
   }
 
   // SI PLUSIEURS ESPACE DE SUITE
@@ -231,12 +252,13 @@ export function parseVoieNom(
     errors.push('multi_space_caractere');
   }
 
+  // value = value.replace(/('|’)\s*/g, '’ ');
   const words: string[] = getWords(value);
-  const lowerWords: string[] = words.map((w) => w.toLowerCase());
+  const lowerWords: string[] = getWords(value, true);
   // SI CELA COMMENCE PAR LIEU DIT
   if (
     lowerWords.length > 1 &&
-    (lowerWords[0] === `${LIEU_WORD}${DIT_WORD}` ||
+    (LIEU_DIT_WORDS.includes(lowerWords[0]) ||
       (lowerWords[0] === LIEU_WORD && lowerWords[1] === DIT_WORD))
   ) {
     errors.push('bad_word_lieudit');
