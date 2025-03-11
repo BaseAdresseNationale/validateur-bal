@@ -67,6 +67,11 @@ const errorLabels: Record<string, string> = {
   '*.word_uppercase': 'Le champ {} contient un ou des mots tout en majuscule',
   '*.word_lowercase': 'Le champ {} contient un ou des mots tout en minuscule',
   '*.abbreviation_invalid': 'Le champ {} contient des abreviation',
+  '*.no_words_in_parentheses':
+    'Le champ {} contient des mots entre parenthèses',
+  '*.bad_point_at_the_end': 'Le champ {} contient un point a la fin',
+  '*.bad_word_lieudit': 'Le champ {} contient le mot lieudit',
+  '*.bad_multi_word_rue': 'Le champ {} contient plusieurs fois le mot rue',
 
   // commune_insee
   'commune_insee.commune_invalide':
