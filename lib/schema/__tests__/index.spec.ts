@@ -94,6 +94,6 @@ describe('SHEMA TEST', () => {
   it('validate voie_nom / contient_tiret_bas', async () => {
     const result = await readValue('voie_nom', 'Allée_des_roseaux');
     expect(result.parsedValue).toBe('Allée des roseaux');
-    expect(result.errors).toEqual(['contient_tiret_bas']);
+    expect(result.errors).toContain('contient_tiret_bas');
   });
 });

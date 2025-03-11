@@ -1,12 +1,13 @@
-/* eslint capitalized-comments: off */
-
 const errorLabels: Record<string, string> = {
+  // LES ERRORS files ET fields N'ONT PAS DE LABELS
+
+  // VALUE LEVEL ERRORS
+
   // *
   '*.valeur_manquante': 'Le champ {} ne doit pas être vide',
   '*.valeur_invalide': 'La valeur du champ {} est incorrecte',
   '*.espaces_debut_fin':
     'La valeur du champ {} ne doit pas avoir d’espaces en début ou en fin de chaîne de caractère',
-  '*.caractere_invalide': 'Le champ {} contient des caractères non valides',
 
   // cle_interop
   'cle_interop.casse_invalide':
@@ -25,7 +26,7 @@ const errorLabels: Record<string, string> = {
 
   // uid_adresse
   'uid_adresse.type_invalide': 'La valeur de uid_adresse n’est pas valide',
-  'uid_adresse.incoherence_ids_ban':
+  'uid_adresse.incoherence_id_ban':
     'Les ids ban renseignés ne sont pas cohérents',
 
   // id_ban_commune
@@ -53,14 +54,24 @@ const errorLabels: Record<string, string> = {
     'La valeur du champ suffixe doit commencer par un caractère alphanumérique.',
   'suffixe.trop_long': 'La valeur du champ suffixe est trop longue',
 
-  // voie_nom
-  'voie_nom.trop_court':
-    'Le nom de la voie est trop court (3 caractères minimum)',
-  'voie_nom.trop_long':
-    'Le nom de la voie est trop long (200 caractères maximum)',
-  'voie_nom.casse_incorrecte': 'Le nom de la voie est en majuscules',
-  'voie_nom.contient_tiret_bas':
-    'Le nom de la voie contient un caractère tiret bas',
+  // voie_nom / voie_nom_@@ / lieudit_complement_nom / lieudit_complement_nom_@@
+  '*.trop_court': 'Le champ {} est trop court (3 caractères minimum)',
+  '*.trop_long': 'Le champ {} est trop long (200 caractères maximum)',
+  '*.casse_incorrecte': 'Le champ {} est en majuscules ou minuscule',
+  '*.contient_tiret_bas': 'Le champ {} contient un caractère tiret bas',
+  '*.caractere_invalide': 'Le champ {} contient des caractères non valides',
+  '*.bad_caractere_start_end':
+    'Le champ {} contient de mauvais caractères en début et/ou fin',
+  '*.ponctuation_invalide': 'Le champ {} contient de la ponctuation',
+  '*.multi_space_caractere': 'Le champ {} contient plusieurs espace de suite',
+  '*.word_uppercase': 'Le champ {} contient un ou des mots tout en majuscule',
+  '*.word_lowercase': 'Le champ {} contient un ou des mots tout en minuscule',
+  '*.abbreviation_invalid': 'Le champ {} contient des abreviation',
+  '*.no_words_in_parentheses':
+    'Le champ {} contient des mots entre parenthèses',
+  '*.bad_point_at_the_end': 'Le champ {} contient un point a la fin',
+  '*.bad_word_lieudit': 'Le champ {} contient le mot lieudit',
+  '*.bad_multi_word_rue': 'Le champ {} contient plusieurs fois le mot rue',
 
   // commune_insee
   'commune_insee.commune_invalide':
@@ -105,7 +116,7 @@ const errorLabels: Record<string, string> = {
   'cad_parcelles.pipe_debut_fin':
     'Le symbole | ne doit pas être utilisé en début ou fin de chaîne',
 
-  // row-level errors
+  // ROW LEVEL ERRORS
   'row.incoherence_numero':
     'Le numéro ne correspond pas à la valeur présente dans la clé',
   'row.position_manquante': 'Position nulle',
@@ -119,13 +130,17 @@ const errorLabels: Record<string, string> = {
     'Les coordonnées long/lat et x/y ne sont pas cohérentes',
   'row.adresse_incomplete':
     'L’adresse est incomplète (numéro ou nom de la voie non renseignés)',
-  'row.incoherence_ids_ban': 'Les ids ban renseignés ne sont pas cohérents',
-  'row.id_ban_adresses_required':
+  'row.incoherence_id_ban': 'Les ids ban renseignés ne sont pas cohérents',
+  'row.adresses_required_id_ban':
     'id_ban_adresses est requis les ids ban et le numero sont renseigné',
-  // rows
+
+  // ROWS LEVEL ERROS
   'rows.empty': 'Aucune ligne détecté',
-  'rows.ids_required_every':
+  'rows.every_line_required_id_ban':
     'Les ids ban sont requis pour toutes les lignes si ils sont utlisés',
+  'rows.multi_id_ban_commune': 'Il ne pas y avoir differents id_ban_commune',
+  'rows.complement_not_declared':
+    'Un lieudit_complement_nom n’a pas été déclaré avec une ligne 99999',
 };
 
 export default errorLabels;

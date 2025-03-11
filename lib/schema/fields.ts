@@ -8,6 +8,8 @@ import {
   isCommuneDeleguee,
 } from '../utils/cog';
 import { validate as isUuid } from 'uuid';
+import { parseVoieNom } from './fields/voie_nom';
+import { ParseValueType } from '../validate/rows';
 
 export enum PositionTypeEnum {
   ENTREE = 'entrée',
@@ -19,22 +21,23 @@ export enum PositionTypeEnum {
   PARCELLE = 'parcelle',
   SEGMENT = 'segment',
 }
+export type ParseFunctionArg = {
+  addError: (error: string) => void;
+  setAdditionnalValues?: (add: any) => void;
+  setRemediation?: (remed: any) => void;
+};
+
+export type ParseFunction = (
+  value: any,
+  { addError, setAdditionnalValues, setRemediation }: ParseFunctionArg,
+) => ParseValueType;
 
 export type FieldsSchema = {
   trim: boolean;
   required?: boolean;
   formats?: string[];
   allowRegionalLang?: boolean;
-  parse?: (
-    value: any,
-    {
-      addError,
-      setAdditionnalValues,
-    }: {
-      addError: (error: string) => void;
-      setAdditionnalValues: (add: any) => void;
-    },
-  ) => string | string[] | boolean | number | void;
+  parse?: ParseFunction;
 };
 
 function isValidFloat(str: string): boolean {
@@ -43,10 +46,6 @@ function isValidFloat(str: string): boolean {
 
 function isValidFrenchFloat(str: string): boolean {
   return Boolean(/^-?(0|[1-9]\d*)(,\d+)?\d?$/.test(str));
-}
-
-function includesInvalidChar(str: string): boolean {
-  return str.includes('�');
 }
 
 function getNormalizedEnumValue(value) {
@@ -76,11 +75,13 @@ const fields: Record<string, FieldsSchema> = {
       const splitted = v.split('_');
 
       if (splitted.length < 3) {
-        return addError('structure_invalide');
+        addError('structure_invalide');
+        return undefined;
       }
 
       if (splitted.some((part) => !part)) {
-        return addError('structure_invalide');
+        addError('structure_invalide');
+        return undefined;
       }
 
       const [, codeVoie, numeroVoie, ...suffixes] = splitted;
@@ -104,7 +105,8 @@ const fields: Record<string, FieldsSchema> = {
 
       // Clé d'interopérabilité - Numéro de voie
       if (!/^\d+$/.test(numeroVoie)) {
-        return addError('numero_invalide');
+        addError('numero_invalide');
+        return undefined;
       }
 
       if (numeroVoie.length !== 5) {
@@ -152,7 +154,7 @@ const fields: Record<string, FieldsSchema> = {
       }
 
       if (!idBanCommune || !idBanToponyme) {
-        addError('incoherence_ids_ban');
+        addError('incoherence_id_ban');
       }
 
       // LES IDS id_ban_commune / id_ban_toponyme / id_ban_adresse NE PEUVENT PAS ËTRE IDENTIQUES
@@ -161,7 +163,7 @@ const fields: Record<string, FieldsSchema> = {
         (idBanCommune && idBanAdresse && idBanCommune === idBanAdresse) ||
         (idBanAdresse && idBanToponyme && idBanToponyme === idBanAdresse)
       ) {
-        addError('incoherence_ids_ban');
+        addError('incoherence_id_ban');
       }
 
       // SI IL Y A UN id_ban_toponyme, IL Y A UN id_ban_commune
@@ -218,30 +220,7 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.1', '1.2', '1.3', '1.4'],
     trim: true,
     allowRegionalLang: true,
-    parse(v, { addError }) {
-      if (v.length < 3) {
-        return addError('trop_court');
-      }
-
-      if (v.length > 200) {
-        return addError('trop_long');
-      }
-
-      if (includesInvalidChar(v)) {
-        return addError('caractere_invalide');
-      }
-
-      if (v.includes('_')) {
-        addError('contient_tiret_bas');
-        v = v.replace(/_/g, ' ');
-      }
-
-      if (v.toUpperCase() === v) {
-        addError('casse_incorrecte');
-      }
-
-      return v;
-    },
+    parse: parseVoieNom,
   },
 
   lieudit_complement_nom: {
@@ -256,7 +235,8 @@ const fields: Record<string, FieldsSchema> = {
     trim: true,
     parse(v, { addError }) {
       if (!/^\d+$/.test(v)) {
-        return addError('type_invalide');
+        addError('type_invalide');
+        return undefined;
       }
 
       if (v.startsWith('0') && v !== '0') {
@@ -266,7 +246,8 @@ const fields: Record<string, FieldsSchema> = {
       const n = Number.parseInt(v, 10);
 
       if (n > 9999 && n !== 99_999) {
-        return addError('trop_grand');
+        addError('trop_grand');
+        return undefined;
       }
 
       return n;
@@ -343,6 +324,7 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.2', '1.3', '1.4'],
     trim: true,
     allowRegionalLang: true,
+    parse: parseVoieNom,
   },
 
   position: {
@@ -474,12 +456,14 @@ const fields: Record<string, FieldsSchema> = {
     trim: true,
     parse(v, { addError }) {
       if (!/^(\d{4}-\d{2}-\d{2})$/.test(v)) {
-        return addError('date_invalide');
+        addError('date_invalide');
+        return undefined;
       }
 
       const parsedDate = parseISO(v);
       if (Number.isNaN(parsedDate.getTime())) {
-        return addError('date_invalide');
+        addError('date_invalide');
+        return undefined;
       }
 
       if (parsedDate < new Date('2010-01-01')) {
@@ -487,7 +471,8 @@ const fields: Record<string, FieldsSchema> = {
       }
 
       if (parsedDate > new Date()) {
-        return addError('date_future');
+        addError('date_future');
+        return undefined;
       }
 
       return format(parsedDate, 'yyyy-MM-dd');
@@ -507,7 +492,8 @@ const fields: Record<string, FieldsSchema> = {
         return false;
       }
 
-      return addError('valeur_invalide');
+      addError('valeur_invalide');
+      return undefined;
     },
   },
 };

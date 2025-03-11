@@ -3,6 +3,7 @@ import fs from 'fs';
 import { promisify } from 'util';
 import { validate } from '../../index';
 import { ValidateProfile } from '../../profiles';
+import { ErrorLevelEnum } from '../../../utils/error-level.enum';
 
 const readFile = promisify(fs.readFile);
 
@@ -130,31 +131,12 @@ describe('VALIDATE 1.4 TEST', () => {
     expect(error[0].level).toBe('E');
   });
 
-  test('Error incoherent ban id (file 1.4)', async () => {
-    const buffer = await readAsBuffer('1.4-incoherent-id-ban.csv');
-    const report = (await validate(buffer, {
-      profile: '1.4',
-    })) as ValidateProfile;
-
+  test('Good incoherent dependance ban id (file 1.4)', async () => {
+    const buffer = await readAsBuffer('1.4-incoherent-dependance-id-ban.csv');
+    const report = await validate(buffer, { profile: '1.4' });
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
-    expect(report.profilesValidation['1.4-relax'].isValid).toBe(true);
-
-    const error = report.profilErrors.filter(
-      (e) => e.code === 'row.incoherence_ids_ban',
-    );
-    expect(error.length).toBe(1);
-    expect(error[0].level).toBe('E');
-  });
-
-  test('Good incoherent dependance ban id (file 1.4)', async () => {
-    const buffer = await readAsBuffer('1.4-good-dependance-id-ban.csv');
-    const report = await validate(buffer, { profile: '1.4' });
-
-    expect(report.encoding).toBe('utf-8');
-    expect(report.parseOk).toBe(true);
-    expect(report.profilesValidation['1.4'].isValid).toBe(true);
     expect(report.profilesValidation['1.4-relax'].isValid).toBe(true);
   });
 
@@ -170,7 +152,7 @@ describe('VALIDATE 1.4 TEST', () => {
     expect(report.profilesValidation['1.4-relax'].isValid).toBe(true);
 
     const error = report.profilErrors.filter(
-      (e) => e.code === 'row.incoherence_ids_ban',
+      (e) => e.code === 'row.incoherence_id_ban',
     );
     expect(error.length).toBe(1);
     expect(error[0].level).toBe('E');
@@ -188,7 +170,7 @@ describe('VALIDATE 1.4 TEST', () => {
     expect(report.profilesValidation['1.4-relax'].isValid).toBe(true);
 
     const error = report.profilErrors.filter(
-      (e) => e.code === 'row.id_ban_adresses_required',
+      (e) => e.code === 'row.adresses_required_id_ban',
     );
     expect(error.length).toBe(1);
     expect(error[0].level).toBe('W');
@@ -206,10 +188,25 @@ describe('VALIDATE 1.4 TEST', () => {
     expect(report.profilesValidation['1.4-relax'].isValid).toBe(true);
 
     const error = report.profilErrors.filter(
-      (e) => e.code === 'row.id_ban_adresses_required',
+      (e) => e.code === 'row.adresses_required_id_ban',
     );
     expect(error.length).toBe(1);
     expect(error[0].level).toBe('E');
+  });
+
+  test('Valid file 1.4 with ids ban empty', async () => {
+    const buffer = await readAsBuffer('1.4-ids-ban-empty.csv');
+    const report = (await validate(buffer, {
+      profile: '1.4',
+    })) as ValidateProfile;
+
+    expect(report.profilesValidation['1.4'].isValid).toBe(true);
+    expect(report.profilesValidation['1.4-relax'].isValid).toBe(true);
+
+    const error = report.profilErrors.filter(
+      (e) => e.level === ErrorLevelEnum.ERROR,
+    );
+    expect(error.length).toBe(0);
   });
 
   test('Warning rows.ids_required_every (file 1.4) with profile relax', async () => {
@@ -224,7 +221,7 @@ describe('VALIDATE 1.4 TEST', () => {
     expect(report.profilesValidation['1.4-relax'].isValid).toBe(true);
 
     const error = report.profilErrors.filter(
-      (e) => e.code === 'rows.ids_required_every',
+      (e) => e.code === 'rows.every_line_required_id_ban',
     );
     expect(error.length).toBe(1);
     expect(error[0].level).toBe('W');
@@ -242,7 +239,7 @@ describe('VALIDATE 1.4 TEST', () => {
     expect(report.profilesValidation['1.4-relax'].isValid).toBe(true);
 
     const error = report.profilErrors.filter(
-      (e) => e.code === 'rows.ids_required_every',
+      (e) => e.code === 'rows.every_line_required_id_ban',
     );
     expect(error.length).toBe(1);
     expect(error[0].level).toBe('E');
