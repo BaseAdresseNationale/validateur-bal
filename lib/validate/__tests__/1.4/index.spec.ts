@@ -3,6 +3,7 @@ import fs from 'fs';
 import { promisify } from 'util';
 import { validate } from '../../index';
 import { ValidateProfile } from '../../profiles';
+import { ErrorLevelEnum } from '../../../utils/error-level.enum';
 
 const readFile = promisify(fs.readFile);
 
@@ -191,6 +192,21 @@ describe('VALIDATE 1.4 TEST', () => {
     );
     expect(error.length).toBe(1);
     expect(error[0].level).toBe('E');
+  });
+
+  test('Valid file 1.4 with ids ban empty', async () => {
+    const buffer = await readAsBuffer('1.4-ids-ban-empty.csv');
+    const report = (await validate(buffer, {
+      profile: '1.4',
+    })) as ValidateProfile;
+
+    expect(report.profilesValidation['1.4'].isValid).toBe(true);
+    expect(report.profilesValidation['1.4-relax'].isValid).toBe(true);
+
+    const error = report.profilErrors.filter(
+      (e) => e.level === ErrorLevelEnum.ERROR,
+    );
+    expect(error.length).toBe(0);
   });
 
   test('Warning rows.ids_required_every (file 1.4) with profile relax', async () => {
