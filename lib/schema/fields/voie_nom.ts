@@ -209,7 +209,12 @@ export function remediationVoieNom(str: string): string {
   words = fixAbbreviation(words);
   words = fixCapitalize(words);
 
-  return capitalize(words.join(' ').replace(/’\s/g, '’'));
+  return capitalize(
+    words
+      .join(' ')
+      // ENLEVE L'ESPACE QU'ON AVAIT RAJOUTÉ DERRIERE LES '
+      .replace(/’\s/g, '’'),
+  );
 }
 
 export function parseVoieNom(
@@ -231,36 +236,32 @@ export function parseVoieNom(
     addError('caractere_invalide');
     return undefined;
   }
-
   // AUTOFIX _
   if (value.includes('_')) {
     errors.push('contient_tiret_bas');
     value = value.replace(/_/g, ' ');
   }
-
   // SI CELA COMMENCE PAR ESPACE ' ou -
   if (trim(value, " '-") !== value) {
     errors.push('bad_caractere_start_end');
   }
-
+  // SI IL Y A UN MOT ENTRE PARENTHESE
   if (value.match(/\([^()]*\)/g)) {
     errors.push('no_words_in_parentheses');
   }
-
+  // SI IL Y A DE LA PONCTUATION
   if (value.match(/[,/#!$%^&*;:{}=\~()"?«»…]/g)) {
     errors.push('ponctuation_invalide');
   }
-
+  // SI CELA FINI PAR UN POINT
   if (value.match(/\.$/)) {
     errors.push('bad_point_at_the_end');
   }
-
   // SI PLUSIEURS ESPACE DE SUITE
   if (value.match(/\s\s+/g)) {
     errors.push('multi_space_caractere');
   }
 
-  // value = value.replace(/('|’)\s*/g, '’ ');
   const words: string[] = getWords(value);
   const lowerWords: string[] = getWords(value, true);
   // SI CELA COMMENCE PAR LIEU DIT
@@ -292,7 +293,6 @@ export function parseVoieNom(
   ) {
     errors.push('word_uppercase');
   }
-
   // SI TOUT EST EN MINUSCULE SI IL Y A UN MOT TOUT EN MAJUSCULE
   if (value.toLowerCase() === value) {
     errors.push('casse_incorrecte');
@@ -304,7 +304,6 @@ export function parseVoieNom(
   ) {
     errors.push('word_lowercase');
   }
-
   // SI IL Y A UNE ABREVATiON
   if (
     lowerWords.some(
@@ -315,7 +314,7 @@ export function parseVoieNom(
   ) {
     errors.push('abbreviation_invalid');
   }
-
+  // setRemediation SI IL Y A DES ERRORS
   if (errors.length > 0) {
     const remediation = remediationVoieNom(value);
     setRemediation(remediation);
