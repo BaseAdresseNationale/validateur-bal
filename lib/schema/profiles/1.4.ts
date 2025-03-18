@@ -7,9 +7,10 @@ const errors: string[] = [
   'id_ban_commune.type_invalide',
   'id_ban_toponyme.type_invalide',
   'id_ban_adresse.type_invalide',
-  'row.incoherence_ids_ban',
-  'row.id_ban_adresses_required',
-  'rows.ids_required_every',
+  'uid_adresse.type_invalide',
+  'row.lack_of_id_ban',
+  'rows.multi_id_ban_commune',
+  'rows.every_line_required_id_ban',
 ];
 
 const warnings: string[] = [
@@ -18,8 +19,6 @@ const warnings: string[] = [
   'field.id_ban_commune.missing',
   'field.id_ban_toponyme.missing',
   'field.id_ban_adresse.missing',
-  'uid_adresse.type_invalide',
-  'uid_adresse.incoherence_ids_ban',
 ];
 
 const infos = ['cle_interop.voie_non_renseignee'];

@@ -130,46 +130,22 @@ const fields: Record<string, FieldsSchema> = {
     trim: true,
     formats: ['1.1', '1.2', '1.3'],
     parse(v, { addError, setAdditionnalValues }) {
-      const regUuidCommune =
-        /@c:([A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12})/gi;
-      const regUuidToponyme =
-        /@v:[A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12}/gi;
-      const regUuidAdresse =
-        /@a:[A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12}/gi;
-
-      const [uuidCommune] = v.match(regUuidCommune) || [];
-      const [uuidToponyme] = v.match(regUuidToponyme) || [];
-      const [uuidAdresse] = v.match(regUuidAdresse) || [];
+      const [uuidCommune] = v.match(/@c:(\S+)/gi) || [];
+      const [uuidToponyme] = v.match(/@v:(\S+)/gi) || [];
+      const [uuidAdresse] = v.match(/@a:(\S+)/gi) || [];
 
       const idBanCommune = uuidCommune?.substr(3) || null;
       const idBanToponyme = uuidToponyme?.substr(3) || null;
       const idBanAdresse = uuidAdresse?.substr(3) || null;
 
       if (
-        !isUuid(idBanCommune) ||
-        !isUuid(idBanToponyme) ||
-        idBanAdresse === null ||
-        !isUuid(idBanAdresse)
+        (idBanCommune && !isUuid(idBanCommune)) ||
+        (idBanToponyme && !isUuid(idBanToponyme)) ||
+        (idBanAdresse && !isUuid(idBanAdresse))
       ) {
         addError('type_invalide');
         return undefined;
       }
-
-      if (!idBanCommune || !idBanToponyme) {
-        addError('incoherence_ids_ban');
-      }
-
-      // LES IDS id_ban_commune / id_ban_toponyme / id_ban_adresse NE PEUVENT PAS ËTRE IDENTIQUES
-      if (
-        (idBanCommune && idBanToponyme && idBanCommune === idBanToponyme) ||
-        (idBanCommune && idBanAdresse && idBanCommune === idBanAdresse) ||
-        (idBanAdresse && idBanToponyme && idBanToponyme === idBanAdresse)
-      ) {
-        addError('incoherence_ids_ban');
-      }
-
-      // SI IL Y A UN id_ban_toponyme, IL Y A UN id_ban_commune
-      // SI IL Y A UN id_ban_adresse, IL Y A UN id_ban_toponyme ET DONC IL Y A IL Y A UN id_ban_commune
 
       setAdditionnalValues({
         idBanCommune,

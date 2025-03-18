@@ -38,7 +38,7 @@ export async function computeRows(
     { concurrency: 4 },
   );
 
-  Schema.rows(parsedRows, {
+  Schema.rows(computedRows, {
     addError(code: string) {
       globalErrors.add(code);
     },
