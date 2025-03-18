@@ -2,6 +2,7 @@ import { ParseError } from 'papaparse';
 import { parse } from './parse';
 import { uniq } from 'lodash';
 import { ParseReturn } from './parse/buffer';
+import { ParseFileType } from './validate.type';
 
 const FATAL_PARSE_ERRORS = new Set([
   'MissingQuotes',
@@ -70,16 +71,6 @@ export function validateFile(
 
   return { encoding, delimiter, linebreak };
 }
-
-export type ParseFileType = {
-  encoding: string;
-  linebreak: string;
-  delimiter: string;
-  originalFields: string[];
-  parseOk: boolean;
-  parseErrors: ParseError[];
-  parsedRows?: Record<string, string>[];
-};
 
 export async function parseFile(
   file: Buffer,
