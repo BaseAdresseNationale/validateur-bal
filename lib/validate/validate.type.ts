@@ -28,7 +28,7 @@ export type ProfileErrorType = {
 };
 
 export type ReadValueType = {
-  parsedValue: string | string[] | boolean | number;
+  parsedValue: string | string[] | boolean | number | undefined;
   additionalValues: any;
   errors: string[];
 };

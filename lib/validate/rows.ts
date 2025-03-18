@@ -52,7 +52,7 @@ export function readValue(fieldName: string, rawValue: string): ReadValueType {
     throw new Error(`Unknown field name: ${fieldName}`);
   }
 
-  const result = {
+  const result: ReadValueType = {
     parsedValue: undefined,
     additionalValues: undefined,
     errors: [],
