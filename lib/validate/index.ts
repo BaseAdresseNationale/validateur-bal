@@ -2,13 +2,14 @@ import { mapValues } from 'lodash';
 
 import profiles from '../schema/profiles/index';
 import { getErrorLevel } from '../utils/helpers';
-import { parseFile, ParseFileType, validateFile } from './file';
+import { parseFile, validateFile } from './file';
 import { computeFields } from './fields';
 import { computeRows } from './rows';
 import { validateProfile } from './profiles';
 import {
   FieldType,
   NotFoundFieldType,
+  ParseFileType,
   PrevalidateType,
   ProfilesValidationType,
   ValidateFileType,

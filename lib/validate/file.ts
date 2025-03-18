@@ -1,8 +1,7 @@
 import { ParseError } from 'papaparse';
 import { parse } from './parse';
 import { uniq } from 'lodash';
-import { ParseReturn } from './parse/buffer';
-import { ParseFileType } from './validate.type';
+import { ParseFileType, ParseReturn } from './validate.type';
 
 const FATAL_PARSE_ERRORS = new Set([
   'MissingQuotes',
