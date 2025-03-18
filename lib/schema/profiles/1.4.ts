@@ -1,5 +1,5 @@
-import { Profile } from './profile.interface';
 import { errors as Errors13, warnings as Warnings13 } from './1.3';
+import { ProfileType } from './profile.type';
 
 const errors: string[] = [
   ...Errors13,
@@ -24,7 +24,7 @@ const warnings: string[] = [
 
 const infos = ['cle_interop.voie_non_renseignee'];
 
-const profile: Profile = {
+const profile: ProfileType = {
   code: '1.4',
   name: 'BAL 1.4 (defaut)',
   isUsed: true,

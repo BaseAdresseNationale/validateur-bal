@@ -3,8 +3,8 @@ import languesRegionales from '@ban-team/shared-data/langues-regionales.json';
 import profiles from '../schema/profiles';
 import errorLabels from '../schema/error-labels';
 import Schema from '../schema/index';
-import { Profile } from '../schema/profiles/profile.interface';
-import { ErrorLevelEnum } from './error-level.enum';
+import { ProfileType } from '../schema/profiles/profile.type';
+import { ErrorLevelEnum } from '../validate/validate.type';
 
 // On fait une liste des langues régional que l'on peut utiliser
 export const allowedRegionalLangs: string[] = languesRegionales.map(
@@ -93,7 +93,7 @@ export function getErrorLevel(
   profileName: string,
   code: string,
 ): ErrorLevelEnum {
-  const profile: Profile = profiles[profileName];
+  const profile: ProfileType = profiles[profileName];
   const { schemaName, locale, fieldError } = parseErrorCode(code);
   // On rajoute @@ si il y a une langue
   const codeToCompare = locale ? `${schemaName}_@@.${fieldError}` : code;

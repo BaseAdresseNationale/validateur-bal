@@ -2,7 +2,7 @@ import iconv from 'iconv-lite';
 import { detectBufferEncoding } from './detect-encoding';
 
 import { parseCsv } from './csv';
-import { ParseError, ParseMeta, ParseResult } from 'papaparse';
+import { ParseResult } from 'papaparse';
 
 // Copied from strip-bom package which contains ES6 syntax
 function stripBom(str: string): string {

@@ -1,8 +1,8 @@
-import { Profile } from './profile.interface';
 import {
   errors as Errors12Strict,
   warnings as Warnings12Strict,
 } from './1.2-strict';
+import { ProfileType } from './profile.type';
 
 export const errors: string[] = [
   ...Errors12Strict,
@@ -13,7 +13,7 @@ export const errors: string[] = [
 
 export const warnings: string[] = [...Warnings12Strict];
 
-const profile: Profile = {
+const profile: ProfileType = {
   code: '1.3-strict',
   name: 'BAL 1.3 Strict',
   isUsed: false,

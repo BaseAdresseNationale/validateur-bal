@@ -33,17 +33,6 @@ function humanizeLinebreak(linebreak: string): HumaneLinebreakEnum {
   return HumaneLinebreakEnum.INCONNU;
 }
 
-export type ValueIsValid = {
-  value: string;
-  isValid: boolean;
-};
-
-export type ValidateFile = {
-  encoding: ValueIsValid;
-  delimiter: ValueIsValid;
-  linebreak: ValueIsValid;
-};
-
 export function validateFile(
   detectedParams: { linebreak: string; encoding: string; delimiter: string },
   { globalErrors }: { globalErrors: Set<string> },

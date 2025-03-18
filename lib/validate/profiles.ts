@@ -1,8 +1,12 @@
-import { PrevalidateType } from '.';
-import { ErrorLevelEnum } from '../utils/error-level.enum';
 import { getErrorLevel } from '../utils/helpers';
-import { NotFoundFieldType } from './fields';
-import { ValidateRowType } from './rows';
+import {
+  NotFoundFieldType,
+  PrevalidateType,
+  ProfileErrorType,
+  ValidateProfileType,
+  ValidateRowType,
+  ErrorLevelEnum,
+} from './validate.type';
 
 function validateProfileRows(
   computedRows: ValidateRowType[],
@@ -24,11 +28,6 @@ function validateProfileRows(
   });
 }
 
-export type ProfileErrorType = {
-  code: string;
-  level: ErrorLevelEnum;
-};
-
 function validateProfileUniqueErrors(
   uniqueErrors: string[],
   profileName: string,
@@ -49,14 +48,10 @@ function validateProfileNotFoundFields(
   }));
 }
 
-export type ValidateProfile = PrevalidateType & {
-  profilErrors: ProfileErrorType[];
-};
-
 export function validateProfile(
   prevalidateResult: PrevalidateType,
   profileName: string,
-): PrevalidateType | ValidateProfile {
+): PrevalidateType | ValidateProfileType {
   if (!prevalidateResult.parseOk) {
     return prevalidateResult;
   }

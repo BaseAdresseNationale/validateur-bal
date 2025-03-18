@@ -1,6 +1,6 @@
 import proj from '@etalab/project-legal';
 import { getCommuneActuelle } from '../utils/cog';
-import { ValidateRowType } from '../validate/rows';
+import { ValidateRowType } from '../validate/validate.type';
 
 function harmlessProj(coordinates) {
   try {

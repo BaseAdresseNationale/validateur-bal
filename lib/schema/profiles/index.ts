@@ -3,13 +3,11 @@ import profiles12Strict from './1.2-strict';
 import profiles13Strict from './1.3-strict';
 import profiles13Relax from './1.3-relax';
 import profiles13 from './1.3';
-import profiles14Relax from './1.4-relax';
 import profiles14 from './1.4';
-import { Profile } from './profile.interface';
+import { ProfileType } from './profile.type';
 
-const profiles: Record<string, Profile> = {
+const profiles: Record<string, ProfileType> = {
   1.4: profiles14,
-  '1.4-relax': profiles14Relax,
   1.3: profiles13,
   '1.3-relax': profiles13Relax,
   '1.3-strict': profiles13Strict,

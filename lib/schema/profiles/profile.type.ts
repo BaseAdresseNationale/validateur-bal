@@ -1,4 +1,4 @@
-export interface Profile {
+export type ProfileType = {
   code: string;
   name: string;
   isUsed: boolean;
@@ -7,4 +7,4 @@ export interface Profile {
   warnings: string[];
   infos?: string[];
   format: string;
-}
+};

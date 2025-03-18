@@ -1,9 +1,13 @@
 import bluebird from 'bluebird';
 import { keyBy } from 'lodash';
-import { FieldType } from './fields';
 import Schema from '../schema';
 import { FieldsSchema } from '../schema/fields';
-import { ErrorLevelEnum } from '../utils/error-level.enum';
+import {
+  FieldType,
+  ReadValueType,
+  ValidateRowType,
+  ErrorLevelEnum,
+} from './validate.type';
 
 export async function computeRows(
   parsedRows: Record<string, string>[],
@@ -21,7 +25,7 @@ export async function computeRows(
   const computedRows: ValidateRowType[] = await bluebird.map(
     parsedRows,
     async (parsedRow: Record<string, string>, line: number) => {
-      const computedRow: ValidateRowType = await validateRow(parsedRow, {
+      const computedRow: ValidateRowType = validateRow(parsedRow, {
         indexedFields,
         line,
       });
@@ -43,16 +47,7 @@ export async function computeRows(
   return computedRows;
 }
 
-type ReadValueType = {
-  parsedValue: string | number | boolean;
-  additionalValues: any;
-  errors: string[];
-};
-
-export async function readValue(
-  fieldName: string,
-  rawValue: string,
-): Promise<ReadValueType> {
+export function readValue(fieldName: string, rawValue: string): ReadValueType {
   if (!(fieldName in Schema.fields)) {
     throw new Error(`Unknown field name: ${fieldName}`);
   }
@@ -76,7 +71,7 @@ export async function readValue(
   } else if (!trimmedValue) {
     // Ne rien faire
   } else if (fieldSchema.parse) {
-    result.parsedValue = await fieldSchema.parse(trimmedValue, {
+    result.parsedValue = fieldSchema.parse(trimmedValue, {
       setAdditionnalValues(values) {
         result.additionalValues = values;
       },
@@ -91,23 +86,13 @@ export async function readValue(
   return result;
 }
 
-export type ValidateRowType = {
-  rawValues: Record<string, string>;
-  parsedValues: Record<string, string | string[] | boolean | number>;
-  additionalValues: Record<string, any>;
-  localizedValues: Record<string, any>;
-  errors?: { code: string; schemaName?: string; level?: ErrorLevelEnum }[];
-  isValid?: boolean;
-  line?: number;
-};
-
-export async function validateRow(
+export function validateRow(
   row: Record<string, string>,
   {
     indexedFields,
     line,
   }: { indexedFields: Record<string, FieldType>; line: number },
-): Promise<ValidateRowType> {
+): ValidateRowType {
   const rawValues: Record<string, string> = {};
   const parsedValues: Record<string, string | string[] | boolean | number> = {};
   const additionalValues: Record<string, any> = {};
@@ -118,56 +103,45 @@ export async function validateRow(
     level?: ErrorLevelEnum;
   }[] = [];
 
-  await Promise.all(
-    Object.keys(row).map(async (fieldName: string) => {
-      const rawValue: string = row[fieldName];
-      const field: FieldType = indexedFields[fieldName];
-      const normalizedFieldName: string =
-        field.localizedSchemaName || field.schemaName || fieldName;
+  Object.keys(row).map(async (fieldName: string) => {
+    const rawValue: string = row[fieldName];
+    const field: FieldType = indexedFields[fieldName];
+    const normalizedFieldName: string =
+      field.localizedSchemaName || field.schemaName || fieldName;
 
-      rawValues[normalizedFieldName] = rawValue;
+    rawValues[normalizedFieldName] = rawValue;
 
-      if (!field.schemaName) {
-        return;
-      }
+    if (!field.schemaName) {
+      return;
+    }
 
-      const result: ReadValueType = await readValue(field.schemaName, rawValue);
+    const result: ReadValueType = readValue(field.schemaName, rawValue);
 
-      for (const error of result.errors) {
-        errors.push({
-          code: `${normalizedFieldName}.${error}`,
-          schemaName: fieldName,
-        });
-      }
+    for (const error of result.errors) {
+      errors.push({
+        code: `${normalizedFieldName}.${error}`,
+        schemaName: fieldName,
+      });
+    }
 
-      if (result.additionalValues) {
-        additionalValues[normalizedFieldName] = result.additionalValues;
-      }
+    if (result.additionalValues) {
+      additionalValues[normalizedFieldName] = result.additionalValues;
+    }
 
-      if (result.parsedValue !== undefined) {
-        parsedValues[normalizedFieldName] = result.parsedValue;
+    if (result.parsedValue !== undefined) {
+      parsedValues[normalizedFieldName] = result.parsedValue;
 
-        if (field.locale) {
-          if (!localizedValues[field.schemaName]) {
-            localizedValues[field.schemaName] = {};
-          }
-
-          localizedValues[field.schemaName][field.locale] = result.parsedValue;
+      if (field.locale) {
+        if (!localizedValues[field.schemaName]) {
+          localizedValues[field.schemaName] = {};
         }
+
+        localizedValues[field.schemaName][field.locale] = result.parsedValue;
       }
-    }),
-  );
+    }
+  });
 
-  Schema.row(
-    { rawValues, parsedValues, additionalValues, localizedValues },
-    {
-      addError(code: string) {
-        errors.push({ code: `row.${code}` });
-      },
-    },
-  );
-
-  return {
+  const validateRow: ValidateRowType = {
     rawValues,
     parsedValues,
     additionalValues,
@@ -175,4 +149,12 @@ export async function validateRow(
     errors,
     line,
   };
+
+  Schema.row(validateRow, {
+    addError(code: string) {
+      errors.push({ code: `row.${code}` });
+    },
+  });
+
+  return validateRow;
 }

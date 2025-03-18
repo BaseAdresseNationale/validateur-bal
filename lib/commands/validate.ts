@@ -1,7 +1,6 @@
 import { readFile } from 'fs-extra';
 import chalk from 'chalk';
-import { validate, getLabel } from '../index';
-import { ValidateProfile } from '../validate/profiles';
+import { validate, getLabel, ValidateProfileType } from '../index';
 
 module.exports = {
   command: 'validate [options] <file>',
@@ -23,10 +22,10 @@ module.exports = {
   async handler(argv) {
     const file = await readFile(argv.file);
     try {
-      const report: ValidateProfile = (await validate(file, {
+      const report: ValidateProfileType = (await validate(file, {
         relaxFieldsDetection: argv.relaxFieldsDetection,
         profile: argv.profile,
-      })) as ValidateProfile;
+      })) as ValidateProfileType;
       printReport(report);
     } catch (error) {
       console.error(error);
@@ -66,7 +65,7 @@ function printSeverity(severity) {
   }
 }
 
-function printReport(report: ValidateProfile) {
+function printReport(report: ValidateProfileType) {
   const {
     fileValidation,
     parseOk,
