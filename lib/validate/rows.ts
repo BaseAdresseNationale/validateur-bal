@@ -95,7 +95,7 @@ export function validateRow(
   const localizedValues: Record<string, any> = {};
   const errors: ErrorType[] = [];
 
-  Object.keys(row).map((fieldName: string) => {
+  Object.keys(row).forEach((fieldName: string) => {
     const rawValue: string = row[fieldName];
     const field: FieldType = indexedFields[fieldName];
     const normalizedFieldName: string =
