@@ -51,11 +51,7 @@ function validateProfileNotFoundFields(
 export function validateProfile(
   prevalidateResult: PrevalidateType,
   profileName: string,
-): PrevalidateType | ValidateProfileType {
-  if (!prevalidateResult.parseOk) {
-    return prevalidateResult;
-  }
-
+): ValidateProfileType {
   const rows = validateProfileRows(prevalidateResult.rows, profileName);
   const profilErrors: ProfileErrorType[] = validateProfileUniqueErrors(
     prevalidateResult.uniqueErrors,

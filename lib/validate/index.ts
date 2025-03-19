@@ -102,7 +102,7 @@ export async function prevalidate(
 export async function validate(
   file: Buffer,
   options: { profile?: string; relaxFieldsDetection?: boolean } = {},
-): Promise<ParseFileType | PrevalidateType | ValidateProfileType> {
+): Promise<ParseFileType | ValidateProfileType> {
   const profile = options.profile || '1.3';
   let { relaxFieldsDetection } = options;
 
@@ -116,5 +116,10 @@ export async function validate(
     format,
     relaxFieldsDetection,
   );
+
+  if (!prevalidateResult.parseOk) {
+    return prevalidateResult as ParseFileType;
+  }
+
   return validateProfile(prevalidateResult as PrevalidateType, profile);
 }
