@@ -8,17 +8,7 @@ import {
   isCommuneDeleguee,
 } from '../utils/cog';
 import { validate as isUuid } from 'uuid';
-
-export enum PositionTypeEnum {
-  ENTREE = 'entrée',
-  BATIMENT = 'bâtiment',
-  CAGE_ESCALIER = 'cage d’escalier',
-  LOGEMENT = 'logement',
-  SERVICE_TECHNIQUE = 'service technique',
-  DELIVRANCE_POSTALE = 'délivrance postale',
-  PARCELLE = 'parcelle',
-  SEGMENT = 'segment',
-}
+import { ParsedValue, PositionTypeEnum } from '../validate/validate.type';
 
 export type FieldsSchema = {
   trim: boolean;
@@ -34,7 +24,7 @@ export type FieldsSchema = {
       addError: (error: string) => void;
       setAdditionnalValues: (add: any) => void;
     },
-  ) => string | string[] | boolean | number | undefined;
+  ) => ParsedValue;
 };
 
 function isValidFloat(str: string): boolean {

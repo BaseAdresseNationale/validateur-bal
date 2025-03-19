@@ -7,6 +7,7 @@ import {
   ReadValueType,
   ValidateRowType,
   ErrorLevelEnum,
+  ParsedValues,
 } from './validate.type';
 
 export async function computeRows(
@@ -94,7 +95,7 @@ export function validateRow(
   }: { indexedFields: Record<string, FieldType>; line: number },
 ): ValidateRowType {
   const rawValues: Record<string, string> = {};
-  const parsedValues: Record<string, string | string[] | boolean | number> = {};
+  const parsedValues: ParsedValues = {};
   const additionalValues: Record<string, any> = {};
   const localizedValues: Record<string, any> = {};
   const errors: {
