@@ -2,13 +2,8 @@ import bluebird from 'bluebird';
 import { keyBy } from 'lodash';
 import Schema from '../schema';
 import { FieldsSchema } from '../schema/fields';
-import {
-  FieldType,
-  ReadValueType,
-  ValidateRowType,
-  ErrorLevelEnum,
-  ParsedValues,
-} from './validate.type';
+import { ErrorType, FieldType, ValidateRowType } from './validate.type';
+import { ParsedValues, ReadValueType } from '../schema/shema.type';
 
 export async function computeRows(
   parsedRows: Record<string, string>[],
@@ -98,11 +93,7 @@ export function validateRow(
   const parsedValues: ParsedValues = {};
   const additionalValues: Record<string, any> = {};
   const localizedValues: Record<string, any> = {};
-  const errors: {
-    code: string;
-    schemaName?: string;
-    level?: ErrorLevelEnum;
-  }[] = [];
+  const errors: ErrorType[] = [];
 
   Object.keys(row).map(async (fieldName: string) => {
     const rawValue: string = row[fieldName];

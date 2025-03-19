@@ -8,7 +8,7 @@ import {
   isCommuneDeleguee,
 } from '../utils/cog';
 import { validate as isUuid } from 'uuid';
-import { ParsedValue, PositionTypeEnum } from '../validate/validate.type';
+import { ParsedValue, PositionTypeEnum } from './shema.type';
 
 export type FieldsSchema = {
   trim: boolean;

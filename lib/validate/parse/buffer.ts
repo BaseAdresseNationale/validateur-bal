@@ -3,7 +3,7 @@ import { detectBufferEncoding } from './detect-encoding';
 
 import { parseCsv } from './csv';
 import { ParseResult } from 'papaparse';
-import { ParseReturn } from '../validate.type';
+import { ParseReturn } from './parse.type';
 
 // Copied from strip-bom package which contains ES6 syntax
 function stripBom(str: string): string {

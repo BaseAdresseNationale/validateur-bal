@@ -2,7 +2,8 @@ import { join } from 'path';
 import fs from 'fs';
 import { promisify } from 'util';
 import { validate } from '../../index';
-import { ErrorLevelEnum, ValidateProfileType } from '../../validate.type';
+import { ValidateType } from '../../validate.type';
+import { ErrorLevelEnum } from '../../../utils/helpers';
 
 const readFile = promisify(fs.readFile);
 
@@ -16,7 +17,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.3-valid.csv');
     const report = (await validate(buffer, {
       profile: '1.3',
-    })) as ValidateProfileType;
+    })) as ValidateType;
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
 
@@ -27,7 +28,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-valid.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-    })) as ValidateProfileType;
+    })) as ValidateType;
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(true);
@@ -37,7 +38,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-valid-relax.csv');
     const report = (await validate(buffer, {
       relaxFieldsDetection: true,
-    })) as ValidateProfileType;
+    })) as ValidateType;
 
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -49,7 +50,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const report = (await validate(buffer, {
       profile: '1.4',
       relaxFieldsDetection: true,
-    })) as ValidateProfileType;
+    })) as ValidateType;
 
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -61,7 +62,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const report = (await validate(buffer, {
       profile: '1.4',
       relaxFieldsDetection: false,
-    })) as ValidateProfileType;
+    })) as ValidateType;
 
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -72,7 +73,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-valid-relax.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-    })) as ValidateProfileType;
+    })) as ValidateType;
 
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -83,7 +84,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-bad-id-ban-adresse.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-    })) as ValidateProfileType;
+    })) as ValidateType;
 
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -100,7 +101,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-bad-id-ban-commune.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-    })) as ValidateProfileType;
+    })) as ValidateType;
 
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -117,7 +118,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-bad-id-ban-toponyme.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-    })) as ValidateProfileType;
+    })) as ValidateType;
 
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -134,7 +135,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-incoherent-dependance-id-ban.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-    })) as ValidateProfileType;
+    })) as ValidateType;
 
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -145,7 +146,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-bad-dependance-id-ban.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-    })) as ValidateProfileType;
+    })) as ValidateType;
 
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -162,7 +163,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-without-ban-adresse.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-    })) as ValidateProfileType;
+    })) as ValidateType;
 
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -179,7 +180,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-without-ban-adresse.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-    })) as ValidateProfileType;
+    })) as ValidateType;
 
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -196,7 +197,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-ids-ban-empty.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-    })) as ValidateProfileType;
+    })) as ValidateType;
 
     expect(report.profilesValidation['1.4'].isValid).toBe(true);
 
@@ -210,7 +211,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-no-ids-ban-every.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-    })) as ValidateProfileType;
+    })) as ValidateType;
 
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -227,7 +228,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-no-ids-ban-every.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-    })) as ValidateProfileType;
+    })) as ValidateType;
 
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -244,7 +245,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.3-valid-uid_adresse.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-    })) as ValidateProfileType;
+    })) as ValidateType;
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(true);
@@ -263,7 +264,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.3-invalid-uid_adresse.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-    })) as ValidateProfileType;
+    })) as ValidateType;
 
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -280,7 +281,7 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.3-incoherent-uid_adresse.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-    })) as ValidateProfileType;
+    })) as ValidateType;
 
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);

@@ -1,17 +1,18 @@
-import { getErrorLevel } from '../utils/helpers';
+import { ErrorLevelEnum, getErrorLevel } from '../utils/helpers';
 import {
   NotFoundFieldType,
   PrevalidateType,
   ProfileErrorType,
-  ValidateProfileType,
+  ValidateType,
   ValidateRowType,
-  ErrorLevelEnum,
+  ValidateRowFullType,
+  NotFoundFieldLevelType,
 } from './validate.type';
 
 function validateProfileRows(
   computedRows: ValidateRowType[],
   profileName: string,
-): ValidateRowType[] {
+): ValidateRowFullType[] {
   return computedRows.map((row) => {
     const errors = row.errors.map((e) => ({
       ...e,
@@ -41,7 +42,7 @@ function validateProfileUniqueErrors(
 function validateProfileNotFoundFields(
   notFoundFields: NotFoundFieldType[],
   profileName: string,
-): NotFoundFieldType[] {
+): NotFoundFieldLevelType[] {
   return notFoundFields.map(({ schemaName }) => ({
     schemaName,
     level: getErrorLevel(profileName, `field.${schemaName}.missing`),
@@ -51,9 +52,9 @@ function validateProfileNotFoundFields(
 export function validateProfile(
   prevalidateResult: PrevalidateType,
   profileName: string,
-): ValidateProfileType {
+): ValidateType {
   const rows = validateProfileRows(prevalidateResult.rows, profileName);
-  const profilErrors: ProfileErrorType[] = validateProfileUniqueErrors(
+  const profilErrors = validateProfileUniqueErrors(
     prevalidateResult.uniqueErrors,
     profileName,
   );

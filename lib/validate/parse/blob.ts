@@ -2,7 +2,7 @@ import toBuffer from 'blob-to-buffer';
 import { detectBufferEncoding } from './detect-encoding';
 import { parseCsv } from './csv';
 import { ParseResult } from 'papaparse';
-import { ParseReturn } from '../validate.type';
+import { ParseReturn } from './parse.type';
 
 function detectBlobEncoding(blob): Promise<string> {
   return new Promise((resolve, reject) => {

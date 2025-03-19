@@ -9,13 +9,13 @@ import { validateProfile } from './profiles';
 import {
   FieldType,
   NotFoundFieldType,
-  ParseFileType,
   PrevalidateType,
   ProfilesValidationType,
   ValidateFileType,
-  ValidateProfileType,
+  ValidateType,
   ValidateRowType,
 } from './validate.type';
+import { ParseFileType } from './parse/parse.type';
 
 export async function prevalidate(
   file: Buffer,
@@ -102,7 +102,7 @@ export async function prevalidate(
 export async function validate(
   file: Buffer,
   options: { profile?: string; relaxFieldsDetection?: boolean } = {},
-): Promise<ParseFileType | ValidateProfileType> {
+): Promise<ParseFileType | ValidateType> {
   const profile = options.profile || '1.3';
   let { relaxFieldsDetection } = options;
 
