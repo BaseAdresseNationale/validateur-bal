@@ -25,8 +25,6 @@ const errorLabels: Record<string, string> = {
 
   // uid_adresse
   'uid_adresse.type_invalide': 'La valeur de uid_adresse n’est pas valide',
-  'uid_adresse.incoherence_ids_ban':
-    'Les ids ban renseignés ne sont pas cohérents',
 
   // id_ban_commune
   'id_ban_commune.type_invalide':
@@ -105,7 +103,7 @@ const errorLabels: Record<string, string> = {
   'cad_parcelles.pipe_debut_fin':
     'Le symbole | ne doit pas être utilisé en début ou fin de chaîne',
 
-  // row-level errors
+  // ROW LEVEL ERROR
   'row.incoherence_numero':
     'Le numéro ne correspond pas à la valeur présente dans la clé',
   'row.position_manquante': 'Position nulle',
@@ -119,12 +117,11 @@ const errorLabels: Record<string, string> = {
     'Les coordonnées long/lat et x/y ne sont pas cohérentes',
   'row.adresse_incomplete':
     'L’adresse est incomplète (numéro ou nom de la voie non renseignés)',
-  'row.incoherence_ids_ban': 'Les ids ban renseignés ne sont pas cohérents',
-  'row.id_ban_adresses_required':
-    'id_ban_adresses est requis les ids ban et le numero sont renseigné',
-  // rows
+  'row.lack_of_id_ban': 'Il y manque un ou plusieurs id ban',
+  // ROWS LEVEL ERROR
   'rows.empty': 'Aucune ligne détecté',
-  'rows.ids_required_every':
+  'rows.multi_id_ban_commune': 'Il ne pas y avoir differents id_ban_commune',
+  'rows.every_line_required_id_ban':
     'Les ids ban sont requis pour toutes les lignes si ils sont utlisés',
 };
 

@@ -1,5 +1,5 @@
-import { Profile } from './profile.interface';
 import { errors as Errors13Relax } from './1.3-relax';
+import { ProfileType } from './profile.type';
 
 // Les erreurs du profile 1.3 sont les erreurs 1.3-relax avec quelques unes en plus
 export const errors: string[] = [
@@ -85,7 +85,7 @@ export const warnings: string[] = [
 
 const infos = ['cle_interop.voie_non_renseignee'];
 
-const profile: Profile = {
+const profile: ProfileType = {
   code: '1.3',
   name: 'BAL 1.3 (legacy)',
   isUsed: true,

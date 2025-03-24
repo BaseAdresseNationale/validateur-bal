@@ -1,18 +1,7 @@
 /* eslint no-inner-declarations: off */
 import Schema from '../schema';
 import { allowedRegionalLangs } from '../utils/helpers';
-
-export type NotFoundFieldType = {
-  schemaName: string;
-  level?: string;
-};
-
-export type FieldType = {
-  name: string;
-  schemaName?: string; // voie_nom
-  localizedSchemaName?: string; // voie_nom_bre
-  locale?: string; // bre
-};
+import { FieldType, NotFoundFieldType } from './validate.type';
 
 export function computeFields(
   originalFields: string[],

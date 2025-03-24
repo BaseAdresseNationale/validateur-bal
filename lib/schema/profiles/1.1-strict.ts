@@ -1,4 +1,4 @@
-import { Profile } from './profile.interface';
+import { ProfileType } from './profile.type';
 
 export const errors: string[] = [
   'cle_interop.valeur_manquante',
@@ -53,7 +53,7 @@ export const errors: string[] = [
 
 export const warnings: string[] = ['position.enum_fuzzy'];
 
-const profile: Profile = {
+const profile: ProfileType = {
   code: '1.1-strict',
   name: 'BAL 1.1 Strict',
   isUsed: false,

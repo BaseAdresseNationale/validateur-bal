@@ -1,7 +1,7 @@
 import { ParseError } from 'papaparse';
 import { parse } from './parse';
 import { uniq } from 'lodash';
-import { ParseReturn } from './parse/buffer';
+import { ParseFileType, ParseReturn } from './parse/parse.type';
 
 const FATAL_PARSE_ERRORS = new Set([
   'MissingQuotes',
@@ -32,17 +32,6 @@ function humanizeLinebreak(linebreak: string): HumaneLinebreakEnum {
 
   return HumaneLinebreakEnum.INCONNU;
 }
-
-export type ValueIsValid = {
-  value: string;
-  isValid: boolean;
-};
-
-export type ValidateFile = {
-  encoding: ValueIsValid;
-  delimiter: ValueIsValid;
-  linebreak: ValueIsValid;
-};
 
 export function validateFile(
   detectedParams: { linebreak: string; encoding: string; delimiter: string },
@@ -81,16 +70,6 @@ export function validateFile(
 
   return { encoding, delimiter, linebreak };
 }
-
-export type ParseFileType = {
-  encoding: string;
-  linebreak: string;
-  delimiter: string;
-  originalFields: string[];
-  parseOk: boolean;
-  parseErrors: ParseError[];
-  parsedRows?: Record<string, string>[];
-};
 
 export async function parseFile(
   file: Buffer,

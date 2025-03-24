@@ -1,4 +1,4 @@
-import { Profile } from './profile.interface';
+import { ProfileType } from './profile.type';
 
 export const errors: string[] = [
   'cle_interop.structure_invalide',
@@ -109,7 +109,7 @@ export const warnings: string[] = [
 
 const infos = ['cle_interop.voie_non_renseignee'];
 
-const profile: Profile = {
+const profile: ProfileType = {
   code: '1.3-relax',
   name: 'BAL 1.3 Relax (legacy)',
   isUsed: false,

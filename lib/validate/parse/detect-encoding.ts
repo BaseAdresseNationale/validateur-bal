@@ -8,7 +8,7 @@ const CHARDET_TO_NORMALIZED_ENCODINGS = {
   'utf-8': 'utf-8',
 };
 
-function normalizeEncodingName(encoding) {
+function normalizeEncodingName(encoding: string): string {
   const lcEncoding = encoding.toLowerCase();
   if (!(lcEncoding in CHARDET_TO_NORMALIZED_ENCODINGS)) {
     throw new Error('Encoding currently not supported: ' + encoding);

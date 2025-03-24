@@ -2,33 +2,26 @@ import { mapValues } from 'lodash';
 
 import profiles from '../schema/profiles/index';
 import { getErrorLevel } from '../utils/helpers';
-import { parseFile, ParseFileType, ValidateFile, validateFile } from './file';
-import { computeFields, FieldType, NotFoundFieldType } from './fields';
-import { computeRows, ValidateRowType } from './rows';
-import { ValidateProfile, validateProfile } from './profiles';
-
-export type ProfilesValidationType = {
-  code: string;
-  name: string;
-  isValid: boolean;
-};
-
-export type PrevalidateType = ParseFileType & {
-  fields?: FieldType[];
-  notFoundFields?: NotFoundFieldType[];
-  rows?: ValidateRowType[];
-  fileValidation?: ValidateFile;
-  profilesValidation?: Record<string, ProfilesValidationType>;
-  globalErrors?: string[];
-  rowsErrors?: string[];
-  uniqueErrors?: string[];
-};
+import { parseFile, validateFile } from './file';
+import { computeFields } from './fields';
+import { computeRows } from './rows';
+import { validateProfile } from './profiles';
+import {
+  FieldType,
+  NotFoundFieldType,
+  PrevalidateType,
+  ProfilesValidationType,
+  ValidateFileType,
+  ValidateType,
+  ValidateRowType,
+} from './validate.type';
+import { ParseFileType } from './parse/parse.type';
 
 export async function prevalidate(
   file: Buffer,
   format: string,
   relaxFieldsDetection: boolean,
-): Promise<PrevalidateType> {
+): Promise<ParseFileType | PrevalidateType> {
   const globalErrors = new Set<string>();
   const rowsErrors = new Set<string>();
 
@@ -70,7 +63,7 @@ export async function prevalidate(
     globalErrors,
   });
 
-  const fileValidation: ValidateFile = validateFile(
+  const fileValidation: ValidateFileType = validateFile(
     { linebreak, encoding, delimiter },
     { globalErrors },
   );
@@ -109,7 +102,7 @@ export async function prevalidate(
 export async function validate(
   file: Buffer,
   options: { profile?: string; relaxFieldsDetection?: boolean } = {},
-): Promise<PrevalidateType | ValidateProfile> {
+): Promise<ParseFileType | ValidateType> {
   const profile = options.profile || '1.3';
   let { relaxFieldsDetection } = options;
 
@@ -118,10 +111,15 @@ export async function validate(
   }
 
   const { format } = profiles[profile];
-  const prevalidateResult: PrevalidateType = await prevalidate(
+  const prevalidateResult: PrevalidateType | ParseFileType = await prevalidate(
     file,
     format,
     relaxFieldsDetection,
   );
-  return validateProfile(prevalidateResult, profile);
+
+  if (!prevalidateResult.parseOk) {
+    return prevalidateResult as ParseFileType;
+  }
+
+  return validateProfile(prevalidateResult as PrevalidateType, profile);
 }

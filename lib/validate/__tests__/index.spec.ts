@@ -1,11 +1,9 @@
-/* eslint camelcase: off */
-
 import { join } from 'path';
 import fs from 'fs';
 import { promisify } from 'util';
 
 import { validate } from '..';
-import { ValidateProfile } from '../profiles';
+import { ValidateType } from '../validate.type';
 
 const readFile = promisify(fs.readFile);
 
@@ -23,9 +21,9 @@ describe('VALIDATE TEST', () => {
 
   it('No validate a file with aliases / relaxFieldsDetection true', async () => {
     const buffer = await readAsBuffer('aliases.csv');
-    const { fields, notFoundFields } = await validate(buffer, {
+    const { notFoundFields } = (await validate(buffer, {
       relaxFieldsDetection: true,
-    });
+    })) as ValidateType;
 
     expect(notFoundFields.length).toBe(14);
     for (const field of [
@@ -52,10 +50,10 @@ describe('VALIDATE TEST', () => {
 
   it('validate a file with aliases / profile relax and relaxFieldsDetection false', async () => {
     const buffer = await readAsBuffer('aliases.csv');
-    const { fields, notFoundFields } = await validate(buffer, {
+    const { fields, notFoundFields } = (await validate(buffer, {
       profile: '1.3-relax',
       relaxFieldsDetection: false,
-    });
+    })) as ValidateType;
 
     const unknownFields = fields.filter((f) => !f.schemaName);
     const knownFields = fields.filter((f) => f.schemaName);
@@ -79,9 +77,9 @@ describe('VALIDATE TEST', () => {
 
   it('validate a file with aliases / relaxFieldsDetection false', async () => {
     const buffer = await readAsBuffer('aliases.csv');
-    const { fields, notFoundFields } = await validate(buffer, {
+    const { fields, notFoundFields } = (await validate(buffer, {
       relaxFieldsDetection: false,
-    });
+    })) as ValidateType;
 
     const unknownFields = fields.filter((f) => !f.schemaName);
     const knownFields = fields.filter((f) => f.schemaName);
@@ -112,13 +110,15 @@ describe('VALIDATE TEST', () => {
 
   it('validate an arbitrary CSV file', async () => {
     const buffer = await readAsBuffer('junk.ascii.csv');
-    const { notFoundFields } = await validate(buffer);
+    const { notFoundFields } = (await validate(buffer)) as ValidateType;
     expect(notFoundFields.length).toBe(19);
   });
 
   it('validation avec locales', async () => {
     const buffer = await readAsBuffer('locales.csv');
-    const { fields, rows, uniqueErrors } = await validate(buffer);
+    const { fields, rows, uniqueErrors } = (await validate(
+      buffer,
+    )) as ValidateType;
     expect(uniqueErrors.includes('voie_nom_eus.trop_court')).toBeTruthy();
     expect(
       rows[0].errors.some((e) => e.code === 'voie_nom_eus.trop_court'),
@@ -139,7 +139,7 @@ describe('VALIDATE TEST', () => {
     const buffer = await readAsBuffer('locales.csv');
     const { profilErrors, uniqueErrors } = (await validate(
       buffer,
-    )) as ValidateProfile;
+    )) as ValidateType;
     for (const e of profilErrors) {
       expect(uniqueErrors.includes(e.code)).toBeTruthy();
       expect(['I', 'W', 'E'].includes(e.level)).toBeTruthy();
@@ -148,16 +148,17 @@ describe('VALIDATE TEST', () => {
 
   it('validation check notFoundFields', async () => {
     const buffer = await readAsBuffer('locales.csv');
-    const { notFoundFields } = await validate(buffer);
+    const { notFoundFields } = (await validate(buffer)) as ValidateType;
     for (const e of notFoundFields) {
-      expect(['I', 'W', 'E'].includes(e.level)).toBeTruthy();
+      expect(['I', 'W', 'E'].includes(e.level as string)).toBeTruthy();
     }
   });
 
   it('validation check row empty', async () => {
     const buffer = await readAsBuffer('without_row.csv');
-    const { profilesValidation, uniqueErrors, globalErrors } =
-      await validate(buffer);
+    const { profilesValidation, uniqueErrors, globalErrors } = (await validate(
+      buffer,
+    )) as ValidateType;
     expect(uniqueErrors.includes('rows.empty')).toBeTruthy();
     expect(globalErrors.includes('rows.empty')).toBeTruthy();
     expect(!profilesValidation['1.3-relax'].isValid).toBeTruthy();

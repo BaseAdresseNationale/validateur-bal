@@ -1,19 +1,9 @@
-import {
-  validate,
-  prevalidate,
-  PrevalidateType,
-  ProfilesValidationType,
-} from './validate';
-import { validateProfile, ValidateProfile } from './validate/profiles';
+import { validate, prevalidate } from './validate';
+import { validateProfile } from './validate/profiles';
 import { readValue } from './validate/rows';
-import { getErrorLevel, getLabel } from './utils/helpers';
+import { getErrorLevel, getLabel, ErrorLevelEnum } from './utils/helpers';
 import profiles from './schema/profiles';
-import { Profile } from './schema/profiles/profile.interface';
-import { ErrorLevelEnum } from './utils/error-level.enum';
-import { FieldType, NotFoundFieldType } from './validate/fields';
-import { ValidateRowType } from './validate/rows';
-import { ValueIsValid, ValidateFile, ParseFileType } from './validate/file';
-import { ProfileErrorType } from './validate/profiles';
+import { PositionTypeEnum } from './schema/shema.type';
 
 export {
   validate,
@@ -24,18 +14,28 @@ export {
   getErrorLevel,
   profiles,
   ErrorLevelEnum,
+  PositionTypeEnum,
 };
 
+export type { ParseFileType } from './validate/parse/parse.type';
+
 export type {
-  PrevalidateType,
-  ValidateProfile,
-  Profile,
-  FieldType,
-  NotFoundFieldType,
-  ValidateRowType,
-  ValueIsValid,
-  ValidateFile,
   ProfilesValidationType,
-  ParseFileType,
+  FieldType,
+  ValueIsValidType,
+  ValidateFileType,
+  PrevalidateType,
   ProfileErrorType,
-};
+  ErrorLevelType,
+  ValidateRowFullType,
+  NotFoundFieldLevelType,
+  ValidateType,
+} from './validate/validate.type';
+
+export type {
+  ParsedValue,
+  ReadValueType,
+  ParsedValues,
+} from './schema/shema.type';
+
+export type { ProfileType } from './schema/profiles/profile.type';

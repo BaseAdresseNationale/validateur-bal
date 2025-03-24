@@ -2,7 +2,8 @@ import iconv from 'iconv-lite';
 import { detectBufferEncoding } from './detect-encoding';
 
 import { parseCsv } from './csv';
-import { ParseError, ParseMeta, ParseResult } from 'papaparse';
+import { ParseResult } from 'papaparse';
+import { ParseReturn } from './parse.type';
 
 // Copied from strip-bom package which contains ES6 syntax
 function stripBom(str: string): string {
@@ -16,10 +17,6 @@ function decodeBuffer(buffer: Buffer) {
   const decodedString: string = stripBom(iconv.decode(buffer, encoding));
   return { encoding, decodedString };
 }
-
-export type ParseReturn = ParseResult<Record<string, string>> & {
-  encoding: string;
-};
 
 export async function parse(
   buffer: Buffer,

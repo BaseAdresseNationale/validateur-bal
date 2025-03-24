@@ -8,17 +8,7 @@ import {
   isCommuneDeleguee,
 } from '../utils/cog';
 import { validate as isUuid } from 'uuid';
-
-export enum PositionTypeEnum {
-  ENTREE = 'entrée',
-  BATIMENT = 'bâtiment',
-  CAGE_ESCALIER = 'cage d’escalier',
-  LOGEMENT = 'logement',
-  SERVICE_TECHNIQUE = 'service technique',
-  DELIVRANCE_POSTALE = 'délivrance postale',
-  PARCELLE = 'parcelle',
-  SEGMENT = 'segment',
-}
+import { ParsedValue, PositionTypeEnum } from './shema.type';
 
 export type FieldsSchema = {
   trim: boolean;
@@ -34,7 +24,7 @@ export type FieldsSchema = {
       addError: (error: string) => void;
       setAdditionnalValues: (add: any) => void;
     },
-  ) => string | string[] | boolean | number | void;
+  ) => ParsedValue;
 };
 
 function isValidFloat(str: string): boolean {
@@ -76,11 +66,13 @@ const fields: Record<string, FieldsSchema> = {
       const splitted = v.split('_');
 
       if (splitted.length < 3) {
-        return addError('structure_invalide');
+        addError('structure_invalide');
+        return undefined;
       }
 
       if (splitted.some((part) => !part)) {
-        return addError('structure_invalide');
+        addError('structure_invalide');
+        return undefined;
       }
 
       const [, codeVoie, numeroVoie, ...suffixes] = splitted;
@@ -104,7 +96,8 @@ const fields: Record<string, FieldsSchema> = {
 
       // Clé d'interopérabilité - Numéro de voie
       if (!/^\d+$/.test(numeroVoie)) {
-        return addError('numero_invalide');
+        addError('numero_invalide');
+        return undefined;
       }
 
       if (numeroVoie.length !== 5) {
@@ -127,45 +120,22 @@ const fields: Record<string, FieldsSchema> = {
     trim: true,
     formats: ['1.1', '1.2', '1.3'],
     parse(v, { addError, setAdditionnalValues }) {
-      const regUuidCommune =
-        /@c:([A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12})/gi;
-      const regUuidToponyme =
-        /@v:[A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12}/gi;
-      const regUuidAdresse =
-        /@a:[A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12}/gi;
-
-      const [uuidCommune] = v.match(regUuidCommune) || [];
-      const [uuidToponyme] = v.match(regUuidToponyme) || [];
-      const [uuidAdresse] = v.match(regUuidAdresse) || [];
+      const [uuidCommune] = v.match(/@c:(\S+)/gi) || [];
+      const [uuidToponyme] = v.match(/@v:(\S+)/gi) || [];
+      const [uuidAdresse] = v.match(/@a:(\S+)/gi) || [];
 
       const idBanCommune = uuidCommune?.substr(3) || null;
       const idBanToponyme = uuidToponyme?.substr(3) || null;
       const idBanAdresse = uuidAdresse?.substr(3) || null;
 
       if (
-        !isUuid(idBanCommune) ||
-        !isUuid(idBanToponyme) ||
-        idBanAdresse === null ||
-        !isUuid(idBanAdresse)
+        (idBanCommune && !isUuid(idBanCommune)) ||
+        (idBanToponyme && !isUuid(idBanToponyme)) ||
+        (idBanAdresse && !isUuid(idBanAdresse))
       ) {
-        return addError('type_invalide');
+        addError('type_invalide');
+        return undefined;
       }
-
-      if (!idBanCommune || !idBanToponyme) {
-        addError('incoherence_ids_ban');
-      }
-
-      // LES IDS id_ban_commune / id_ban_toponyme / id_ban_adresse NE PEUVENT PAS ËTRE IDENTIQUES
-      if (
-        (idBanCommune && idBanToponyme && idBanCommune === idBanToponyme) ||
-        (idBanCommune && idBanAdresse && idBanCommune === idBanAdresse) ||
-        (idBanAdresse && idBanToponyme && idBanToponyme === idBanAdresse)
-      ) {
-        addError('incoherence_ids_ban');
-      }
-
-      // SI IL Y A UN id_ban_toponyme, IL Y A UN id_ban_commune
-      // SI IL Y A UN id_ban_adresse, IL Y A UN id_ban_toponyme ET DONC IL Y A IL Y A UN id_ban_commune
 
       setAdditionnalValues({
         idBanCommune,
@@ -182,7 +152,8 @@ const fields: Record<string, FieldsSchema> = {
     trim: true,
     parse(v, { addError }) {
       if (!isUuid(v)) {
-        return addError('type_invalide');
+        addError('type_invalide');
+        return undefined;
       }
 
       return v;
@@ -194,7 +165,8 @@ const fields: Record<string, FieldsSchema> = {
     trim: true,
     parse(v, { addError }) {
       if (!isUuid(v)) {
-        return addError('type_invalide');
+        addError('type_invalide');
+        return undefined;
       }
 
       return v;
@@ -206,7 +178,8 @@ const fields: Record<string, FieldsSchema> = {
     trim: true,
     parse(v, { addError }) {
       if (!isUuid(v)) {
-        return addError('type_invalide');
+        addError('type_invalide');
+        return undefined;
       }
 
       return v;
@@ -220,15 +193,18 @@ const fields: Record<string, FieldsSchema> = {
     allowRegionalLang: true,
     parse(v, { addError }) {
       if (v.length < 3) {
-        return addError('trop_court');
+        addError('trop_court');
+        return undefined;
       }
 
       if (v.length > 200) {
-        return addError('trop_long');
+        addError('trop_long');
+        return undefined;
       }
 
       if (includesInvalidChar(v)) {
-        return addError('caractere_invalide');
+        addError('caractere_invalide');
+        return undefined;
       }
 
       if (v.includes('_')) {
@@ -256,7 +232,8 @@ const fields: Record<string, FieldsSchema> = {
     trim: true,
     parse(v, { addError }) {
       if (!/^\d+$/.test(v)) {
-        return addError('type_invalide');
+        addError('type_invalide');
+        return undefined;
       }
 
       if (v.startsWith('0') && v !== '0') {
@@ -266,7 +243,8 @@ const fields: Record<string, FieldsSchema> = {
       const n = Number.parseInt(v, 10);
 
       if (n > 9999 && n !== 99_999) {
-        return addError('trop_grand');
+        addError('trop_grand');
+        return undefined;
       }
 
       return n;
@@ -278,11 +256,13 @@ const fields: Record<string, FieldsSchema> = {
     trim: true,
     parse(v, { addError }) {
       if (!/^[\da-z]/i.test(v)) {
-        return addError('debut_invalide');
+        addError('debut_invalide');
+        return undefined;
       }
 
       if (v.length > 9) {
-        return addError('trop_long');
+        addError('trop_long');
+        return undefined;
       }
 
       return v;
@@ -474,12 +454,14 @@ const fields: Record<string, FieldsSchema> = {
     trim: true,
     parse(v, { addError }) {
       if (!/^(\d{4}-\d{2}-\d{2})$/.test(v)) {
-        return addError('date_invalide');
+        addError('date_invalide');
+        return undefined;
       }
 
       const parsedDate = parseISO(v);
       if (Number.isNaN(parsedDate.getTime())) {
-        return addError('date_invalide');
+        addError('date_invalide');
+        return undefined;
       }
 
       if (parsedDate < new Date('2010-01-01')) {
@@ -487,7 +469,8 @@ const fields: Record<string, FieldsSchema> = {
       }
 
       if (parsedDate > new Date()) {
-        return addError('date_future');
+        addError('date_future');
+        return undefined;
       }
 
       return format(parsedDate, 'yyyy-MM-dd');
@@ -507,7 +490,8 @@ const fields: Record<string, FieldsSchema> = {
         return false;
       }
 
-      return addError('valeur_invalide');
+      addError('valeur_invalide');
+      return undefined;
     },
   },
 };
