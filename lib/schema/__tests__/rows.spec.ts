@@ -215,4 +215,91 @@ describe('VALIDATE ROWS', () => {
     );
     expect(errors).toContain('rows.every_line_required_id_ban');
   });
+
+  it('TEST rows.cog_no_match_id_ban_commune', () => {
+    const errors: string[] = [];
+    const rows: any[] = [
+      {
+        additionalValues: {
+          uid_adresse: {
+            idBanCommune: '0246e48c-f33d-433a-8984-034219be842e',
+            idBanToponyme: '0246e48c-f33d-433a-8984-034219be842e',
+            idBanAdresse: '0246e48c-f33d-433a-8984-034219be842e',
+          },
+        },
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          numero: 1,
+        },
+      },
+      {
+        additionalValues: {
+          uid_adresse: {
+            idBanCommune: '0246e48c-f33d-433a-8984-034219be842a',
+            idBanToponyme: '0246e48c-f33d-433a-8984-034219be842e',
+            idBanAdresse: '0246e48c-f33d-433a-8984-034219be842e',
+          },
+        },
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          numero: 2,
+        },
+      },
+    ];
+    validateRows(
+      rows,
+      {
+        addError: (e: string) => errors.push(e),
+      },
+      {
+        communeBanIds: ['0246e48c-f33d-433a-8984-034219be842e'],
+      },
+    );
+    expect(errors).toContain('rows.cog_no_match_id_ban_commune');
+  });
+
+  it('TEST no error rows.cog_no_match_id_ban_commune', () => {
+    const errors: string[] = [];
+    const rows: any[] = [
+      {
+        additionalValues: {
+          uid_adresse: {
+            idBanCommune: '0246e48c-f33d-433a-8984-034219be842e',
+            idBanToponyme: '0246e48c-f33d-433a-8984-034219be842e',
+            idBanAdresse: '0246e48c-f33d-433a-8984-034219be842e',
+          },
+        },
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          numero: 1,
+        },
+      },
+      {
+        additionalValues: {
+          uid_adresse: {
+            idBanCommune: '0246e48c-f33d-433a-8984-034219be842a',
+            idBanToponyme: '0246e48c-f33d-433a-8984-034219be842e',
+            idBanAdresse: '0246e48c-f33d-433a-8984-034219be842e',
+          },
+        },
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          numero: 2,
+        },
+      },
+    ];
+    validateRows(
+      rows,
+      {
+        addError: (e: string) => errors.push(e),
+      },
+      {
+        communeBanIds: [
+          '0246e48c-f33d-433a-8984-034219be842e',
+          '0246e48c-f33d-433a-8984-034219be842a',
+        ],
+      },
+    );
+    expect(errors).not.toContain('rows.cog_no_match_id_ban_commune');
+  });
 });

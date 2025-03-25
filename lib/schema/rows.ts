@@ -39,13 +39,16 @@ function validateUseBanIds(
       districtIDs.add(idBanCommune);
     }
   }
-
   if (balAdresseUseBanId === rows.length) {
     // Check district IDs consistency
     if (districtIDs.size > 1) {
       addError('rows.multi_id_ban_commune');
     }
-    if (!communeBanIds.some((districtID) => districtIDs.has(districtID))) {
+    if (
+      !Array.from(districtIDs).every((districtID: string) =>
+        communeBanIds.includes(districtID),
+      )
+    ) {
       addError('rows.cog_no_match_id_ban_commune');
     }
     return true;
