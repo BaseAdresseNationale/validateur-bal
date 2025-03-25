@@ -18,7 +18,10 @@ function readAsBuffer(relativePath) {
 describe('VALIDATE 1.4 TEST', () => {
   beforeEach(() => {
     fetchMock.doMock(async () => {
-      return JSON.stringify([{ id: '0246e48c-f33d-433a-8984-034219be842e' }]);
+      return JSON.stringify({
+        status: 'success',
+        response: [{ id: '0246e48c-f33d-433a-8984-034219be842e' }],
+      });
     });
   });
 

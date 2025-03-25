@@ -8,9 +8,14 @@ import { ParsedValues, ParsedValue, ReadValueType } from '../schema/shema.type';
 const BAN_API_URL =
   process.env.BAN_API_URL || 'https://plateforme.adresse.data.gouv.fr';
 
+type DistrictBanRsponse = {
+  status: 'success' | 'error';
+  response: { id: string }[];
+};
+
 export async function getCommuneBanIdByCodeCommune(
   codeCommune: string,
-): Promise<{ id: string }[]> {
+): Promise<DistrictBanRsponse> {
   const response = await fetch(
     `${BAN_API_URL}/api/district/cog/${codeCommune}`,
   );
@@ -37,10 +42,10 @@ export async function getCommuneBanIds(
     }
   }
   for (const codeCommune of Array.from(codeCommunes)) {
-    const [{ id: communeBanId }] =
-      await getCommuneBanIdByCodeCommune(codeCommune);
-
-    indexCommuneBanIds[codeCommune] = communeBanId;
+    const res = await getCommuneBanIdByCodeCommune(codeCommune);
+    if (res.status == 'success' && res.response) {
+      indexCommuneBanIds[codeCommune] = res.response[0].id;
+    }
   }
   return indexCommuneBanIds;
 }
