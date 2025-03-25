@@ -18,18 +18,30 @@ describe('VALIDATE ROWS', () => {
         },
       },
     ];
-    validateRows(rows, {
-      addError: (e: string) => errors.push(e),
-    });
+    validateRows(
+      rows,
+      {
+        addError: (e: string) => errors.push(e),
+      },
+      {
+        communeBanIds: [],
+      },
+    );
     expect(errors).toEqual([]);
   });
 
   it('TEST rows.empty', () => {
     const errors: string[] = [];
     const rows: any[] = [];
-    validateRows(rows, {
-      addError: (e: string) => errors.push(e),
-    });
+    validateRows(
+      rows,
+      {
+        addError: (e: string) => errors.push(e),
+      },
+      {
+        communeBanIds: [],
+      },
+    );
     expect(errors).toContain('rows.empty');
   });
 
@@ -55,9 +67,15 @@ describe('VALIDATE ROWS', () => {
         },
       },
     ];
-    validateRows(rows, {
-      addError: (e: string) => errors.push(e),
-    });
+    validateRows(
+      rows,
+      {
+        addError: (e: string) => errors.push(e),
+      },
+      {
+        communeBanIds: [],
+      },
+    );
     expect(errors).toEqual([]);
   });
 
@@ -83,9 +101,15 @@ describe('VALIDATE ROWS', () => {
         },
       },
     ];
-    validateRows(rows, {
-      addError: (e: string) => errors.push(e),
-    });
+    validateRows(
+      rows,
+      {
+        addError: (e: string) => errors.push(e),
+      },
+      {
+        communeBanIds: ['0246e48c-f33d-433a-8984-034219be842e'],
+      },
+    );
     expect(errors).toEqual([]);
   });
 
@@ -111,9 +135,18 @@ describe('VALIDATE ROWS', () => {
         },
       },
     ];
-    validateRows(rows, {
-      addError: (e: string) => errors.push(e),
-    });
+    validateRows(
+      rows,
+      {
+        addError: (e: string) => errors.push(e),
+      },
+      {
+        communeBanIds: [
+          '8a3bab10-f329-4ce3-9c7d-280d91a8053a',
+          '0246e48c-f33d-433a-8984-034219be842e',
+        ],
+      },
+    );
     expect(errors).toContain('rows.multi_id_ban_commune');
   });
 
@@ -136,9 +169,15 @@ describe('VALIDATE ROWS', () => {
         },
       },
     ];
-    validateRows(rows, {
-      addError: (e: string) => errors.push(e),
-    });
+    validateRows(
+      rows,
+      {
+        addError: (e: string) => errors.push(e),
+      },
+      {
+        communeBanIds: [],
+      },
+    );
     expect(errors).toContain('rows.every_line_required_id_ban');
   });
 
@@ -165,9 +204,15 @@ describe('VALIDATE ROWS', () => {
         },
       },
     ];
-    validateRows(rows, {
-      addError: (e: string) => errors.push(e),
-    });
+    validateRows(
+      rows,
+      {
+        addError: (e: string) => errors.push(e),
+      },
+      {
+        communeBanIds: ['0246e48c-f33d-433a-8984-034219be842e'],
+      },
+    );
     expect(errors).toContain('rows.every_line_required_id_ban');
   });
 });
