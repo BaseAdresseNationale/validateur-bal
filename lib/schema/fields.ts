@@ -1,12 +1,7 @@
 import { format, parseISO } from 'date-fns';
 import { trim, trimStart, deburr } from 'lodash';
 
-import {
-  isCommune,
-  isCommuneActuelle,
-  isCommuneAncienne,
-  isCommuneDeleguee,
-} from '../utils/cog';
+import { isCommune, isCommuneAncienne, isCommuneDeleguee } from '../utils/cog';
 import { validate as isUuid } from 'uuid';
 import { ParsedValue, PositionTypeEnum } from './shema.type';
 
@@ -306,13 +301,8 @@ const fields: Record<string, FieldsSchema> = {
         addError('commune_invalide');
         return;
       }
-
       if (!isCommuneDeleguee(code)) {
-        if (isCommuneActuelle(code)) {
-          addError('commune_actuelle_non_deleguee');
-        } else {
-          addError('commune_ancienne_non_deleguee');
-        }
+        addError('commune_non_deleguee');
       }
 
       return code;

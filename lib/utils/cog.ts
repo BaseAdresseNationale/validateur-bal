@@ -6,38 +6,35 @@ type CommuneActuelle = {
   anciensCodes?: string;
 };
 
-const codesCommunesActuelles = new Set<string>(
-  communes.filter((c) => !c.chefLieu).map((c) => c.code),
-);
-const codesCommunesDeleguees = new Set<string>(
-  communes.filter((c) => c.chefLieu).map((c) => c.code),
-);
+const communeSet = new Set<string>(communes.map(({ code }) => code));
 
-const anciensCodesIndex = new Map<string, string>();
+const communeAncienneMap = new Map<string, string>();
+const communeChefLieuSet = new Set<string>();
 for (const commune of communes as CommuneActuelle[]) {
-  for (const ancienCode of commune.anciensCodes || []) {
-    anciensCodesIndex.set(ancienCode, commune.code);
+  if (commune.anciensCodes) {
+    for (const ancienCode of commune.anciensCodes || []) {
+      communeAncienneMap.set(ancienCode, commune.code);
+    }
+    communeChefLieuSet.add(commune.code);
   }
 }
 
-export function isCommuneAncienne(codeCommune: string): boolean {
-  return anciensCodesIndex.has(codeCommune);
-}
-
-export function isCommuneActuelle(codeCommune: string): boolean {
-  return codesCommunesActuelles.has(codeCommune);
-}
-
-export function isCommuneDeleguee(codeCommune: string) {
-  return codesCommunesDeleguees.has(codeCommune);
+export function isCommuneAncienne(codeCommune: string) {
+  return communeAncienneMap.has(codeCommune);
 }
 
 export function isCommune(codeCommune: string): boolean {
-  return isCommuneActuelle(codeCommune) || isCommuneAncienne(codeCommune);
+  return communeSet.has(codeCommune);
+}
+
+export function isCommuneDeleguee(codeCommune: string): boolean {
+  return (
+    communeAncienneMap.has(codeCommune) || communeChefLieuSet.has(codeCommune)
+  );
 }
 
 export function getCommuneActuelle(codeCommune: string): string {
-  return anciensCodesIndex.has(codeCommune)
-    ? anciensCodesIndex.get(codeCommune)
-    : communes.find((c) => c.code === codeCommune && !c.chefLieu);
+  return communeAncienneMap.has(codeCommune)
+    ? communeAncienneMap.get(codeCommune)
+    : codeCommune;
 }
