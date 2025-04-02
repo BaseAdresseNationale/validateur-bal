@@ -56,7 +56,7 @@
     "@babel/cli": "^7.18.10",
     "@babel/core": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
-    "@etalab/decoupage-administratif": "^4.0.0",
+    "@etalab/decoupage-administratif": "^5.0.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.12.0",
     "@types/papaparse": "^5.3.15",
