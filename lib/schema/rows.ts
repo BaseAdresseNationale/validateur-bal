@@ -13,6 +13,7 @@ function validateRowsEmpty(
 function validateUseBanIds(
   rows: ValidateRowType[],
   { addError }: { addError: (code: string) => void },
+  { communeBanIds }: { communeBanIds: string[] },
 ) {
   const districtIDs = new Set();
   let balAdresseUseBanId = 0;
@@ -38,17 +39,18 @@ function validateUseBanIds(
       districtIDs.add(idBanCommune);
     }
   }
-
   if (balAdresseUseBanId === rows.length) {
     // Check district IDs consistency
     if (districtIDs.size > 1) {
       addError('rows.multi_id_ban_commune');
     }
-    // if (!districtIDs.has(districtID)) {
-    //   throw new Error(
-    //     `Missing rights - BAL from district ID : \`${districtID}\` (cog : \`${cog}\`) - Cannot be updated`,
-    //   );
-    // }
+    if (
+      !Array.from(districtIDs).every((districtID: string) =>
+        communeBanIds.includes(districtID),
+      )
+    ) {
+      addError('rows.cog_no_match_id_ban_commune');
+    }
     return true;
   } else if (balAdresseUseBanId > 0) {
     addError('rows.every_line_required_id_ban');
@@ -58,9 +60,10 @@ function validateUseBanIds(
 function validateRows(
   rows: ValidateRowType[],
   { addError }: { addError: (code: string) => void },
+  { communeBanIds }: { communeBanIds: string[] },
 ) {
   validateRowsEmpty(rows, { addError });
-  validateUseBanIds(rows, { addError });
+  validateUseBanIds(rows, { addError }, { communeBanIds });
 }
 
 export default validateRows;

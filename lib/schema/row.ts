@@ -1,6 +1,15 @@
 import proj from '@etalab/project-legal';
+import { v4 as uuid } from 'uuid';
 import { getCommuneActuelle } from '../utils/cog';
 import { ValidateRowType } from '../validate/validate.type';
+import { ParsedValue } from './shema.type';
+
+function getCodeCommune(row: ValidateRowType) {
+  return (
+    row.parsedValues.commune_insee ||
+    row.additionalValues.cle_interop.codeCommune
+  );
+}
 
 function validateCleInterop(
   row: ValidateRowType,
@@ -99,7 +108,7 @@ function validateCommuneDelegueeInsee(
     row.parsedValues.commune_deleguee_insee &&
     row.parsedValues.commune_insee
   ) {
-    const codeCommune = row.parsedValues.commune_insee;
+    const codeCommune = getCodeCommune(row);
     const codeAncienneCommune = row.parsedValues.commune_deleguee_insee;
     const codeCommuneActuelle = getCommuneActuelle(
       codeAncienneCommune as string,
@@ -113,7 +122,18 @@ function validateCommuneDelegueeInsee(
 
 function validateBanIds(
   row: ValidateRowType,
-  { addError }: { addError: (code: string) => void },
+  {
+    addError,
+    addRemeditation,
+  }: {
+    addError: (code: string) => void;
+    addRemeditation: (field: string, value: ParsedValue) => void;
+  },
+  {
+    indexCommuneBanIds,
+  }: {
+    indexCommuneBanIds: Record<string, string>;
+  },
 ) {
   const idBanCommune =
     row.parsedValues.id_ban_commune ||
@@ -127,11 +147,21 @@ function validateBanIds(
 
   // Si au moins un des ID est présent, cela signifie que l'adresse BAL utilise BanID
   if (idBanCommune || idBanToponyme || idBanAdresse) {
+    let isLackOfIdBan = false;
     if (!idBanCommune) {
-      addError('lack_of_id_ban');
-    } else if (!idBanToponyme) {
-      addError('lack_of_id_ban');
-    } else if (!idBanAdresse && row.parsedValues.numero !== 99_999) {
+      const codeCommune = getCodeCommune(row);
+      addRemeditation('id_ban_commune', indexCommuneBanIds[codeCommune]);
+      isLackOfIdBan = true;
+    }
+    if (!idBanToponyme) {
+      addRemeditation('id_ban_toponyme', uuid());
+      isLackOfIdBan = true;
+    }
+    if (!idBanAdresse && row.parsedValues.numero !== 99_999) {
+      addRemeditation('id_ban_adresse', uuid());
+      isLackOfIdBan = true;
+    }
+    if (isLackOfIdBan) {
       addError('lack_of_id_ban');
     }
   }
@@ -139,14 +169,25 @@ function validateBanIds(
 
 function validateRow(
   row: ValidateRowType,
-  { addError }: { addError: (code: string) => void },
+  {
+    addError,
+    addRemeditation,
+  }: {
+    addError: (code: string) => void;
+    addRemeditation: (field: string, value: ParsedValue) => void;
+  },
+  {
+    indexCommuneBanIds,
+  }: {
+    indexCommuneBanIds: Record<string, string>;
+  },
 ) {
   validateCleInterop(row, { addError });
   validatePositionType(row, { addError });
   validateCoords(row, { addError });
   validateMinimalAdress(row, { addError });
   validateCommuneDelegueeInsee(row, { addError });
-  validateBanIds(row, { addError });
+  validateBanIds(row, { addError, addRemeditation }, { indexCommuneBanIds });
 }
 
 export default validateRow;
