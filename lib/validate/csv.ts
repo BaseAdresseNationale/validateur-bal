@@ -7,36 +7,27 @@ import { ParsedValues } from '../schema/shema.type';
 const langs = languesRegionales.map(({ code }) => code);
 
 function getIdsBan(
-  fields: FieldType[],
   parsedValues: ParsedValues,
   remediations: ParsedValues,
   additionalValues: Record<string, any>,
 ) {
-  if (
-    fields.some(({ schemaName }) => schemaName === 'id_ban_commune') ||
-    fields.some(({ schemaName }) => schemaName === 'id_ban_toponyme') ||
-    fields.some(({ schemaName }) => schemaName === 'id_ban_adresse') ||
-    fields.some(({ schemaName }) => schemaName === 'uid_adresse')
-  ) {
-    const idBanCommune =
-      remediations.id_ban_commune ||
-      parsedValues.id_ban_commune ||
-      additionalValues.uid_adresse.idBanCommune;
-    const idBanToponyme =
-      remediations.id_ban_toponyme ||
-      parsedValues.id_ban_toponyme ||
-      additionalValues.uid_adresse.idBanToponyme;
-    const idBanAdresse =
-      remediations.id_ban_adresse ||
-      parsedValues.id_ban_adresse ||
-      additionalValues.uid_adresse.idBanAdresse;
-    return {
-      id_ban_commune: idBanCommune,
-      id_ban_toponyme: idBanToponyme,
-      id_ban_adresse: idBanAdresse,
-    };
-  }
-  return {};
+  const idBanCommune =
+    remediations.id_ban_commune ||
+    parsedValues.id_ban_commune ||
+    additionalValues.uid_adresse.idBanCommune;
+  const idBanToponyme =
+    remediations.id_ban_toponyme ||
+    parsedValues.id_ban_toponyme ||
+    additionalValues.uid_adresse.idBanToponyme;
+  const idBanAdresse =
+    remediations.id_ban_adresse ||
+    parsedValues.id_ban_adresse ||
+    additionalValues.uid_adresse.idBanAdresse;
+  return {
+    id_ban_commune: idBanCommune,
+    id_ban_toponyme: idBanToponyme,
+    id_ban_adresse: idBanAdresse,
+  };
 }
 
 function getMultiLangField(
@@ -59,7 +50,7 @@ function getCsvRow(
   { parsedValues, remediations, additionalValues }: ValidateRowType,
 ): ParsedValues {
   return {
-    ...getIdsBan(fields, parsedValues, remediations, additionalValues),
+    ...getIdsBan(parsedValues, remediations, additionalValues),
     cle_interop: remediations.cle_interop || parsedValues.cle_interop,
     commune_insee: remediations.commune_insee || parsedValues.commune_insee,
     commune_nom: remediations.commune_nom || parsedValues.commune_nom,
