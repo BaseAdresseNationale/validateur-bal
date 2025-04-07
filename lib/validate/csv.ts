@@ -48,10 +48,12 @@ function getMultiLangField(
   parsedValues: ParsedValues,
   fieldName: string,
 ) {
-  const fieldMultiLang = fields.filter(
-    ({ schemaName, locale }) =>
-      schemaName === fieldName && langs.includes(locale),
-  );
+  const fieldMultiLang = fields
+    .filter(
+      ({ schemaName, locale }) =>
+        schemaName === fieldName && langs.includes(locale),
+    )
+    .map(({ localizedSchemaName }) => localizedSchemaName);
 
   return pick(parsedValues, fieldMultiLang);
 }
