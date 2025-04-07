@@ -1,7 +1,10 @@
 import Papa from 'papaparse';
+import { pick } from 'lodash';
 import languesRegionales from '@ban-team/shared-data/langues-regionales.json';
 import { FieldType, PrevalidateType, ValidateRowType } from './validate.type';
 import { ParsedValues } from '../schema/shema.type';
+
+const langs = languesRegionales.map(({ code }) => code);
 
 function getIdsBan(
   fields: FieldType[],
@@ -37,13 +40,18 @@ function getIdsBan(
   return {};
 }
 
-// function getMultiLangField(parsedValues: ParsedValues, fieldName: string) {
-//   return Object.fromEntries(
-//     Object.entries(parsedValues).filter(([key]) =>
-//       languesRegionales.some(({ code }) => key === `${fieldName}_${code}`),
-//     ),
-//   );
-// }
+function getMultiLangField(
+  fields: FieldType[],
+  parsedValues: ParsedValues,
+  fieldName: string,
+) {
+  const fieldMultiLang = fields.filter(
+    ({ schemaName, locale }) =>
+      schemaName === fieldName && langs.includes(locale),
+  );
+
+  return pick(parsedValues, fieldMultiLang);
+}
 
 function getCsvRow(
   fields: FieldType[],
@@ -54,19 +62,19 @@ function getCsvRow(
     cle_interop: remediations.cle_interop || parsedValues.cle_interop,
     commune_insee: remediations.commune_insee || parsedValues.commune_insee,
     commune_nom: remediations.commune_nom || parsedValues.commune_nom,
-    // ...getMultiLangField(parsedValues, 'commune_nom'),
+    ...getMultiLangField(fields, parsedValues, 'commune_nom'),
     commune_deleguee_insee:
       remediations.commune_deleguee_insee ||
       parsedValues.commune_deleguee_insee,
     commune_deleguee_nom:
       remediations.commune_deleguee_nom || parsedValues.commune_deleguee_nom,
-    // ...getMultiLangField(parsedValues, 'commune_deleguee_nom'),
+    ...getMultiLangField(fields, parsedValues, 'commune_deleguee_nom'),
     voie_nom: remediations.voie_nom || parsedValues.voie_nom,
-    // ...getMultiLangField(parsedValues, 'voie_nom'),
+    ...getMultiLangField(fields, parsedValues, 'voie_nom'),
     lieudit_complement_nom:
       remediations.lieudit_complement_nom ||
       parsedValues.lieudit_complement_nom,
-    // ...getMultiLangField(parsedValues, 'lieudit_complement_nom'),
+    ...getMultiLangField(fields, parsedValues, 'lieudit_complement_nom'),
     numero: remediations.numero || parsedValues.numero,
     suffixe: remediations.suffixe || parsedValues.suffixe,
     position: remediations.position || parsedValues.position,
