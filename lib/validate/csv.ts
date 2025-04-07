@@ -10,32 +10,35 @@ function getIdsBan(
   fields: FieldType[],
   parsedValues: ParsedValues,
   remediations: ParsedValues,
+  additionalValues: Record<string, any>,
 ) {
   if (
     fields.some(({ schemaName }) => schemaName === 'id_ban_commune') ||
     fields.some(({ schemaName }) => schemaName === 'id_ban_toponyme') ||
     fields.some(({ schemaName }) => schemaName === 'id_ban_adresse')
   ) {
+    const idBanCommune =
+      remediations.id_ban_commune || parsedValues.id_ban_commune;
+    const idBanToponyme =
+      remediations.id_ban_toponyme || parsedValues.id_ban_toponyme;
+    const idBanAdresse =
+      remediations.id_ban_adresse || parsedValues.id_ban_adresse;
     return {
-      id_ban_commune:
-        remediations.id_ban_commune || parsedValues.id_ban_commune,
-      id_ban_toponyme:
-        remediations.id_ban_toponyme || parsedValues.id_ban_toponyme,
-      id_ban_adresse:
-        remediations.id_ban_adresse || parsedValues.id_ban_adresse,
+      id_ban_commune: idBanCommune,
+      id_ban_toponyme: idBanToponyme,
+      id_ban_adresse: idBanAdresse,
     };
   } else if (fields.some(({ schemaName }) => schemaName === 'uid_adresse')) {
-    let uid_adresse = parsedValues.uid_adresse;
-    if (remediations.id_ban_commune) {
-      uid_adresse = uid_adresse.concat(` @c:${remediations.id_ban_commune} `);
-    }
-    if (remediations.id_ban_toponyme) {
-      uid_adresse = uid_adresse.concat(` @v:${remediations.id_ban_commune} `);
-    }
-    if (remediations.id_ban_adresse) {
-      uid_adresse = uid_adresse.concat(` @a:${remediations.id_ban_commune} `);
-    }
-    return { uid_adresse };
+    const idBanCommune =
+      remediations.id_ban_commune || additionalValues.uid_adresse.idBanCommune;
+    const idBanToponyme =
+      remediations.id_ban_toponyme ||
+      additionalValues.uid_adresse.idBanToponyme;
+    const idBanAdresse =
+      remediations.id_ban_adresse || additionalValues.uid_adresse.idBanAdresse;
+    return {
+      uid_adresse: `@c:${idBanCommune} @v:${idBanToponyme} @a:${idBanAdresse}`,
+    };
   }
   return {};
 }
@@ -55,10 +58,10 @@ function getMultiLangField(
 
 function getCsvRow(
   fields: FieldType[],
-  { parsedValues, remediations }: ValidateRowType,
+  { parsedValues, remediations, additionalValues }: ValidateRowType,
 ): ParsedValues {
   return {
-    ...getIdsBan(fields, parsedValues, remediations),
+    ...getIdsBan(fields, parsedValues, remediations, additionalValues),
     cle_interop: remediations.cle_interop || parsedValues.cle_interop,
     commune_insee: remediations.commune_insee || parsedValues.commune_insee,
     commune_nom: remediations.commune_nom || parsedValues.commune_nom,
