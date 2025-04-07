@@ -15,29 +15,25 @@ function getIdsBan(
   if (
     fields.some(({ schemaName }) => schemaName === 'id_ban_commune') ||
     fields.some(({ schemaName }) => schemaName === 'id_ban_toponyme') ||
-    fields.some(({ schemaName }) => schemaName === 'id_ban_adresse')
+    fields.some(({ schemaName }) => schemaName === 'id_ban_adresse') ||
+    fields.some(({ schemaName }) => schemaName === 'uid_adresse')
   ) {
     const idBanCommune =
-      remediations.id_ban_commune || parsedValues.id_ban_commune;
+      remediations.id_ban_commune ||
+      parsedValues.id_ban_commune ||
+      additionalValues.uid_adresse.idBanCommune;
     const idBanToponyme =
-      remediations.id_ban_toponyme || parsedValues.id_ban_toponyme;
+      remediations.id_ban_toponyme ||
+      parsedValues.id_ban_toponyme ||
+      additionalValues.uid_adresse.idBanToponyme;
     const idBanAdresse =
-      remediations.id_ban_adresse || parsedValues.id_ban_adresse;
+      remediations.id_ban_adresse ||
+      parsedValues.id_ban_adresse ||
+      additionalValues.uid_adresse.idBanAdresse;
     return {
       id_ban_commune: idBanCommune,
       id_ban_toponyme: idBanToponyme,
       id_ban_adresse: idBanAdresse,
-    };
-  } else if (fields.some(({ schemaName }) => schemaName === 'uid_adresse')) {
-    const idBanCommune =
-      remediations.id_ban_commune || additionalValues.uid_adresse.idBanCommune;
-    const idBanToponyme =
-      remediations.id_ban_toponyme ||
-      additionalValues.uid_adresse.idBanToponyme;
-    const idBanAdresse =
-      remediations.id_ban_adresse || additionalValues.uid_adresse.idBanAdresse;
-    return {
-      uid_adresse: `@c:${idBanCommune} @v:${idBanToponyme} @a:${idBanAdresse}`,
     };
   }
   return {};
