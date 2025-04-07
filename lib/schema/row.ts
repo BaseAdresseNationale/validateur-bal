@@ -7,7 +7,7 @@ import { ParsedValue } from './shema.type';
 function getCodeCommune(row: ValidateRowType) {
   return (
     row.parsedValues.commune_insee ||
-    row.additionalValues.cle_interop.codeCommune
+    row.additionalValues?.cle_interop?.codeCommune
   );
 }
 
@@ -130,9 +130,9 @@ function validateBanIds(
     addRemeditation: (field: string, value: ParsedValue) => void;
   },
   {
-    indexCommuneBanIds,
+    mapCodeCommuneBanIds,
   }: {
-    indexCommuneBanIds: Record<string, string>;
+    mapCodeCommuneBanIds: Record<string, string>;
   },
 ) {
   const idBanCommune =
@@ -150,7 +150,7 @@ function validateBanIds(
     let isLackOfIdBan = false;
     if (!idBanCommune) {
       const codeCommune = getCodeCommune(row);
-      addRemeditation('id_ban_commune', indexCommuneBanIds[codeCommune]);
+      addRemeditation('id_ban_commune', mapCodeCommuneBanIds[codeCommune]);
       isLackOfIdBan = true;
     }
     if (!idBanToponyme) {
@@ -164,6 +164,11 @@ function validateBanIds(
     if (isLackOfIdBan) {
       addError('lack_of_id_ban');
     }
+  } else {
+    const codeCommune = getCodeCommune(row);
+    addRemeditation('id_ban_commune', mapCodeCommuneBanIds[codeCommune]);
+    addRemeditation('id_ban_toponyme', uuid());
+    addRemeditation('id_ban_adresse', uuid());
   }
 }
 
@@ -177,9 +182,9 @@ function validateRow(
     addRemeditation: (field: string, value: ParsedValue) => void;
   },
   {
-    indexCommuneBanIds,
+    mapCodeCommuneBanIds,
   }: {
-    indexCommuneBanIds: Record<string, string>;
+    mapCodeCommuneBanIds: Record<string, string>;
   },
 ) {
   validateCleInterop(row, { addError });
@@ -187,7 +192,7 @@ function validateRow(
   validateCoords(row, { addError });
   validateMinimalAdress(row, { addError });
   validateCommuneDelegueeInsee(row, { addError });
-  validateBanIds(row, { addError, addRemeditation }, { indexCommuneBanIds });
+  validateBanIds(row, { addError, addRemeditation }, { mapCodeCommuneBanIds });
 }
 
 export default validateRow;

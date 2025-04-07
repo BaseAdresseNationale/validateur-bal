@@ -155,6 +155,8 @@ describe('VALIDATE 1.4 TEST', () => {
     );
     expect(error.length).toBe(1);
     expect(error[0].level).toBe(ErrorLevelEnum.ERROR);
+    // CHECK REMEDIATION
+    expect(report.rows[0].remediations).toHaveProperty('id_ban_commune');
   });
 
   test('Warning adresses_required_id_ban (file 1.4) with profile relax', async () => {
@@ -170,6 +172,8 @@ describe('VALIDATE 1.4 TEST', () => {
     );
     expect(error.length).toBe(1);
     expect(error[0].level).toBe(ErrorLevelEnum.ERROR);
+    // CHECK REMEDIATION
+    expect(report.rows[0].remediations).toHaveProperty('id_ban_adresse');
   });
 
   test('ERROR adresses_required_id_ban (file 1.4)', async () => {
@@ -185,6 +189,8 @@ describe('VALIDATE 1.4 TEST', () => {
     );
     expect(error.length).toBe(1);
     expect(error[0].level).toBe(ErrorLevelEnum.ERROR);
+    // CHECK REMEDIATION
+    expect(report.rows[0].remediations).toHaveProperty('id_ban_adresse');
   });
 
   test('Valid file 1.4 with ids ban empty', async () => {
@@ -196,6 +202,12 @@ describe('VALIDATE 1.4 TEST', () => {
     const error = report.profilErrors.filter(
       (e) => e.level === ErrorLevelEnum.ERROR,
     );
+    // CHECK REMEDIATION
+    for (const row of report.rows) {
+      expect(row.remediations).toHaveProperty('id_ban_commune');
+      expect(row.remediations).toHaveProperty('id_ban_toponyme');
+      expect(row.remediations).toHaveProperty('id_ban_adresse');
+    }
     expect(error.length).toBe(0);
   });
 
@@ -276,6 +288,8 @@ describe('VALIDATE 1.4 TEST', () => {
     );
     expect(error.length).toBe(1);
     expect(error[0].level).toBe(ErrorLevelEnum.ERROR);
+    // CHECK REMEDIATION
+    expect(report.rows[0].remediations).toHaveProperty('id_ban_commune');
   });
 
   test('Error cog_no_match_id_ban_commune', async () => {

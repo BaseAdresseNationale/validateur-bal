@@ -8,14 +8,14 @@ import { ParsedValues, ParsedValue, ReadValueType } from '../schema/shema.type';
 const BAN_API_URL =
   process.env.BAN_API_URL || 'https://plateforme.adresse.data.gouv.fr';
 
-type DistrictBanRsponse = {
+type DistrictBanResponse = {
   status: 'success' | 'error';
   response: { id: string }[];
 };
 
 export async function getCommuneBanIdByCodeCommune(
   codeCommune: string,
-): Promise<DistrictBanRsponse> {
+): Promise<DistrictBanResponse> {
   const response = await fetch(
     `${BAN_API_URL}/api/district/cog/${codeCommune}`,
   );
@@ -62,14 +62,14 @@ export async function computeRows(
     globalErrors: Set<string>;
   },
 ): Promise<ValidateRowType[]> {
-  const indexCommuneBanIds = await getCommuneBanIds(parsedRows);
+  const mapCodeCommuneBanIds = await getCommuneBanIds(parsedRows);
   const indexedFields: Record<string, FieldType> = keyBy(fields, 'name');
   const computedRows: ValidateRowType[] = await bluebird.map(
     parsedRows,
     async (parsedRow: Record<string, string>, line: number) => {
       const computedRow: ValidateRowType = validateRow(parsedRow, {
         indexedFields,
-        indexCommuneBanIds,
+        mapCodeCommuneBanIds,
         line,
       });
       for (const e of computedRow.errors) {
@@ -88,7 +88,7 @@ export async function computeRows(
         globalErrors.add(code);
       },
     },
-    { communeBanIds: Object.values(indexCommuneBanIds) },
+    { communeBanIds: Object.values(mapCodeCommuneBanIds) },
   );
 
   return computedRows;
@@ -137,11 +137,11 @@ export function validateRow(
   row: Record<string, string>,
   {
     indexedFields,
-    indexCommuneBanIds,
+    mapCodeCommuneBanIds,
     line,
   }: {
     indexedFields: Record<string, FieldType>;
-    indexCommuneBanIds: Record<string, string>;
+    mapCodeCommuneBanIds: Record<string, string>;
     line: number;
   },
 ): ValidateRowType {
@@ -211,7 +211,7 @@ export function validateRow(
       },
     },
     {
-      indexCommuneBanIds,
+      mapCodeCommuneBanIds,
     },
   );
 
