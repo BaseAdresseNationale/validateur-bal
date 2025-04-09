@@ -60,7 +60,7 @@ function getMapNameVoieBanId(
   return chain(parsedRows)
     .keyBy(({ parsedValues }) => normalize(parsedValues.voie_nom))
     .map((row) => [
-      row.parsedValues.voie_nom,
+      normalize(row.parsedValues.voie_nom),
       row.parsedValues.id_ban_toponyme ||
         row.additionalValues?.uid_adresse?.idBanToponyme ||
         uuid(),
@@ -91,7 +91,6 @@ function remediationBanIds(
   },
 ) {
   const codeCommune = getCodeCommune(row);
-
   if (!idBanCommune) {
     row.remediations.id_ban_commune = mapCodeCommuneBanId[codeCommune];
   }
@@ -170,7 +169,7 @@ async function validateRows(
   },
 ) {
   validateRowsEmpty(rows, { addError });
-  validateUseBanIds(rows, { addError });
+  await validateUseBanIds(rows, { addError });
 }
 
 export default validateRows;
