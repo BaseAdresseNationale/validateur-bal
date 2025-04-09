@@ -1,9 +1,11 @@
 import { join } from 'path';
 import fs from 'fs';
 import { promisify } from 'util';
-
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
 import { validate } from '..';
 import { ValidateType } from '../validate.type';
+
+enableFetchMocks();
 
 const readFile = promisify(fs.readFile);
 
@@ -13,6 +15,15 @@ function readAsBuffer(relativePath) {
 }
 
 describe('VALIDATE TEST', () => {
+  beforeEach(() => {
+    fetchMock.doMock(async () => {
+      return JSON.stringify({
+        status: 'success',
+        response: [{ id: '0246e48c-f33d-433a-8984-034219be842e' }],
+      });
+    });
+  });
+
   it('validate a file', async () => {
     const buffer = await readAsBuffer('sample.csv');
     const report = await validate(buffer);

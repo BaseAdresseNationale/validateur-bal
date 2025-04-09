@@ -2,6 +2,13 @@ import proj from '@etalab/project-legal';
 import { getCommuneActuelle } from '../utils/cog';
 import { ValidateRowType } from '../validate/validate.type';
 
+export function getCodeCommune(row: ValidateRowType) {
+  return (
+    row.parsedValues.commune_insee ||
+    row.additionalValues?.cle_interop?.codeCommune
+  );
+}
+
 function validateCleInterop(
   row: ValidateRowType,
   { addError }: { addError: (code: string) => void },
@@ -99,7 +106,7 @@ function validateCommuneDelegueeInsee(
     row.parsedValues.commune_deleguee_insee &&
     row.parsedValues.commune_insee
   ) {
-    const codeCommune = row.parsedValues.commune_insee;
+    const codeCommune = getCodeCommune(row);
     const codeAncienneCommune = row.parsedValues.commune_deleguee_insee;
     const codeCommuneActuelle = getCommuneActuelle(
       codeAncienneCommune as string,
@@ -113,7 +120,11 @@ function validateCommuneDelegueeInsee(
 
 function validateBanIds(
   row: ValidateRowType,
-  { addError }: { addError: (code: string) => void },
+  {
+    addError,
+  }: {
+    addError: (code: string) => void;
+  },
 ) {
   const idBanCommune =
     row.parsedValues.id_ban_commune ||
@@ -129,9 +140,11 @@ function validateBanIds(
   if (idBanCommune || idBanToponyme || idBanAdresse) {
     if (!idBanCommune) {
       addError('lack_of_id_ban');
-    } else if (!idBanToponyme) {
+    }
+    if (!idBanToponyme) {
       addError('lack_of_id_ban');
-    } else if (!idBanAdresse && row.parsedValues.numero !== 99_999) {
+    }
+    if (!idBanAdresse && row.parsedValues.numero !== 99_999) {
       addError('lack_of_id_ban');
     }
   }
@@ -139,7 +152,11 @@ function validateBanIds(
 
 function validateRow(
   row: ValidateRowType,
-  { addError }: { addError: (code: string) => void },
+  {
+    addError,
+  }: {
+    addError: (code: string) => void;
+  },
 ) {
   validateCleInterop(row, { addError });
   validatePositionType(row, { addError });
