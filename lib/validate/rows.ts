@@ -3,52 +3,7 @@ import { keyBy } from 'lodash';
 import Schema from '../schema';
 import { FieldsSchema } from '../schema/fields';
 import { ErrorType, FieldType, ValidateRowType } from './validate.type';
-import { ParsedValues, ParsedValue, ReadValueType } from '../schema/shema.type';
-
-const BAN_API_URL =
-  process.env.BAN_API_URL || 'https://plateforme.adresse.data.gouv.fr';
-
-type DistrictBanResponse = {
-  status: 'success' | 'error';
-  response: { id: string }[];
-};
-
-export async function getCommuneBanIdByCodeCommune(
-  codeCommune: string,
-): Promise<DistrictBanResponse> {
-  const response = await fetch(
-    `${BAN_API_URL}/api/district/cog/${codeCommune}`,
-  );
-  if (!response.ok) {
-    const body = await response.json();
-    throw new Error(body.message);
-  }
-
-  return response.json();
-}
-
-export async function getCommuneBanIds(
-  parsedRows: Record<string, string>[],
-): Promise<Record<string, string>> {
-  const codeCommunes = new Set<string>();
-  const indexCommuneBanIds: Record<string, string> = {};
-
-  for (const r of parsedRows) {
-    if (r.commune_insee) {
-      codeCommunes.add(r.commune_insee);
-    } else if (r.cle_interop) {
-      const [codeCommune] = r.cle_interop.split('_');
-      codeCommunes.add(codeCommune);
-    }
-  }
-  for (const codeCommune of Array.from(codeCommunes)) {
-    const res = await getCommuneBanIdByCodeCommune(codeCommune);
-    if (res.status == 'success' && res.response) {
-      indexCommuneBanIds[codeCommune] = res.response[0].id;
-    }
-  }
-  return indexCommuneBanIds;
-}
+import { ParsedValues, ReadValueType } from '../schema/shema.type';
 
 export async function computeRows(
   parsedRows: Record<string, string>[],
@@ -62,14 +17,12 @@ export async function computeRows(
     globalErrors: Set<string>;
   },
 ): Promise<ValidateRowType[]> {
-  const mapCodeCommuneBanIds = await getCommuneBanIds(parsedRows);
   const indexedFields: Record<string, FieldType> = keyBy(fields, 'name');
   const computedRows: ValidateRowType[] = await bluebird.map(
     parsedRows,
     async (parsedRow: Record<string, string>, line: number) => {
       const computedRow: ValidateRowType = validateRow(parsedRow, {
         indexedFields,
-        mapCodeCommuneBanIds,
         line,
       });
       for (const e of computedRow.errors) {
@@ -81,15 +34,11 @@ export async function computeRows(
     { concurrency: 4 },
   );
 
-  Schema.rows(
-    computedRows,
-    {
-      addError(code: string) {
-        globalErrors.add(code);
-      },
+  await Schema.rows(computedRows, {
+    addError(code: string) {
+      globalErrors.add(code);
     },
-    { communeBanIds: Object.values(mapCodeCommuneBanIds) },
-  );
+  });
 
   return computedRows;
 }
@@ -137,11 +86,9 @@ export function validateRow(
   row: Record<string, string>,
   {
     indexedFields,
-    mapCodeCommuneBanIds,
     line,
   }: {
     indexedFields: Record<string, FieldType>;
-    mapCodeCommuneBanIds: Record<string, string>;
     line: number;
   },
 ): ValidateRowType {
@@ -200,20 +147,11 @@ export function validateRow(
     line,
   };
 
-  Schema.row(
-    validateRow,
-    {
-      addError(code: string) {
-        errors.push({ code: `row.${code}` });
-      },
-      addRemeditation(field: string, value: ParsedValue) {
-        remediations[field] = value;
-      },
+  Schema.row(validateRow, {
+    addError(code: string) {
+      errors.push({ code: `row.${code}` });
     },
-    {
-      mapCodeCommuneBanIds,
-    },
-  );
+  });
 
   return validateRow;
 }
