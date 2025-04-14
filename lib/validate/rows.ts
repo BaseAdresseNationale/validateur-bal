@@ -34,7 +34,7 @@ export async function computeRows(
     { concurrency: 4 },
   );
 
-  Schema.rows(computedRows, {
+  await Schema.rows(computedRows, {
     addError(code: string) {
       globalErrors.add(code);
     },
@@ -87,10 +87,14 @@ export function validateRow(
   {
     indexedFields,
     line,
-  }: { indexedFields: Record<string, FieldType>; line: number },
+  }: {
+    indexedFields: Record<string, FieldType>;
+    line: number;
+  },
 ): ValidateRowType {
   const rawValues: Record<string, string> = {};
   const parsedValues: ParsedValues = {};
+  const remediations: ParsedValues = {};
   const additionalValues: Record<string, any> = {};
   const localizedValues: Record<string, any> = {};
   const errors: ErrorType[] = [];
@@ -136,6 +140,7 @@ export function validateRow(
   const validateRow: ValidateRowType = {
     rawValues,
     parsedValues,
+    remediations,
     additionalValues,
     localizedValues,
     errors,

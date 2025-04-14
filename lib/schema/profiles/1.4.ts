@@ -10,6 +10,7 @@ const errors: string[] = [
   'uid_adresse.type_invalide',
   'row.lack_of_id_ban',
   'rows.multi_id_ban_commune',
+  'rows.cog_no_match_id_ban_commune',
   'rows.every_line_required_id_ban',
 ];
 

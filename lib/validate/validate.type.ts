@@ -14,6 +14,7 @@ export type ErrorType = {
 export type ValidateRowType = {
   rawValues: Record<string, string>;
   parsedValues: ParsedValues;
+  remediations: ParsedValues;
   additionalValues: Record<string, any>;
   localizedValues: Record<string, any>;
   errors: ErrorType[];
