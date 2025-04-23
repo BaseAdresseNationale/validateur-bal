@@ -103,6 +103,20 @@ function remediationBanIds(
   }
 }
 
+function getBanIdsFromRow(row: ValidateRowType) {
+  return {
+    idBanCommune:
+      row.parsedValues.id_ban_commune ||
+      row.additionalValues?.uid_adresse?.idBanCommune,
+    idBanToponyme:
+      row.parsedValues.id_ban_toponyme ||
+      row.additionalValues?.uid_adresse?.idBanToponyme,
+    idBanAdresse:
+      row.parsedValues.id_ban_adresse ||
+      row.additionalValues?.uid_adresse?.idBanAdresse,
+  };
+}
+
 async function validateUseBanIds(
   rows: ValidateRowType[],
   {
@@ -117,15 +131,7 @@ async function validateUseBanIds(
   let balAdresseUseBanId = 0;
 
   for (const row of rows) {
-    const idBanCommune =
-      row.parsedValues.id_ban_commune ||
-      row.additionalValues?.uid_adresse?.idBanCommune;
-    const idBanToponyme =
-      row.parsedValues.id_ban_toponyme ||
-      row.additionalValues?.uid_adresse?.idBanToponyme;
-    const idBanAdresse =
-      row.parsedValues.id_ban_adresse ||
-      row.additionalValues?.uid_adresse?.idBanAdresse;
+    const { idBanCommune, idBanToponyme, idBanAdresse } = getBanIdsFromRow(row);
     const numero = row.parsedValues.numero;
 
     if (
@@ -135,12 +141,13 @@ async function validateUseBanIds(
     ) {
       balAdresseUseBanId++;
       districtIDs.add(idBanCommune);
+    } else {
+      remediationBanIds(
+        row,
+        { idBanCommune, idBanToponyme, idBanAdresse },
+        { mapCodeCommuneBanId, mapNomVoieBanId },
+      );
     }
-    remediationBanIds(
-      row,
-      { idBanCommune, idBanToponyme, idBanAdresse },
-      { mapCodeCommuneBanId, mapNomVoieBanId },
-    );
   }
   if (balAdresseUseBanId === rows.length) {
     // Check district IDs consistency

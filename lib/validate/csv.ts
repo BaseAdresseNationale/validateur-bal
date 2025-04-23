@@ -14,15 +14,15 @@ function getIdsBan(
   const idBanCommune =
     remediations.id_ban_commune ||
     parsedValues.id_ban_commune ||
-    additionalValues.uid_adresse.idBanCommune;
+    additionalValues?.uid_adresse?.idBanToponyme;
   const idBanToponyme =
     remediations.id_ban_toponyme ||
     parsedValues.id_ban_toponyme ||
-    additionalValues.uid_adresse.idBanToponyme;
+    additionalValues?.uid_adresse?.idBanToponyme;
   const idBanAdresse =
     remediations.id_ban_adresse ||
     parsedValues.id_ban_adresse ||
-    additionalValues.uid_adresse.idBanAdresse;
+    additionalValues?.uid_adresse?.idBanToponyme;
   return {
     id_ban_commune: idBanCommune,
     id_ban_toponyme: idBanToponyme,
