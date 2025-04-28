@@ -1,4 +1,4 @@
-import { validate, prevalidate } from './validate';
+import { validate, prevalidate, autofix } from './validate';
 import { validateProfile } from './validate/profiles';
 import { readValue } from './validate/rows';
 import { getErrorLevel, getLabel, ErrorLevelEnum } from './utils/helpers';
@@ -8,6 +8,7 @@ import { PositionTypeEnum } from './schema/shema.type';
 export {
   validate,
   validateProfile,
+  autofix,
   prevalidate,
   getLabel,
   readValue,

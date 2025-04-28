@@ -16,11 +16,12 @@ import {
   ValidateRowType,
 } from './validate.type';
 import { ParseFileType } from './parse/parse.type';
+import { exportCsvBALWithReport } from './csv';
 
 export async function prevalidate(
   file: Buffer,
-  format: string,
-  relaxFieldsDetection: boolean,
+  format: string = '1.4',
+  relaxFieldsDetection: boolean = false,
 ): Promise<ParseFileType | PrevalidateType> {
   const globalErrors = new Set<string>();
   const rowsErrors = new Set<string>();
@@ -122,4 +123,15 @@ export async function validate(
   }
 
   return validateProfile(prevalidateResult as PrevalidateType, profile);
+}
+
+export async function autofix(file: Buffer): Promise<Buffer> {
+  const prevalidateResult: PrevalidateType | ParseFileType =
+    await prevalidate(file);
+
+  if (!prevalidateResult.parseOk) {
+    return null;
+  }
+
+  return exportCsvBALWithReport(prevalidateResult as PrevalidateType);
 }

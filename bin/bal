@@ -1,19 +1,16 @@
 #!/usr/bin/env node
 /* eslint no-unused-expressions: off */
 
-const yargs = require("yargs");
+const yargs = require('yargs');
 
 yargs
-  .usage("Utilisation: $0 <command>")
-  .commandDir("../dist/commands")
-  .example(
-    "$0 validate xxxxxx_bal_xxxxxxxxx.csv",
-    "Validation d’un fichier BAL"
-  )
+  .usage('Utilisation: $0 <command>')
+  .commandDir('../dist/commands')
+  .example('$0 validate file.csv', 'Valider un fichier BAL')
   .help()
-  .demandCommand(1, "Vous devez utiliser une des commandes disponibles.").argv;
+  .demandCommand(1, 'Vous devez utiliser une des commandes disponibles.').argv;
 
-process.on("unhandledRejection", (reason, p) => {
-  console.log("Unhandled Rejection at:", p, "reason:", reason);
+process.on('unhandledRejection', (reason, p) => {
+  console.log('Unhandled Rejection at:', p, 'reason:', reason);
   process.exit(1);
 });

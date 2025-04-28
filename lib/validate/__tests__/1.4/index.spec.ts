@@ -1,9 +1,12 @@
 import { join } from 'path';
 import fs from 'fs';
 import { promisify } from 'util';
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
 import { validate } from '../../index';
 import { ValidateType } from '../../validate.type';
 import { ErrorLevelEnum } from '../../../utils/helpers';
+
+enableFetchMocks();
 
 const readFile = promisify(fs.readFile);
 
@@ -13,6 +16,15 @@ function readAsBuffer(relativePath) {
 }
 
 describe('VALIDATE 1.4 TEST', () => {
+  beforeEach(() => {
+    fetchMock.doMock(async () => {
+      return JSON.stringify({
+        status: 'success',
+        response: [{ id: '0246e48c-f33d-433a-8984-034219be842e' }],
+      });
+    });
+  });
+
   test('Valid file 1.3', async () => {
     const buffer = await readAsBuffer('1.3-valid.csv');
     const report = (await validate(buffer, {
@@ -20,7 +32,6 @@ describe('VALIDATE 1.4 TEST', () => {
     })) as ValidateType;
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
-
     expect(report.profilesValidation['1.4'].isValid).toBe(true);
   });
 
@@ -39,7 +50,6 @@ describe('VALIDATE 1.4 TEST', () => {
     const report = (await validate(buffer, {
       relaxFieldsDetection: true,
     })) as ValidateType;
-
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
@@ -51,7 +61,6 @@ describe('VALIDATE 1.4 TEST', () => {
       profile: '1.4',
       relaxFieldsDetection: true,
     })) as ValidateType;
-
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
@@ -63,7 +72,6 @@ describe('VALIDATE 1.4 TEST', () => {
       profile: '1.4',
       relaxFieldsDetection: false,
     })) as ValidateType;
-
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
@@ -74,7 +82,6 @@ describe('VALIDATE 1.4 TEST', () => {
     const report = (await validate(buffer, {
       profile: '1.4',
     })) as ValidateType;
-
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
@@ -85,11 +92,9 @@ describe('VALIDATE 1.4 TEST', () => {
     const report = (await validate(buffer, {
       profile: '1.4',
     })) as ValidateType;
-
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
-
     const error = report.profilErrors.filter(
       (e) => e.code === 'id_ban_adresse.type_invalide',
     );
@@ -102,11 +107,9 @@ describe('VALIDATE 1.4 TEST', () => {
     const report = (await validate(buffer, {
       profile: '1.4',
     })) as ValidateType;
-
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
-
     const error = report.profilErrors.filter(
       (e) => e.code === 'id_ban_commune.type_invalide',
     );
@@ -119,11 +122,9 @@ describe('VALIDATE 1.4 TEST', () => {
     const report = (await validate(buffer, {
       profile: '1.4',
     })) as ValidateType;
-
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
-
     const error = report.profilErrors.filter(
       (e) => e.code === 'id_ban_toponyme.type_invalide',
     );
@@ -136,7 +137,6 @@ describe('VALIDATE 1.4 TEST', () => {
     const report = (await validate(buffer, {
       profile: '1.4',
     })) as ValidateType;
-
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
@@ -147,16 +147,16 @@ describe('VALIDATE 1.4 TEST', () => {
     const report = (await validate(buffer, {
       profile: '1.4',
     })) as ValidateType;
-
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
-
     const error = report.profilErrors.filter(
       (e) => e.code === 'row.lack_of_id_ban',
     );
     expect(error.length).toBe(1);
     expect(error[0].level).toBe(ErrorLevelEnum.ERROR);
+    // CHECK REMEDIATION
+    expect(report.rows[0].remediations).toHaveProperty('id_ban_commune');
   });
 
   test('Warning adresses_required_id_ban (file 1.4) with profile relax', async () => {
@@ -164,16 +164,16 @@ describe('VALIDATE 1.4 TEST', () => {
     const report = (await validate(buffer, {
       profile: '1.4',
     })) as ValidateType;
-
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
-
     const error = report.profilErrors.filter(
       (e) => e.code === 'row.lack_of_id_ban',
     );
     expect(error.length).toBe(1);
     expect(error[0].level).toBe(ErrorLevelEnum.ERROR);
+    // CHECK REMEDIATION
+    expect(report.rows[0].remediations).toHaveProperty('id_ban_adresse');
   });
 
   test('ERROR adresses_required_id_ban (file 1.4)', async () => {
@@ -181,16 +181,16 @@ describe('VALIDATE 1.4 TEST', () => {
     const report = (await validate(buffer, {
       profile: '1.4',
     })) as ValidateType;
-
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
-
     const error = report.profilErrors.filter(
       (e) => e.code === 'row.lack_of_id_ban',
     );
     expect(error.length).toBe(1);
     expect(error[0].level).toBe(ErrorLevelEnum.ERROR);
+    // CHECK REMEDIATION
+    expect(report.rows[0].remediations).toHaveProperty('id_ban_adresse');
   });
 
   test('Valid file 1.4 with ids ban empty', async () => {
@@ -198,12 +198,16 @@ describe('VALIDATE 1.4 TEST', () => {
     const report = (await validate(buffer, {
       profile: '1.4',
     })) as ValidateType;
-
     expect(report.profilesValidation['1.4'].isValid).toBe(true);
-
     const error = report.profilErrors.filter(
       (e) => e.level === ErrorLevelEnum.ERROR,
     );
+    // CHECK REMEDIATION
+    for (const row of report.rows) {
+      expect(row.remediations).toHaveProperty('id_ban_commune');
+      expect(row.remediations).toHaveProperty('id_ban_toponyme');
+      expect(row.remediations).toHaveProperty('id_ban_adresse');
+    }
     expect(error.length).toBe(0);
   });
 
@@ -212,11 +216,9 @@ describe('VALIDATE 1.4 TEST', () => {
     const report = (await validate(buffer, {
       profile: '1.4',
     })) as ValidateType;
-
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
-
     const error = report.profilErrors.filter(
       (e) => e.code === 'rows.every_line_required_id_ban',
     );
@@ -229,11 +231,9 @@ describe('VALIDATE 1.4 TEST', () => {
     const report = (await validate(buffer, {
       profile: '1.4',
     })) as ValidateType;
-
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
-
     const error = report.profilErrors.filter(
       (e) => e.code === 'rows.every_line_required_id_ban',
     );
@@ -265,11 +265,9 @@ describe('VALIDATE 1.4 TEST', () => {
     const report = (await validate(buffer, {
       profile: '1.4',
     })) as ValidateType;
-
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
-
     const error = report.profilErrors.filter(
       (e) => e.code === 'uid_adresse.type_invalide',
     );
@@ -282,13 +280,28 @@ describe('VALIDATE 1.4 TEST', () => {
     const report = (await validate(buffer, {
       profile: '1.4',
     })) as ValidateType;
-
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
-
     const error = report.profilErrors.filter(
       (e) => e.code === 'row.lack_of_id_ban',
+    );
+    expect(error.length).toBe(1);
+    expect(error[0].level).toBe(ErrorLevelEnum.ERROR);
+    // CHECK REMEDIATION
+    expect(report.rows[0].remediations).toHaveProperty('id_ban_commune');
+  });
+
+  test('Error cog_no_match_id_ban_commune', async () => {
+    const buffer = await readAsBuffer('1.4-cog-no-match-id_ban_commune.csv');
+    const report = (await validate(buffer, {
+      profile: '1.4',
+    })) as ValidateType;
+    expect(report.encoding).toBe('utf-8');
+    expect(report.parseOk).toBe(true);
+    expect(report.profilesValidation['1.4'].isValid).toBe(false);
+    const error = report.profilErrors.filter(
+      (e) => e.code === 'rows.cog_no_match_id_ban_commune',
     );
     expect(error.length).toBe(1);
     expect(error[0].level).toBe(ErrorLevelEnum.ERROR);

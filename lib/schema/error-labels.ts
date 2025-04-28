@@ -120,9 +120,12 @@ const errorLabels: Record<string, string> = {
   'row.lack_of_id_ban': 'Il y manque un ou plusieurs id ban',
   // ROWS LEVEL ERROR
   'rows.empty': 'Aucune ligne détecté',
-  'rows.multi_id_ban_commune': 'Il ne pas y avoir differents id_ban_commune',
+  'rows.multi_id_ban_commune':
+    'Il ne peut pas y avoir differents id_ban_commune',
+  'rows.cog_no_match_id_ban_commune':
+    'Le code_insee ne correspond pas au bon id_ban_commune',
   'rows.every_line_required_id_ban':
-    'Les ids ban sont requis pour toutes les lignes si ils sont utlisés',
+    'Les ids ban sont requis pour toutes les lignes si ils sont utilisés',
 };
 
 export default errorLabels;

@@ -4,7 +4,7 @@ import { validate, getLabel, ValidateType } from '../index';
 
 module.exports = {
   command: 'validate [options] <file>',
-  describe: 'Valider une base Adresse locale',
+  describe: 'Valider un fichier BAL',
   builder: {
     'relax-fields-detection': {
       type: 'boolean',
