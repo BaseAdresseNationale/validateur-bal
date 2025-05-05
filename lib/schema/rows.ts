@@ -60,7 +60,7 @@ function getMapNameVoieBanId(
   return chain(parsedRows)
     .keyBy(({ parsedValues }) => normalize(parsedValues.voie_nom))
     .map((row) => [
-      normalize(row.parsedValues.voie_nom),
+      `${normalize(row.parsedValues.voie_nom)}${row.parsedValues.commune_deleguee_insee}`,
       row.parsedValues.id_ban_toponyme ||
         row.additionalValues?.uid_adresse?.idBanToponyme ||
         uuid(),
@@ -96,7 +96,9 @@ function remediationBanIds(
   }
   if (!idBanToponyme) {
     row.remediations.id_ban_toponyme =
-      mapNomVoieBanId[normalize(row.parsedValues.voie_nom)];
+      mapNomVoieBanId[
+        `${normalize(row.parsedValues.voie_nom)}${row.parsedValues.commune_deleguee_insee}`
+      ];
   }
   if (!idBanAdresse && row.parsedValues.numero !== 99_999) {
     row.remediations.id_ban_adresse = uuid();
