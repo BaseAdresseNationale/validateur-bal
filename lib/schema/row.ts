@@ -1,6 +1,7 @@
 import proj from '@etalab/project-legal';
 import { getCommuneActuelle } from '../utils/cog';
 import { ValidateRowType } from '../validate/validate.type';
+import { ParsedValue } from './shema.type';
 
 export function getCodeCommune(row: ValidateRowType) {
   return (
@@ -11,7 +12,13 @@ export function getCodeCommune(row: ValidateRowType) {
 
 function validateCleInterop(
   row: ValidateRowType,
-  { addError }: { addError: (code: string) => void },
+  {
+    addError,
+    addRemediation,
+  }: {
+    addError: (code: string) => void;
+    addRemediation: (key: string, value: ParsedValue) => void;
+  },
 ) {
   if (row.parsedValues.cle_interop && row.parsedValues.numero) {
     const { numeroVoie } = row.additionalValues.cle_interop;
@@ -22,6 +29,15 @@ function validateCleInterop(
 
   if (!row.parsedValues.cle_interop && !row.parsedValues.commune_insee) {
     addError('commune_manquante');
+  } else if (
+    row.parsedValues.cle_interop &&
+    row.additionalValues?.cle_interop?.codeCommune &&
+    !row.parsedValues.commune_insee
+  ) {
+    addRemediation(
+      'commune_insee',
+      row.additionalValues?.cle_interop?.codeCommune,
+    );
   }
 }
 
@@ -154,11 +170,13 @@ function validateRow(
   row: ValidateRowType,
   {
     addError,
+    addRemediation,
   }: {
     addError: (code: string) => void;
+    addRemediation: (key: string, value: ParsedValue) => void;
   },
 ) {
-  validateCleInterop(row, { addError });
+  validateCleInterop(row, { addError, addRemediation });
   validatePositionType(row, { addError });
   validateCoords(row, { addError });
   validateMinimalAdress(row, { addError });
