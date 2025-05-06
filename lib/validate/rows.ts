@@ -51,6 +51,7 @@ export function readValue(fieldName: string, rawValue: string): ReadValueType {
   const result: ReadValueType = {
     parsedValue: undefined,
     additionalValues: undefined,
+    remediation: undefined,
     errors: [],
   };
 
@@ -73,6 +74,9 @@ export function readValue(fieldName: string, rawValue: string): ReadValueType {
       },
       addError(code) {
         result.errors.push(code);
+      },
+      setRemediation(value) {
+        result.remediation = value;
       },
     });
   } else {
@@ -122,6 +126,10 @@ export function validateRow(
 
     if (result.additionalValues) {
       additionalValues[normalizedFieldName] = result.additionalValues;
+    }
+
+    if (result.remediation) {
+      remediations[normalizedFieldName] = result.remediation;
     }
 
     if (result.parsedValue !== undefined) {

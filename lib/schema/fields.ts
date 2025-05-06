@@ -1,9 +1,9 @@
-import { format, parseISO } from 'date-fns';
 import { trim, trimStart, deburr } from 'lodash';
 
 import { isCommune, isCommuneAncienne, isCommuneDeleguee } from '../utils/cog';
 import { validate as isUuid } from 'uuid';
 import { ParsedValue, PositionTypeEnum } from './shema.type';
+import { date_der_maj } from './fields/date_der_maj.field';
 
 export type FieldsSchema = {
   trim: boolean;
@@ -15,9 +15,11 @@ export type FieldsSchema = {
     {
       addError,
       setAdditionnalValues,
+      setRemediation,
     }: {
       addError: (error: string) => void;
       setAdditionnalValues: (add: any) => void;
+      setRemediation: (remediation: ParsedValue) => void;
     },
   ) => ParsedValue;
 };
@@ -438,34 +440,7 @@ const fields: Record<string, FieldsSchema> = {
     trim: true,
   },
 
-  date_der_maj: {
-    required: true,
-    formats: ['1.1', '1.2', '1.3', '1.4'],
-    trim: true,
-    parse(v, { addError }) {
-      if (!/^(\d{4}-\d{2}-\d{2})$/.test(v)) {
-        addError('date_invalide');
-        return undefined;
-      }
-
-      const parsedDate = parseISO(v);
-      if (Number.isNaN(parsedDate.getTime())) {
-        addError('date_invalide');
-        return undefined;
-      }
-
-      if (parsedDate < new Date('2010-01-01')) {
-        addError('date_ancienne');
-      }
-
-      if (parsedDate > new Date()) {
-        addError('date_future');
-        return undefined;
-      }
-
-      return format(parsedDate, 'yyyy-MM-dd');
-    },
-  },
+  date_der_maj,
 
   certification_commune: {
     formats: ['1.3', '1.4'],
