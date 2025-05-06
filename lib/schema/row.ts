@@ -45,12 +45,13 @@ function validateCommuneInsee(
     );
     addRemediation(
       'commune_nom',
+      getCommune(row.additionalValues?.cle_interop?.codeCommune)?.nom,
+    );
+  } else if (!row.parsedValues.commune_nom) {
+    addRemediation(
+      'commune_nom',
       getCommune(row.parsedValues.commune_insee)?.nom,
     );
-  }
-
-  if (!row.parsedValues.commune_nom) {
-    addRemediation('commune_nom', row.parsedValues.commune_insee);
   }
 }
 
