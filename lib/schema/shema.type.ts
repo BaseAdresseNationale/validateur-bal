@@ -11,6 +11,7 @@ export type ReadValueType = {
   parsedValue: ParsedValue;
   additionalValues: any;
   errors: string[];
+  remediation: ParsedValue;
 };
 
 export enum PositionTypeEnum {

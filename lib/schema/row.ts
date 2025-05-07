@@ -1,4 +1,5 @@
 import proj from '@etalab/project-legal';
+import { format } from 'date-fns';
 import { getCommune } from '../utils/cog';
 import { ValidateRowType } from '../validate/validate.type';
 import { ParsedValue } from './shema.type';
@@ -180,6 +181,17 @@ function validateBanIds(
   }
 }
 
+function validateDateDerMaj(
+  row: ValidateRowType,
+  {
+    addRemediation,
+  }: { addRemediation: (key: string, value: ParsedValue) => void },
+) {
+  if (!row.parsedValues.date_der_maj && !row.remediations?.date_der_maj) {
+    addRemediation('date_der_maj', format(new Date(), 'yyyy-MM-dd'));
+  }
+}
+
 function validateRow(
   row: ValidateRowType,
   {
@@ -197,6 +209,7 @@ function validateRow(
   validateMinimalAdress(row, { addError });
   validateCommuneDelegueeInsee(row, { addError });
   validateBanIds(row, { addError });
+  validateDateDerMaj(row, { addRemediation });
 }
 
 export default validateRow;
