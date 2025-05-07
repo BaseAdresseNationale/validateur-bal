@@ -26,6 +26,14 @@ export async function getCommuneBanIdByCodeCommune(
   return response.json();
 }
 
+export function getVoieIdentifier({ parsedValues }: ValidateRowType) {
+  return `${normalize(parsedValues.voie_nom)}#${parsedValues.commune_deleguee_insee}`;
+}
+
+export function getNumeroIdentifier({ parsedValues }: ValidateRowType) {
+  return `${parsedValues.numero}#${parsedValues.suffixe}#${parsedValues.commune_deleguee_insee}`;
+}
+
 export async function getMapCodeCommuneBanId(
   parsedRows: ValidateRowType[],
 ): Promise<Record<string, string>> {
@@ -58,11 +66,27 @@ function getMapNameVoieBanId(
   parsedRows: ValidateRowType[],
 ): Record<string, string> {
   return chain(parsedRows)
-    .keyBy(({ parsedValues }) => normalize(parsedValues.voie_nom))
+    .keyBy((row) => getVoieIdentifier(row))
     .map((row) => [
-      normalize(row.parsedValues.voie_nom),
+      getVoieIdentifier(row),
       row.parsedValues.id_ban_toponyme ||
         row.additionalValues?.uid_adresse?.idBanToponyme ||
+        uuid(),
+    ])
+    .fromPairs()
+    .value();
+}
+
+function getMapNumeroBanId(
+  parsedRows: ValidateRowType[],
+): Record<string, string> {
+  return chain(parsedRows)
+    .filter(({ parsedValues }) => parsedValues.numero !== 99_999)
+    .keyBy((row) => getNumeroIdentifier(row))
+    .map((row) => [
+      getNumeroIdentifier(row),
+      row.parsedValues.id_ban_adresse ||
+        row.additionalValues?.uid_adresse?.idBanAdresse ||
         uuid(),
     ])
     .fromPairs()
@@ -85,9 +109,11 @@ function remediationBanIds(
   {
     mapCodeCommuneBanId,
     mapNomVoieBanId,
+    mapNumeroBanId,
   }: {
     mapCodeCommuneBanId: Record<string, string>;
     mapNomVoieBanId: Record<string, string>;
+    mapNumeroBanId: Record<string, string>;
   },
 ) {
   const codeCommune = getCodeCommune(row);
@@ -96,10 +122,15 @@ function remediationBanIds(
   }
   if (!idBanToponyme) {
     row.remediations.id_ban_toponyme =
-      mapNomVoieBanId[normalize(row.parsedValues.voie_nom)];
+      mapNomVoieBanId[
+        `${normalize(row.parsedValues.voie_nom)}#${row.parsedValues.commune_deleguee_insee}`
+      ];
   }
   if (!idBanAdresse && row.parsedValues.numero !== 99_999) {
-    row.remediations.id_ban_adresse = uuid();
+    row.remediations.id_ban_adresse =
+      mapNumeroBanId[
+        `${row.parsedValues.numero}#${row.parsedValues.suffixe}#${row.parsedValues.commune_deleguee_insee}`
+      ];
   }
 }
 
@@ -127,6 +158,7 @@ async function validateUseBanIds(
 ) {
   const mapCodeCommuneBanId = await getMapCodeCommuneBanId(rows);
   const mapNomVoieBanId = getMapNameVoieBanId(rows);
+  const mapNumeroBanId = getMapNumeroBanId(rows);
   const districtIDs = new Set();
   let balAdresseUseBanId = 0;
 
@@ -145,7 +177,7 @@ async function validateUseBanIds(
       remediationBanIds(
         row,
         { idBanCommune, idBanToponyme, idBanAdresse },
-        { mapCodeCommuneBanId, mapNomVoieBanId },
+        { mapCodeCommuneBanId, mapNomVoieBanId, mapNumeroBanId },
       );
     }
   }

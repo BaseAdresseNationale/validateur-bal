@@ -246,4 +246,70 @@ describe('VALIDATE ROWS', () => {
     });
     expect(errors).toContain('rows.cog_no_match_id_ban_commune');
   });
+
+  it('TEST remediation des id_ban manquants avec changement de commune deleguee', async () => {
+    const errors: string[] = [];
+    const rows: any[] = [
+      {
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          numero: 1,
+          commune_insee: '91534',
+          commune_deleguee_insee: '91535',
+        },
+        remediations: {},
+      },
+      {
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          numero: 1,
+          suffixe: 'A',
+          commune_insee: '91534',
+          commune_deleguee_insee: '91536',
+        },
+        remediations: {},
+      },
+      {
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          numero: 1,
+          suffixe: 'A',
+          commune_insee: '91534',
+          commune_deleguee_insee: '91536',
+        },
+        remediations: {},
+      },
+    ];
+    await validateRows(rows, {
+      addError: (e: string) => errors.push(e),
+    });
+
+    // Vérification que les remediations contiennent les id_ban
+    expect(rows[0].remediations).toHaveProperty('id_ban_commune');
+    expect(rows[0].remediations).toHaveProperty('id_ban_toponyme');
+    expect(rows[0].remediations).toHaveProperty('id_ban_adresse');
+
+    expect(rows[1].remediations).toHaveProperty('id_ban_commune');
+    expect(rows[1].remediations).toHaveProperty('id_ban_toponyme');
+    expect(rows[1].remediations).toHaveProperty('id_ban_adresse');
+
+    expect(rows[2].remediations).toHaveProperty('id_ban_commune');
+    expect(rows[2].remediations).toHaveProperty('id_ban_toponyme');
+    expect(rows[2].remediations).toHaveProperty('id_ban_adresse');
+
+    // Check reconnaissance des commune_deleguee
+    expect(rows[0].remediations.id_ban_toponyme).not.toBe(
+      rows[1].remediations.id_ban_toponyme,
+    );
+    expect(rows[1].remediations.id_ban_toponyme).toBe(
+      rows[2].remediations.id_ban_toponyme,
+    );
+
+    expect(rows[0].remediations.id_ban_adresse).not.toBe(
+      rows[1].remediations.id_ban_adresse,
+    );
+    expect(rows[1].remediations.id_ban_adresse).toBe(
+      rows[2].remediations.id_ban_adresse,
+    );
+  });
 });
