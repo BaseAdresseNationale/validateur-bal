@@ -1,4 +1,5 @@
 import { format, isValid, parse as parseDateFns, parseISO } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 const formats = [
   'dd/MM/yy', // 01/05/25
@@ -8,18 +9,25 @@ const formats = [
   'yyyy-MM-dd', // 2025-05-01
   'dd MM yyyy', // 01-05-2025
   'yyyy MM dd', // 2025-05-01
-  'd MMM yyyy', // 6 mai 2025
+  'd LLLL yyyy', // 6 mai 2025
   'yyyy-MM-dd HH:mm', // 2025-05-01 00:00
 ];
 
-function calculateRemediation(value: string): string {
+function calculateRemediation(
+  value: string,
+  {
+    setRemediation,
+  }: {
+    setRemediation: (remediation: any) => void;
+  },
+) {
   for (const fmt of formats) {
-    const dt = parseDateFns(value, fmt, new Date());
-    if (isValid(dt)) {
-      return format(dt, 'yyyy-MM-dd');
+    const date = parseDateFns(value, fmt, new Date(), { locale: fr });
+    if (isValid(date) && date > new Date('2010-01-01') && date < new Date()) {
+      setRemediation(format(date, 'yyyy-MM-dd'));
+      return;
     }
   }
-  return format(new Date(), 'yyyy-MM-dd');
 }
 
 function parse(
@@ -34,7 +42,7 @@ function parse(
 ) {
   if (!/^(\d{4}-\d{2}-\d{2})$/.test(value)) {
     addError('date_invalide');
-    setRemediation(calculateRemediation(value));
+    calculateRemediation(value, { setRemediation });
     return undefined;
   }
 
@@ -42,7 +50,7 @@ function parse(
 
   if (Number.isNaN(parsedDate.getTime())) {
     addError('date_invalide');
-    setRemediation(calculateRemediation(value));
+    calculateRemediation(value, { setRemediation });
     return undefined;
   }
 

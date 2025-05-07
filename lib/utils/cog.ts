@@ -1,40 +1,33 @@
+import { keyBy, flatten } from 'lodash';
 import communes from '../../minicog.json';
 
-type CommuneActuelle = {
+export type CommuneMiniCOG = {
   code: string;
   nom: string;
-  anciensCodes?: string;
+  chefLieu?: string;
+  anciensCodes?: string[];
 };
 
-const communeSet = new Set<string>(communes.map(({ code }) => code));
+const communesIndex: Record<string, CommuneMiniCOG> = keyBy(communes, 'code');
 
-const communeAncienneMap = new Map<string, string>();
-const communeChefLieuSet = new Set<string>();
-for (const commune of communes as CommuneActuelle[]) {
-  if (commune.anciensCodes) {
-    for (const ancienCode of commune.anciensCodes || []) {
-      communeAncienneMap.set(ancienCode, commune.code);
-    }
-    communeChefLieuSet.add(commune.code);
-  }
+const codesCommunesActuelles = new Set(
+  communes.filter((c) => !c.chefLieu).map((c) => c.code),
+);
+
+const codesCommunesAnciennes = new Set(
+  flatten(
+    communes.map((c) => (c.anciensCodes ? [...c.anciensCodes, c.code] : [])),
+  ),
+);
+
+export function isCommuneActuelle(codeCommune: string): boolean {
+  return codesCommunesActuelles.has(codeCommune);
 }
 
-export function isCommuneAncienne(codeCommune: string) {
-  return communeAncienneMap.has(codeCommune);
+export function isCommuneAncienne(codeCommune: string): boolean {
+  return codesCommunesAnciennes.has(codeCommune);
 }
 
-export function isCommune(codeCommune: string): boolean {
-  return communeSet.has(codeCommune);
-}
-
-export function isCommuneDeleguee(codeCommune: string): boolean {
-  return (
-    communeAncienneMap.has(codeCommune) || communeChefLieuSet.has(codeCommune)
-  );
-}
-
-export function getCommuneActuelle(codeCommune: string): string {
-  return communeAncienneMap.has(codeCommune)
-    ? communeAncienneMap.get(codeCommune)
-    : codeCommune;
+export function getCommune(codeCommune: string): CommuneMiniCOG {
+  return communesIndex[codeCommune];
 }

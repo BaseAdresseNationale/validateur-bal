@@ -1,6 +1,6 @@
 import { trim, trimStart, deburr } from 'lodash';
 
-import { isCommune, isCommuneAncienne, isCommuneDeleguee } from '../utils/cog';
+import { isCommuneActuelle, isCommuneAncienne } from '../utils/cog';
 import { validate as isUuid } from 'uuid';
 import { ParsedValue, PositionTypeEnum } from './shema.type';
 import { date_der_maj } from './fields/date_der_maj.field';
@@ -75,7 +75,7 @@ const fields: Record<string, FieldsSchema> = {
       const [, codeVoie, numeroVoie, ...suffixes] = splitted;
       const codeCommune = splitted[0].toUpperCase();
 
-      if (!isCommune(codeCommune)) {
+      if (!isCommuneActuelle(codeCommune)) {
         addError('commune_invalide');
       } else if (isCommuneAncienne(codeCommune)) {
         addError('commune_ancienne');
@@ -273,12 +273,10 @@ const fields: Record<string, FieldsSchema> = {
     parse(v, { addError }) {
       const code = v.toUpperCase();
 
-      if (!isCommune(code)) {
+      if (!isCommuneActuelle(code)) {
         addError('commune_invalide');
         return;
-      }
-
-      if (isCommuneAncienne(code)) {
+      } else if (isCommuneAncienne(code)) {
         addError('commune_ancienne');
       }
 
@@ -299,11 +297,7 @@ const fields: Record<string, FieldsSchema> = {
     parse(v, { addError }) {
       const code = v.toUpperCase();
 
-      if (!isCommune(code)) {
-        addError('commune_invalide');
-        return;
-      }
-      if (!isCommuneDeleguee(code)) {
+      if (!isCommuneAncienne(code)) {
         addError('commune_non_deleguee');
       }
 

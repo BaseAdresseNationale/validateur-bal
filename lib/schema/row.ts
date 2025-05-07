@@ -1,6 +1,8 @@
 import proj from '@etalab/project-legal';
-import { getCommuneActuelle } from '../utils/cog';
+import { format } from 'date-fns';
+import { getCommune } from '../utils/cog';
 import { ValidateRowType } from '../validate/validate.type';
+import { ParsedValue } from './shema.type';
 
 export function getCodeCommune(row: ValidateRowType) {
   return (
@@ -9,7 +11,7 @@ export function getCodeCommune(row: ValidateRowType) {
   );
 }
 
-function validateCleInterop(
+function validateNumero(
   row: ValidateRowType,
   { addError }: { addError: (code: string) => void },
 ) {
@@ -19,9 +21,38 @@ function validateCleInterop(
       addError('incoherence_numero');
     }
   }
+}
 
+function validateCommuneInsee(
+  row: ValidateRowType,
+  {
+    addError,
+    addRemediation,
+  }: {
+    addError: (code: string) => void;
+    addRemediation: (key: string, value: ParsedValue) => void;
+  },
+) {
   if (!row.parsedValues.cle_interop && !row.parsedValues.commune_insee) {
     addError('commune_manquante');
+  } else if (
+    row.parsedValues.cle_interop &&
+    row.additionalValues?.cle_interop?.codeCommune &&
+    !row.parsedValues.commune_insee
+  ) {
+    addRemediation(
+      'commune_insee',
+      row.additionalValues?.cle_interop?.codeCommune,
+    );
+    addRemediation(
+      'commune_nom',
+      getCommune(row.additionalValues?.cle_interop?.codeCommune)?.nom,
+    );
+  } else if (!row.parsedValues.commune_nom) {
+    addRemediation(
+      'commune_nom',
+      getCommune(row.parsedValues.commune_insee)?.nom,
+    );
   }
 }
 
@@ -107,12 +138,12 @@ function validateCommuneDelegueeInsee(
     row.parsedValues.commune_insee
   ) {
     const codeCommune = getCodeCommune(row);
-    const codeAncienneCommune = row.parsedValues.commune_deleguee_insee;
-    const codeCommuneActuelle = getCommuneActuelle(
-      codeAncienneCommune as string,
-    );
+    const commune = getCommune(codeCommune);
+    // const codeAncienneCommune = row.parsedValues.commune_deleguee_insee;
 
-    if (codeCommuneActuelle && codeCommuneActuelle !== codeCommune) {
+    if (
+      commune.anciensCodes.includes(row.parsedValues.commune_deleguee_insee)
+    ) {
       addError('chef_lieu_invalide');
     }
   }
@@ -150,20 +181,35 @@ function validateBanIds(
   }
 }
 
+function validateDateDerMaj(
+  row: ValidateRowType,
+  {
+    addRemediation,
+  }: { addRemediation: (key: string, value: ParsedValue) => void },
+) {
+  if (!row.parsedValues.date_der_maj && !row.remediations?.date_der_maj) {
+    addRemediation('date_der_maj', format(new Date(), 'yyyy-MM-dd'));
+  }
+}
+
 function validateRow(
   row: ValidateRowType,
   {
     addError,
+    addRemediation,
   }: {
     addError: (code: string) => void;
+    addRemediation: (key: string, value: ParsedValue) => void;
   },
 ) {
-  validateCleInterop(row, { addError });
+  validateNumero(row, { addError });
+  validateCommuneInsee(row, { addError, addRemediation });
   validatePositionType(row, { addError });
   validateCoords(row, { addError });
   validateMinimalAdress(row, { addError });
   validateCommuneDelegueeInsee(row, { addError });
   validateBanIds(row, { addError });
+  validateDateDerMaj(row, { addRemediation });
 }
 
 export default validateRow;
