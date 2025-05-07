@@ -12,26 +12,18 @@ const formats = [
   'yyyy-MM-dd HH:mm', // 2025-05-01 00:00
 ];
 
-function calculateRemediation(
-  value: string,
-  {
-    setRemediation,
-  }: {
-    setRemediation: (remediation: any) => void;
-  },
-) {
+function calculateRemediation(value: string): string {
   for (const fmt of formats) {
     const dt = parseDateFns(value, fmt, new Date());
     if (isValid(dt)) {
-      setRemediation(format(dt, 'yyyy-MM-dd'));
-      return;
+      return format(dt, 'yyyy-MM-dd');
     }
   }
-  setRemediation(format(new Date(), 'yyyy-MM-dd'));
+  return format(new Date(), 'yyyy-MM-dd');
 }
 
 function parse(
-  v: string,
+  value: string,
   {
     addError,
     setRemediation,
@@ -40,17 +32,17 @@ function parse(
     setRemediation: (remediation: any) => void;
   },
 ) {
-  if (!/^(\d{4}-\d{2}-\d{2})$/.test(v)) {
+  if (!/^(\d{4}-\d{2}-\d{2})$/.test(value)) {
     addError('date_invalide');
-    calculateRemediation(v, { setRemediation });
+    setRemediation(calculateRemediation(value));
     return undefined;
   }
 
-  const parsedDate = parseISO(v);
+  const parsedDate = parseISO(value);
 
   if (Number.isNaN(parsedDate.getTime())) {
     addError('date_invalide');
-    calculateRemediation(v, { setRemediation });
+    setRemediation(calculateRemediation(value));
     return undefined;
   }
 
