@@ -26,6 +26,14 @@ export async function getCommuneBanIdByCodeCommune(
   return response.json();
 }
 
+export function getVoieIdentifier({ parsedValues }: ValidateRowType) {
+  return `${normalize(parsedValues.voie_nom)}#${parsedValues.commune_deleguee_insee}`;
+}
+
+export function getNumeroIdentifier({ parsedValues }: ValidateRowType) {
+  return `${parsedValues.numero}#${parsedValues.suffixe}#${parsedValues.commune_deleguee_insee}`;
+}
+
 export async function getMapCodeCommuneBanId(
   parsedRows: ValidateRowType[],
 ): Promise<Record<string, string>> {
@@ -58,12 +66,9 @@ function getMapNameVoieBanId(
   parsedRows: ValidateRowType[],
 ): Record<string, string> {
   return chain(parsedRows)
-    .keyBy(
-      ({ parsedValues }) =>
-        `${normalize(parsedValues.voie_nom)}#${parsedValues.commune_deleguee_insee}`,
-    )
+    .keyBy((row) => getVoieIdentifier(row))
     .map((row) => [
-      `${normalize(row.parsedValues.voie_nom)}#${row.parsedValues.commune_deleguee_insee}`,
+      getVoieIdentifier(row),
       row.parsedValues.id_ban_toponyme ||
         row.additionalValues?.uid_adresse?.idBanToponyme ||
         uuid(),
@@ -77,12 +82,9 @@ function getMapNumeroBanId(
 ): Record<string, string> {
   return chain(parsedRows)
     .filter(({ parsedValues }) => parsedValues.numero !== 99_999)
-    .keyBy(
-      ({ parsedValues }) =>
-        `${parsedValues.numero}#${parsedValues.suffixe}#${parsedValues.commune_deleguee_insee}`,
-    )
+    .keyBy((row) => getNumeroIdentifier(row))
     .map((row) => [
-      `${row.parsedValues.numero}#${row.parsedValues.suffixe}#${row.parsedValues.commune_deleguee_insee}`,
+      getNumeroIdentifier(row),
       row.parsedValues.id_ban_adresse ||
         row.additionalValues?.uid_adresse?.idBanAdresse ||
         uuid(),
