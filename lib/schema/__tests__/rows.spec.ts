@@ -298,18 +298,18 @@ describe('VALIDATE ROWS', () => {
     expect(rows[2].remediations).toHaveProperty('id_ban_adresse');
 
     // Check reconnaissance des commune_deleguee
-    expect(rows[0].remediations.id_ban_toponyme).not.toBe(
-      rows[1].remediations.id_ban_toponyme,
+    expect(rows[0].remediations.id_ban_toponyme.value).not.toBe(
+      rows[1].remediations.id_ban_toponyme.value,
     );
-    expect(rows[1].remediations.id_ban_toponyme).toBe(
-      rows[2].remediations.id_ban_toponyme,
+    expect(rows[1].remediations.id_ban_toponyme.value).toBe(
+      rows[2].remediations.id_ban_toponyme.value,
     );
 
-    expect(rows[0].remediations.id_ban_adresse).not.toBe(
-      rows[1].remediations.id_ban_adresse,
+    expect(rows[0].remediations.id_ban_adresse.value).not.toBe(
+      rows[1].remediations.id_ban_adresse.value,
     );
-    expect(rows[1].remediations.id_ban_adresse).toBe(
-      rows[2].remediations.id_ban_adresse,
+    expect(rows[1].remediations.id_ban_adresse.value).toBe(
+      rows[2].remediations.id_ban_adresse.value,
     );
   });
 });

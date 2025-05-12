@@ -2,7 +2,7 @@ import proj from '@etalab/project-legal';
 import { format } from 'date-fns';
 import { getCommune } from '../utils/cog';
 import { ValidateRowType } from '../validate/validate.type';
-import { ParsedValue } from './shema.type';
+import { RemediationValue } from './shema.type';
 
 export function getCodeCommune(row: ValidateRowType) {
   return (
@@ -30,7 +30,7 @@ function validateCommuneInsee(
     addRemediation,
   }: {
     addError: (code: string) => void;
-    addRemediation: (key: string, value: ParsedValue) => void;
+    addRemediation: <T>(key: string, remediation: RemediationValue<T>) => void;
   },
 ) {
   if (!row.parsedValues.cle_interop && !row.parsedValues.commune_insee) {
@@ -40,19 +40,19 @@ function validateCommuneInsee(
     row.additionalValues?.cle_interop?.codeCommune &&
     !row.parsedValues.commune_insee
   ) {
-    addRemediation(
-      'commune_insee',
-      row.additionalValues?.cle_interop?.codeCommune,
-    );
-    addRemediation(
-      'commune_nom',
-      getCommune(row.additionalValues?.cle_interop?.codeCommune)?.nom,
-    );
+    addRemediation('commune_insee', {
+      errors: ['commune_insee.valeur_manquante'],
+      value: row.additionalValues?.cle_interop?.codeCommune,
+    });
+    addRemediation<string>('commune_nom', {
+      errors: ['commune_nom.valeur_manquante'],
+      value: getCommune(row.additionalValues?.cle_interop?.codeCommune)?.nom,
+    });
   } else if (!row.parsedValues.commune_nom) {
-    addRemediation(
-      'commune_nom',
-      getCommune(row.parsedValues.commune_insee)?.nom,
-    );
+    addRemediation<string>('commune_nom', {
+      errors: ['commune_nom.valeur_manquante'],
+      value: getCommune(row.parsedValues.commune_insee)?.nom,
+    });
   }
 }
 
@@ -185,10 +185,15 @@ function validateDateDerMaj(
   row: ValidateRowType,
   {
     addRemediation,
-  }: { addRemediation: (key: string, value: ParsedValue) => void },
+  }: {
+    addRemediation: <T>(key: string, remediation: RemediationValue<T>) => void;
+  },
 ) {
   if (!row.parsedValues.date_der_maj && !row.remediations?.date_der_maj) {
-    addRemediation('date_der_maj', format(new Date(), 'yyyy-MM-dd'));
+    addRemediation('date_der_maj', {
+      errors: ['date_der_maj.valeur_manquante'],
+      value: format(new Date(), 'yyyy-MM-dd'),
+    });
   }
 }
 
@@ -199,7 +204,7 @@ function validateRow(
     addRemediation,
   }: {
     addError: (code: string) => void;
-    addRemediation: (key: string, value: ParsedValue) => void;
+    addRemediation: <T>(key: string, remediation: RemediationValue<T>) => void;
   },
 ) {
   validateNumero(row, { addError });

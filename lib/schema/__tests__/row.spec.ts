@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import validateRow from '../row';
+import { RemediationValue } from '../shema.type';
 
 describe('VALIDATE ROW', () => {
   it('TEST commune_insee dans additionalValues.cle_interop', async () => {
@@ -22,13 +23,19 @@ describe('VALIDATE ROW', () => {
 
     await validateRow(row, {
       addError: () => {},
-      addRemediation: (key: string, value: string) =>
+      addRemediation: <T>(key: string, value: RemediationValue<T>) =>
         (remediations[key] = value),
     });
 
     expect(remediations).toEqual({
-      commune_insee: '91534',
-      commune_nom: 'Saclay',
+      commune_insee: {
+        errors: ['commune_insee.valeur_manquante'],
+        value: '91534',
+      },
+      commune_nom: {
+        errors: ['commune_nom.valeur_manquante'],
+        value: 'Saclay',
+      },
     });
   });
   it('TEST commune_nom avec commune_insee', async () => {
@@ -46,12 +53,15 @@ describe('VALIDATE ROW', () => {
 
     await validateRow(row, {
       addError: () => {},
-      addRemediation: (key: string, value: string) =>
+      addRemediation: <T>(key: string, value: RemediationValue<T>) =>
         (remediations[key] = value),
     });
 
     expect(remediations).toEqual({
-      commune_nom: 'Saclay',
+      commune_nom: {
+        errors: ['commune_nom.valeur_manquante'],
+        value: 'Saclay',
+      },
     });
   });
 
@@ -70,12 +80,15 @@ describe('VALIDATE ROW', () => {
 
     await validateRow(row, {
       addError: () => {},
-      addRemediation: (key: string, value: string) =>
+      addRemediation: <T>(key: string, value: RemediationValue<T>) =>
         (remediations[key] = value),
     });
 
     expect(remediations).toEqual({
-      date_der_maj: format(new Date(), 'yyyy-MM-dd'),
+      date_der_maj: {
+        errors: ['date_der_maj.valeur_manquante'],
+        value: format(new Date(), 'yyyy-MM-dd'),
+      },
     });
   });
 });
