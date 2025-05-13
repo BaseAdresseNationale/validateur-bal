@@ -3,7 +3,12 @@ import { keyBy } from 'lodash';
 import Schema from '../schema';
 import { FieldsSchema } from '../schema/fields';
 import { ErrorType, FieldType, ValidateRowType } from './validate.type';
-import { ParsedValue, ParsedValues, ReadValueType } from '../schema/shema.type';
+import {
+  ParsedValues,
+  ReadValueType,
+  RemediationsType,
+  RemediationValue,
+} from '../schema/shema.type';
 
 export async function computeRows(
   parsedRows: Record<string, string>[],
@@ -98,7 +103,7 @@ export function validateRow(
 ): ValidateRowType {
   const rawValues: Record<string, string> = {};
   const parsedValues: ParsedValues = {};
-  const remediations: ParsedValues = {};
+  const remediations: RemediationsType = {};
   const additionalValues: Record<string, any> = {};
   const localizedValues: Record<string, any> = {};
   const errors: ErrorType[] = [];
@@ -159,8 +164,8 @@ export function validateRow(
     addError(code: string) {
       errors.push({ code: `row.${code}` });
     },
-    addRemediation(key: string, value: ParsedValue) {
-      remediations[key] = value;
+    addRemediation<T>(key: string, remediation: RemediationValue<T>) {
+      remediations[key] = remediation;
     },
   });
 
