@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import { getCommune } from '../utils/cog';
 import { ValidateRowType } from '../validate/validate.type';
 import { RemediationValue } from './shema.type';
+import { getErrorMissingOrValeurManquante } from '../utils/remediation';
 
 export function getCodeCommune(row: ValidateRowType) {
   return (
@@ -41,16 +42,16 @@ function validateCommuneInsee(
     !row.parsedValues.commune_insee
   ) {
     addRemediation('commune_insee', {
-      errors: ['commune_insee.valeur_manquante'],
+      errors: [getErrorMissingOrValeurManquante('commune_insee', row)],
       value: row.additionalValues?.cle_interop?.codeCommune,
     });
     addRemediation<string>('commune_nom', {
-      errors: ['commune_nom.valeur_manquante'],
+      errors: [getErrorMissingOrValeurManquante('commune_nom', row)],
       value: getCommune(row.additionalValues?.cle_interop?.codeCommune)?.nom,
     });
   } else if (!row.parsedValues.commune_nom) {
     addRemediation<string>('commune_nom', {
-      errors: ['commune_nom.valeur_manquante'],
+      errors: [getErrorMissingOrValeurManquante('commune_nom', row)],
       value: getCommune(row.parsedValues.commune_insee)?.nom,
     });
   }
@@ -191,7 +192,7 @@ function validateDateDerMaj(
 ) {
   if (!row.parsedValues.date_der_maj && !row.remediations?.date_der_maj) {
     addRemediation('date_der_maj', {
-      errors: ['date_der_maj.valeur_manquante'],
+      errors: [getErrorMissingOrValeurManquante('date_der_maj', row)],
       value: format(new Date(), 'yyyy-MM-dd'),
     });
   }
