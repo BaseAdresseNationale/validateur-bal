@@ -29,11 +29,11 @@ describe('VALIDATE ROW', () => {
 
     expect(remediations).toEqual({
       commune_insee: {
-        errors: ['commune_insee.valeur_manquante'],
+        errors: ['field.commune_insee.missing'],
         value: '91534',
       },
       commune_nom: {
-        errors: ['commune_nom.valeur_manquante'],
+        errors: ['field.commune_nom.missing'],
         value: 'Saclay',
       },
     });
@@ -59,7 +59,7 @@ describe('VALIDATE ROW', () => {
 
     expect(remediations).toEqual({
       commune_nom: {
-        errors: ['commune_nom.valeur_manquante'],
+        errors: ['field.commune_nom.missing'],
         value: 'Saclay',
       },
     });
@@ -86,7 +86,7 @@ describe('VALIDATE ROW', () => {
 
     expect(remediations).toEqual({
       date_der_maj: {
-        errors: ['date_der_maj.valeur_manquante'],
+        errors: ['field.date_der_maj.missing'],
         value: format(new Date(), 'yyyy-MM-dd'),
       },
     });

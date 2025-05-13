@@ -24,6 +24,7 @@ describe('VALIDATE ROWS', () => {
           commune_insee: '91534',
         },
         remediations: {},
+        rawValues: {},
       },
       {
         parsedValues: {
@@ -32,6 +33,7 @@ describe('VALIDATE ROWS', () => {
           commune_insee: '91534',
         },
         remediations: {},
+        rawValues: {},
       },
     ];
     await validateRows(rows, {
@@ -62,6 +64,7 @@ describe('VALIDATE ROWS', () => {
           numero: 1,
         },
         remediations: {},
+        rawValues: {},
       },
       {
         parsedValues: {
@@ -73,6 +76,7 @@ describe('VALIDATE ROWS', () => {
           numero: 2,
         },
         remediations: {},
+        rawValues: {},
       },
     ];
     await validateRows(rows, {
@@ -94,6 +98,7 @@ describe('VALIDATE ROWS', () => {
           numero: 1,
         },
         remediations: {},
+        rawValues: {},
       },
       {
         parsedValues: {
@@ -105,6 +110,7 @@ describe('VALIDATE ROWS', () => {
           numero: 99999,
         },
         remediations: {},
+        rawValues: {},
       },
     ];
     await validateRows(rows, {
@@ -126,6 +132,7 @@ describe('VALIDATE ROWS', () => {
           numero: 1,
         },
         remediations: {},
+        rawValues: {},
       },
       {
         parsedValues: {
@@ -137,6 +144,7 @@ describe('VALIDATE ROWS', () => {
           numero: 99999,
         },
         remediations: {},
+        rawValues: {},
       },
     ];
     await validateRows(rows, {
@@ -158,6 +166,7 @@ describe('VALIDATE ROWS', () => {
           numero: 1,
         },
         remediations: {},
+        rawValues: {},
       },
       {
         parsedValues: {
@@ -166,6 +175,7 @@ describe('VALIDATE ROWS', () => {
           numero: 2,
         },
         remediations: {},
+        rawValues: {},
       },
     ];
     await validateRows(rows, {
@@ -191,6 +201,7 @@ describe('VALIDATE ROWS', () => {
           commune_insee: '91534',
         },
         remediations: {},
+        rawValues: {},
       },
       {
         parsedValues: {
@@ -199,6 +210,7 @@ describe('VALIDATE ROWS', () => {
           commune_insee: '91534',
         },
         remediations: {},
+        rawValues: {},
       },
     ];
     await validateRows(rows, {
@@ -224,6 +236,7 @@ describe('VALIDATE ROWS', () => {
           commune_insee: '91534',
         },
         remediations: {},
+        rawValues: {},
       },
       {
         additionalValues: {
@@ -239,6 +252,7 @@ describe('VALIDATE ROWS', () => {
           commune_insee: '91534',
         },
         remediations: {},
+        rawValues: {},
       },
     ];
     await validateRows(rows, {
@@ -258,6 +272,7 @@ describe('VALIDATE ROWS', () => {
           commune_deleguee_insee: '91535',
         },
         remediations: {},
+        rawValues: {},
       },
       {
         parsedValues: {
@@ -268,6 +283,7 @@ describe('VALIDATE ROWS', () => {
           commune_deleguee_insee: '91536',
         },
         remediations: {},
+        rawValues: {},
       },
       {
         parsedValues: {
@@ -278,6 +294,7 @@ describe('VALIDATE ROWS', () => {
           commune_deleguee_insee: '91536',
         },
         remediations: {},
+        rawValues: {},
       },
     ];
     await validateRows(rows, {
