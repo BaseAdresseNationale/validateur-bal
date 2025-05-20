@@ -1,4 +1,4 @@
-import { ParsedValues } from '../schema/shema.type';
+import { ParsedValues, RemediationsType } from '../schema/shema.type';
 import { ErrorLevelEnum } from '../utils/helpers';
 import { ParseFileType } from './parse/parse.type';
 
@@ -14,7 +14,7 @@ export type ErrorType = {
 export type ValidateRowType = {
   rawValues: Record<string, string>;
   parsedValues: ParsedValues;
-  remediations: ParsedValues;
+  remediations: RemediationsType;
   additionalValues: Record<string, any>;
   localizedValues: Record<string, any>;
   errors: ErrorType[];

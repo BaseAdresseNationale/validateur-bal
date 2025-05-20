@@ -58,3 +58,17 @@ export type ParsedValues = {
   [key: VoieNomIsoCodeKey]: string;
   [key: LieuditComplementNomIsoCodeKey]: string;
 };
+
+export type RemediationValue<T> = {
+  errors: string[];
+  value: T;
+};
+
+export type RemediationsType = {
+  id_ban_commune?: RemediationValue<string>;
+  id_ban_toponyme?: RemediationValue<string>;
+  id_ban_adresse?: RemediationValue<string>;
+  commune_insee?: RemediationValue<string>;
+  commune_nom?: RemediationValue<string>;
+  date_der_maj?: RemediationValue<Date>;
+};

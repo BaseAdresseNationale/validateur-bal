@@ -3,6 +3,7 @@ import { getCodeCommune } from './row';
 import { normalize } from '@ban-team/adresses-util/lib/voies';
 import { chain } from 'lodash';
 import { v4 as uuid } from 'uuid';
+import { getErrorMissingOrValeurManquante } from '../utils/remediation';
 
 const BAN_API_URL =
   process.env.BAN_API_URL || 'https://plateforme.adresse.data.gouv.fr';
@@ -118,19 +119,28 @@ function remediationBanIds(
 ) {
   const codeCommune = getCodeCommune(row);
   if (!idBanCommune) {
-    row.remediations.id_ban_commune = mapCodeCommuneBanId[codeCommune];
+    row.remediations.id_ban_commune = {
+      errors: [getErrorMissingOrValeurManquante('id_ban_commune', row)],
+      value: mapCodeCommuneBanId[codeCommune],
+    };
   }
   if (!idBanToponyme) {
-    row.remediations.id_ban_toponyme =
-      mapNomVoieBanId[
-        `${normalize(row.parsedValues.voie_nom)}#${row.parsedValues.commune_deleguee_insee}`
-      ];
+    row.remediations.id_ban_toponyme = {
+      errors: [getErrorMissingOrValeurManquante('id_ban_toponyme', row)],
+      value:
+        mapNomVoieBanId[
+          `${normalize(row.parsedValues.voie_nom)}#${row.parsedValues.commune_deleguee_insee}`
+        ],
+    };
   }
   if (!idBanAdresse && row.parsedValues.numero !== 99_999) {
-    row.remediations.id_ban_adresse =
-      mapNumeroBanId[
-        `${row.parsedValues.numero}#${row.parsedValues.suffixe}#${row.parsedValues.commune_deleguee_insee}`
-      ];
+    row.remediations.id_ban_adresse = {
+      errors: [getErrorMissingOrValeurManquante('id_ban_adresse', row)],
+      value:
+        mapNumeroBanId[
+          `${row.parsedValues.numero}#${row.parsedValues.suffixe}#${row.parsedValues.commune_deleguee_insee}`
+        ],
+    };
   }
 }
 
