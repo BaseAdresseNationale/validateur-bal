@@ -3,7 +3,6 @@ import { getCodeCommune } from './row';
 import { normalize } from '@ban-team/adresses-util/lib/voies';
 import { chain } from 'lodash';
 import { v4 as uuid } from 'uuid';
-import { getErrorMissingOrValeurManquante } from '../utils/remediation';
 
 const BAN_API_URL =
   process.env.BAN_API_URL || 'https://plateforme.adresse.data.gouv.fr';
@@ -120,13 +119,23 @@ function remediationBanIds(
   const codeCommune = getCodeCommune(row);
   if (!idBanCommune) {
     row.remediations.id_ban_commune = {
-      errors: [`field.id_ban_commune.missing`, `id_ban_commune.valeur_manquante`, 'rows.every_line_required_id_ban', 'row.lack_of_id_ban'],
+      errors: [
+        `field.id_ban_commune.missing`,
+        `id_ban_commune.valeur_manquante`,
+        'rows.every_line_required_id_ban',
+        'row.lack_of_id_ban',
+      ],
       value: mapCodeCommuneBanId[codeCommune],
     };
   }
   if (!idBanToponyme) {
     row.remediations.id_ban_toponyme = {
-      errors: [`field.id_ban_toponyme.missing`, `id_ban_toponyme.valeur_manquante`, 'rows.every_line_required_id_ban', 'row.lack_of_id_ban'],
+      errors: [
+        `field.id_ban_toponyme.missing`,
+        `id_ban_toponyme.valeur_manquante`,
+        'rows.every_line_required_id_ban',
+        'row.lack_of_id_ban',
+      ],
       value:
         mapNomVoieBanId[
           `${normalize(row.parsedValues.voie_nom)}#${row.parsedValues.commune_deleguee_insee}`
@@ -135,7 +144,12 @@ function remediationBanIds(
   }
   if (!idBanAdresse && row.parsedValues.numero !== 99_999) {
     row.remediations.id_ban_adresse = {
-      errors: [`field.id_ban_adresse.missing`, `id_ban_adresse.valeur_manquante`, 'rows.every_line_required_id_ban', 'row.lack_of_id_ban'],
+      errors: [
+        `field.id_ban_adresse.missing`,
+        `id_ban_adresse.valeur_manquante`,
+        'rows.every_line_required_id_ban',
+        'row.lack_of_id_ban',
+      ],
       value:
         mapNumeroBanId[
           `${row.parsedValues.numero}#${row.parsedValues.suffixe}#${row.parsedValues.commune_deleguee_insee}`
