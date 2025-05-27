@@ -4,7 +4,6 @@ import Schema from '../schema';
 import { FieldsSchema } from '../schema/fields';
 import { ErrorType, FieldType, ValidateRowType } from './validate.type';
 import {
-  ParsedValue,
   ParsedValues,
   ReadValueType,
   RemediationsType,
