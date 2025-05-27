@@ -140,10 +140,9 @@ function validateCommuneDelegueeInsee(
   ) {
     const codeCommune = getCodeCommune(row);
     const commune = getCommune(codeCommune);
-    // const codeAncienneCommune = row.parsedValues.commune_deleguee_insee;
 
     if (
-      commune.anciensCodes.includes(row.parsedValues.commune_deleguee_insee)
+      !commune.anciensCodes?.includes(row.parsedValues.commune_deleguee_insee)
     ) {
       addError('chef_lieu_invalide');
     }
