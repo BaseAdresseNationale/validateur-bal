@@ -2,7 +2,7 @@ import { trim, trimStart, deburr } from 'lodash';
 
 import { isCommuneActuelle, isCommuneAncienne } from '../utils/cog';
 import { validate as isUuid } from 'uuid';
-import { ParsedValue, PositionTypeEnum } from './shema.type';
+import { ParsedValue, PositionTypeEnum, RemediationValue } from './shema.type';
 import { date_der_maj } from './fields/date_der_maj.field';
 
 export type FieldsSchema = {
@@ -19,7 +19,7 @@ export type FieldsSchema = {
     }: {
       addError: (error: string) => void;
       setAdditionnalValues: (add: any) => void;
-      setRemediation: (remediation: ParsedValue) => void;
+      setRemediation: <T>(value: RemediationValue<T>) => void;
     },
   ) => ParsedValue;
 };

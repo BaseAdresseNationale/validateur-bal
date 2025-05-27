@@ -4,6 +4,7 @@ import Schema from '../schema';
 import { FieldsSchema } from '../schema/fields';
 import { ErrorType, FieldType, ValidateRowType } from './validate.type';
 import {
+  ParsedValue,
   ParsedValues,
   ReadValueType,
   RemediationsType,
@@ -77,10 +78,10 @@ export function readValue(fieldName: string, rawValue: string): ReadValueType {
       setAdditionnalValues(values) {
         result.additionalValues = values;
       },
-      addError(code) {
+      addError(code: string) {
         result.errors.push(code);
       },
-      setRemediation(value) {
+      setRemediation<T>(value: RemediationValue<T>) {
         result.remediation = value;
       },
     });
@@ -164,8 +165,8 @@ export function validateRow(
     addError(code: string) {
       errors.push({ code: `row.${code}` });
     },
-    addRemediation<T>(key: string, remediation: RemediationValue<T>) {
-      remediations[key] = remediation;
+    addRemediation<T>(key: string, value: RemediationValue<T>) {
+      remediations[key] = value;
     },
   });
 

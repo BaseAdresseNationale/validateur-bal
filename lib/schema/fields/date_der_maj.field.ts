@@ -1,5 +1,6 @@
 import { format, isValid, parse as parseDateFns, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { RemediationValue } from '../shema.type';
 
 const formats = [
   'dd/MM/yy', // 01/05/25
@@ -18,13 +19,16 @@ function calculateRemediation(
   {
     setRemediation,
   }: {
-    setRemediation: (remediation: any) => void;
+    setRemediation: <T>(value: RemediationValue<T>) => void;
   },
 ) {
   for (const fmt of formats) {
     const date = parseDateFns(value, fmt, new Date(), { locale: fr });
     if (isValid(date) && date > new Date('2010-01-01') && date < new Date()) {
-      setRemediation(format(date, 'yyyy-MM-dd'));
+      setRemediation({
+        errors: ['date_der_maj.date_invalide'],
+        value: format(new Date(), 'yyyy-MM-dd'),
+      });
       return;
     }
   }
@@ -37,7 +41,7 @@ function parse(
     setRemediation,
   }: {
     addError: (error: string) => void;
-    setRemediation: (remediation: any) => void;
+    setRemediation: <T>(value: RemediationValue<T>) => void;
   },
 ) {
   if (!/^(\d{4}-\d{2}-\d{2})$/.test(value)) {
