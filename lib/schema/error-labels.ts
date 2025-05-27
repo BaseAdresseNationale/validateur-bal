@@ -117,7 +117,7 @@ const errorLabels: Record<string, string> = {
     'Les coordonnées long/lat et x/y ne sont pas cohérentes',
   'row.adresse_incomplete':
     'L’adresse est incomplète (numéro ou nom de la voie non renseignés)',
-  'row.lack_of_id_ban': 'Il y manque un ou plusieurs id ban',
+  'row.lack_of_id_ban': 'Il manque un ou plusieurs ids ban sur la ligne',
   // ROWS LEVEL ERROR
   'rows.empty': 'Aucune ligne détecté',
   'rows.multi_id_ban_commune':
