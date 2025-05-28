@@ -4,8 +4,7 @@ import { normalize } from '@ban-team/adresses-util/lib/voies';
 import { chain } from 'lodash';
 import { v4 as uuid } from 'uuid';
 
-const BAN_API_URL =
-  process.env.BAN_API_URL || 'https://plateforme.adresse.data.gouv.fr';
+const BAN_API_URL = 'https://plateforme.adresse.data.gouv.fr';
 
 type DistrictBanResponse = {
   status: 'success' | 'error';
