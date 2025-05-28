@@ -134,11 +134,8 @@ function validateCommuneDelegueeInsee(
   { addError }: { addError: (code: string) => void },
 ) {
   // VERIFIE QUE LE commune_insee_deleguee SOIT UNE ANCIEN COMMUNE DU commune_insee
-  if (
-    row.parsedValues.commune_deleguee_insee &&
-    row.parsedValues.commune_insee
-  ) {
-    const codeCommune = getCodeCommune(row);
+  const codeCommune = getCodeCommune(row);
+  if (row.parsedValues.commune_deleguee_insee && codeCommune) {
     const commune = getCommune(codeCommune);
 
     if (
