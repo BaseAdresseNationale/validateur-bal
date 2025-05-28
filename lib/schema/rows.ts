@@ -36,7 +36,7 @@ export function getNumeroIdentifier({ parsedValues }: ValidateRowType) {
 
 export async function getMapCodeCommuneBanId(
   parsedRows: ValidateRowType[],
-): Promise<Record<string, string>> {
+): Promise<Record<string, string>> | undefined {
   const indexCommuneBanIds: Record<string, string> = {};
 
   const codeCommunes = new Set<string>([
@@ -52,12 +52,18 @@ export async function getMapCodeCommuneBanId(
           additionalValues?.cle_interop?.codeCommune,
       ),
   ]);
-
-  for (const codeCommune of Array.from(codeCommunes)) {
-    const res = await getCommuneBanIdByCodeCommune(codeCommune);
-    if (res.status == 'success' && res.response) {
-      indexCommuneBanIds[codeCommune] = res.response[0].id;
+  try {
+    for (const codeCommune of Array.from(codeCommunes)) {
+      const res = await getCommuneBanIdByCodeCommune(codeCommune);
+      if (res.status == 'success' && res.response) {
+        indexCommuneBanIds[codeCommune] = res.response[0].id;
+      }
     }
+  } catch {
+    console.error(
+      `Impossible de récupèrer id_ban_commune pour les communes suivantes : ${Array.from(codeCommunes).join(', ')}`,
+    );
+    return undefined;
   }
   return indexCommuneBanIds;
 }
@@ -111,13 +117,13 @@ function remediationBanIds(
     mapNomVoieBanId,
     mapNumeroBanId,
   }: {
-    mapCodeCommuneBanId: Record<string, string>;
+    mapCodeCommuneBanId: Record<string, string> | undefined;
     mapNomVoieBanId: Record<string, string>;
     mapNumeroBanId: Record<string, string>;
   },
 ) {
   const codeCommune = getCodeCommune(row);
-  if (!idBanCommune) {
+  if (!idBanCommune && mapCodeCommuneBanId) {
     row.remediations.id_ban_commune = {
       errors: [
         `field.id_ban_commune.missing`,
@@ -211,6 +217,7 @@ async function validateUseBanIds(
       addError('rows.multi_id_ban_commune');
     }
     if (
+      mapCodeCommuneBanId &&
       !Array.from(districtIDs).every((districtID: string) =>
         Object.values(mapCodeCommuneBanId).includes(districtID),
       )
