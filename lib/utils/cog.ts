@@ -15,9 +15,7 @@ const codesCommunesActuelles = new Set(
 );
 
 const codesCommunesAnciennes = new Set(
-  flatten(
-    communes.map((c) => (c.anciensCodes ? [...c.anciensCodes, c.code] : [])),
-  ),
+  flatten(communes.map((c) => c.anciensCodes || [])),
 );
 
 export function isCommuneActuelle(codeCommune: string): boolean {

@@ -15,7 +15,7 @@ const errorLabels: Record<string, string> = {
     'La clé d’interopérabilité doit contenir au moins 3 segments',
   'cle_interop.commune_invalide': 'Clé d’interopérabilité invalide (commune)',
   'cle_interop.commune_ancienne':
-    'La commune référencée est une commune ancienne',
+    'Le commune INSEE référencée dans la clé d’interopérabilité est une commune ancienne',
   'cle_interop.voie_invalide': 'Clé d’interopérabilité invalide (voie)',
   'cle_interop.numero_invalide': 'Clé d’interopérabilité invalide (numéro)',
   'cle_interop.numero_prefixe_manquant':
