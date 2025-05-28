@@ -11,7 +11,7 @@ describe('VALIDATE FIELDS', () => {
       expect(addError).toHaveBeenCalledWith('date_invalide');
       expect(setRemediation).toHaveBeenCalledWith({
         errors: ['date_der_maj.date_invalide'],
-        value: '2025-05-27',
+        value: '2023-12-25',
       });
     });
 
@@ -24,7 +24,7 @@ describe('VALIDATE FIELDS', () => {
       expect(addError).toHaveBeenCalledWith('date_invalide');
       expect(setRemediation).toHaveBeenCalledWith({
         errors: ['date_der_maj.date_invalide'],
-        value: '2025-05-27',
+        value: '2023-07-16',
       });
     });
 

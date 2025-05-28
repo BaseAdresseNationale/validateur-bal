@@ -59,7 +59,7 @@ export async function getMapCodeCommuneBanId(
         indexCommuneBanIds[codeCommune] = res.response[0].id;
       }
     }
-  } catch (error) {
+  } catch {
     console.error(
       `Impossible de récupèrer id_ban_commune pour les communes suivantes : ${Array.from(codeCommunes).join(', ')}`,
     );
