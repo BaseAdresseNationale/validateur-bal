@@ -27,7 +27,7 @@ function calculateRemediation(
     if (isValid(date) && date > new Date('2010-01-01') && date < new Date()) {
       setRemediation({
         errors: ['date_der_maj.date_invalide'],
-        value: format(new Date(), 'yyyy-MM-dd'),
+        value: format(date, 'yyyy-MM-dd'),
       });
       return;
     }
