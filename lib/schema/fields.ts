@@ -11,15 +11,15 @@ export type FieldsSchema = {
   formats?: string[];
   allowRegionalLang?: boolean;
   parse?: (
-    value: any,
+    value: string,
     {
       addError,
       setAdditionnalValues,
       setRemediation,
     }: {
       addError: (error: string) => void;
-      setAdditionnalValues: (add: any) => void;
-      setRemediation: <T>(value: RemediationValue<T>) => void;
+      setAdditionnalValues?: (add: any) => void;
+      setRemediation?: <T>(value: RemediationValue<T>) => void;
     },
   ) => ParsedValue;
 };
@@ -55,7 +55,7 @@ const fields: Record<string, FieldsSchema> = {
     required: true,
     trim: true,
     formats: ['1.1', '1.2', '1.3', '1.4'],
-    parse(v, { addError, setAdditionnalValues }) {
+    parse(v: string, { addError, setAdditionnalValues }) {
       if (v.toLowerCase() !== v) {
         addError('casse_invalide');
       }
@@ -75,7 +75,7 @@ const fields: Record<string, FieldsSchema> = {
       const [, codeVoie, numeroVoie, ...suffixes] = splitted;
       const codeCommune = splitted[0].toUpperCase();
 
-      if (!isCommuneActuelle(codeCommune)) {
+      if (!isCommuneActuelle(codeCommune) && !isCommuneAncienne(codeCommune)) {
         addError('commune_invalide');
       } else if (isCommuneAncienne(codeCommune)) {
         addError('commune_ancienne');
@@ -116,7 +116,7 @@ const fields: Record<string, FieldsSchema> = {
   uid_adresse: {
     trim: true,
     formats: ['1.1', '1.2', '1.3'],
-    parse(v, { addError, setAdditionnalValues }) {
+    parse(v: string, { addError, setAdditionnalValues }) {
       const [uuidCommune] = v.match(/@c:(\S+)/gi) || [];
       const [uuidToponyme] = v.match(/@v:(\S+)/gi) || [];
       const [uuidAdresse] = v.match(/@a:(\S+)/gi) || [];
@@ -147,7 +147,7 @@ const fields: Record<string, FieldsSchema> = {
   id_ban_commune: {
     formats: ['1.4'],
     trim: true,
-    parse(v, { addError }) {
+    parse(v: string, { addError }) {
       if (!isUuid(v)) {
         addError('type_invalide');
         return undefined;
@@ -160,7 +160,7 @@ const fields: Record<string, FieldsSchema> = {
   id_ban_toponyme: {
     formats: ['1.4'],
     trim: true,
-    parse(v, { addError }) {
+    parse(v: string, { addError }) {
       if (!isUuid(v)) {
         addError('type_invalide');
         return undefined;
@@ -173,7 +173,7 @@ const fields: Record<string, FieldsSchema> = {
   id_ban_adresse: {
     formats: ['1.4'],
     trim: true,
-    parse(v, { addError }) {
+    parse(v: string, { addError }) {
       if (!isUuid(v)) {
         addError('type_invalide');
         return undefined;
@@ -188,7 +188,7 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.1', '1.2', '1.3', '1.4'],
     trim: true,
     allowRegionalLang: true,
-    parse(v, { addError }) {
+    parse(v: string, { addError }) {
       if (v.length < 3) {
         addError('trop_court');
         return undefined;
@@ -227,7 +227,7 @@ const fields: Record<string, FieldsSchema> = {
     required: true,
     formats: ['1.1', '1.2', '1.3', '1.4'],
     trim: true,
-    parse(v, { addError }) {
+    parse(v: string, { addError }) {
       if (!/^\d+$/.test(v)) {
         addError('type_invalide');
         return undefined;
@@ -251,7 +251,7 @@ const fields: Record<string, FieldsSchema> = {
   suffixe: {
     formats: ['1.1', '1.2', '1.3', '1.4'],
     trim: true,
-    parse(v, { addError }) {
+    parse(v: string, { addError }) {
       if (!/^[\da-z]/i.test(v)) {
         addError('debut_invalide');
         return undefined;
@@ -270,10 +270,10 @@ const fields: Record<string, FieldsSchema> = {
     required: true,
     formats: ['1.2', '1.3', '1.4'],
     trim: true,
-    parse(v, { addError }) {
+    parse(v: string, { addError }) {
       const code = v.toUpperCase();
 
-      if (!isCommuneActuelle(code)) {
+      if (!isCommuneActuelle(code) && !isCommuneAncienne(code)) {
         addError('commune_invalide');
         return;
       } else if (isCommuneAncienne(code)) {
@@ -294,13 +294,12 @@ const fields: Record<string, FieldsSchema> = {
   commune_deleguee_insee: {
     formats: ['1.2', '1.3', '1.4'],
     trim: true,
-    parse(v, { addError }) {
+    parse(v: string, { addError }) {
       const code = v.toUpperCase();
 
-      if (!isCommuneAncienne(code)) {
-        addError('commune_non_deleguee');
+      if (!isCommuneActuelle(code) && !isCommuneAncienne(code)) {
+        addError('commune_invalide');
       }
-
       return code;
     },
   },
@@ -314,7 +313,7 @@ const fields: Record<string, FieldsSchema> = {
   position: {
     formats: ['1.1', '1.2', '1.3', '1.4'],
     trim: true,
-    parse(v, { addError }) {
+    parse(v: string, { addError }) {
       const normalizedValue = getNormalizedEnumValue(v);
 
       if (enumPositionMap.has(normalizedValue)) {
@@ -332,7 +331,7 @@ const fields: Record<string, FieldsSchema> = {
   x: {
     formats: ['1.1', '1.2', '1.3', '1.4'],
     trim: true,
-    parse(v, { addError }) {
+    parse(v: string, { addError }) {
       if (isValidFloat(v)) {
         return Number.parseFloat(v);
       }
@@ -349,7 +348,7 @@ const fields: Record<string, FieldsSchema> = {
   y: {
     formats: ['1.1', '1.2', '1.3', '1.4'],
     trim: true,
-    parse(v, { addError }) {
+    parse(v: string, { addError }) {
       if (isValidFloat(v)) {
         return Number.parseFloat(v);
       }
@@ -366,7 +365,7 @@ const fields: Record<string, FieldsSchema> = {
   long: {
     formats: ['1.1', '1.2', '1.3', '1.4'],
     trim: true,
-    parse(v, { addError }) {
+    parse(v: string, { addError }) {
       if (isValidFloat(v)) {
         return Number.parseFloat(v);
       }
@@ -383,7 +382,7 @@ const fields: Record<string, FieldsSchema> = {
   lat: {
     formats: ['1.1', '1.2', '1.3', '1.4'],
     trim: true,
-    parse(v, { addError }) {
+    parse(v: string, { addError }) {
       if (isValidFloat(v)) {
         return Number.parseFloat(v);
       }
@@ -401,7 +400,7 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.2', '1.3', '1.4'],
     trim: true,
 
-    parse(v, { addError }) {
+    parse(v: string, { addError }) {
       const pTrimmedValue = trim(v, '|');
 
       if (pTrimmedValue !== v) {
@@ -440,7 +439,7 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.3', '1.4'],
     required: false,
     trim: true,
-    parse(v, { addError }) {
+    parse(v: string, { addError }) {
       if (v === '1') {
         return true;
       }
