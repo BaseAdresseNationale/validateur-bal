@@ -45,14 +45,16 @@ function validateCommuneInsee(
       errors: [getErrorMissingOrValeurManquante('commune_insee', row)],
       value: row.additionalValues?.cle_interop?.codeCommune,
     });
+    const commune = getCommune(row.additionalValues?.cle_interop?.codeCommune);
     addRemediation<string>('commune_nom', {
       errors: [getErrorMissingOrValeurManquante('commune_nom', row)],
-      value: getCommune(row.additionalValues?.cle_interop?.codeCommune)?.nom,
+      value: commune?.nom,
     });
   } else if (!row.parsedValues.commune_nom) {
+    const commune = getCommune(row.parsedValues.commune_insee);
     addRemediation<string>('commune_nom', {
       errors: [getErrorMissingOrValeurManquante('commune_nom', row)],
-      value: getCommune(row.parsedValues.commune_insee)?.nom,
+      value: commune?.nom,
     });
   }
 }
@@ -133,16 +135,30 @@ function validateCommuneDelegueeInsee(
   row: ValidateRowType,
   { addError }: { addError: (code: string) => void },
 ) {
-  // VERIFIE QUE LE commune_insee_deleguee SOIT UNE ANCIEN COMMUNE DU commune_insee
+  // Si il n'y a pas de commune_deleguee_insee pas d'erreur
+  if (!row.parsedValues.commune_deleguee_insee) {
+    return;
+  }
+  const errorCommuneDelegueeInsee =
+    row.errors?.filter(({ schemaName }) =>
+      ['commune_deleguee_insee', 'commune_insee'].includes(schemaName),
+    ) || [];
+  // Si il y a deja des erreur sur le commune_deleguee_insee on en rajoute pas
+  if (errorCommuneDelegueeInsee.length > 0) {
+    return;
+  }
+  // Si il y a pas de code_insee impossible de calculer l'erreur sur commune_deleguee_insee
   const codeCommune = getCodeCommune(row);
-  if (row.parsedValues.commune_deleguee_insee && codeCommune) {
-    const commune = getCommune(codeCommune);
+  if (!codeCommune) {
+    return;
+  }
+  const commune = getCommune(codeCommune);
 
-    if (
-      !commune.anciensCodes?.includes(row.parsedValues.commune_deleguee_insee)
-    ) {
-      addError('chef_lieu_invalide');
-    }
+  if (
+    !commune.anciensCodes?.includes(row.parsedValues.commune_deleguee_insee) &&
+    row.parsedValues.commune_deleguee_insee != codeCommune
+  ) {
+    addError('chef_lieu_invalide');
   }
 }
 

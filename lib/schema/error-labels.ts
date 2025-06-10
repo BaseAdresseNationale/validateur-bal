@@ -68,11 +68,7 @@ const errorLabels: Record<string, string> = {
 
   // commune_deleguee_insee
   'commune_deleguee_insee.commune_invalide':
-    'Le code INSEE renseigné n’est pas un code valide ou n’a jamais existé',
-  'commune_deleguee_insee.commune_actuelle_non_deleguee':
-    'Le code INSEE renseigné correspond au code d’une commune actuelle dont le chef lieu n’est pas une commune déléguée',
-  'commune_deleguee_insee.commune_ancienne_non_deleguee':
-    'Le code INSEE renseigné correspond au code d’une commune ancienne qui n’a pas le statut de commune déléguée',
+    'Le code INSEE de la commune déléguée renseigné n’est pas un code valide ou n’a jamais existé',
 
   // position
   'position.enum_fuzzy':
