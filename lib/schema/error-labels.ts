@@ -62,13 +62,13 @@ const errorLabels: Record<string, string> = {
 
   // commune_insee
   'commune_insee.commune_invalide':
-    'Le code INSEE de la commune n’est pas un code ayant existé',
+    'Le code INSEE de la commune n’est pas valide',
   'commune_insee.commune_ancienne':
     'Le code INSEE de la commune est le code d’une commune ancienne',
 
   // commune_deleguee_insee
   'commune_deleguee_insee.commune_invalide':
-    'Le code INSEE de la commune déléguée renseigné n’est pas un code valide ou n’a jamais existé',
+    'Le code INSEE de la commune déléguée renseigné n’est pas valide',
 
   // position
   'position.enum_fuzzy':
