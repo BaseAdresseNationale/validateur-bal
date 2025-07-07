@@ -1341,10 +1341,10 @@
     talisman "^1.1.4"
     written-number "^0.9.1"
 
-"@ban-team/shared-data@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@ban-team/shared-data/-/shared-data-1.4.1.tgz#befd80777dd8a5f80262d65730f92c3a1c8a0116"
-  integrity sha512-dcbwb+6xUE3O/5e7Gz5XrMw6rkI7XvTAXqfSzpFPkf5yteuy8nkLZc8EK4hX3G2nSvOx/hh8mVVCpo+OAZuOwA==
+"@ban-team/shared-data@^1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@ban-team/shared-data/-/shared-data-1.4.2.tgz#feb0a4e9aaa026cf1db39b99f8b4dda987682006"
+  integrity sha512-GBdEmqIJEcx89EKq+PkyL2YR7hfoiKyDlfNy/vob0N5ro4pCdKZ9cMfPvod35FSC9KOEwaUZuOJz5fFwfSqufA==
 
 "@bcoe/v8-coverage@^0.2.3":
   version "0.2.3"
