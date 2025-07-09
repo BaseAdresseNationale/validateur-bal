@@ -329,4 +329,70 @@ describe('VALIDATE ROWS', () => {
       rows[2].remediations.id_ban_adresse.value,
     );
   });
+
+  it('TEST remediation des id_ban manquants avec correspondance voie et numero', async () => {
+    const errors: string[] = [];
+    const rows: any[] = [
+      {
+        parsedValues: {
+          id_ban_toponyme: '0246e48c-f33d-433a-8984-034219be842e',
+          id_ban_adresse: '0246e48c-f33d-433a-8984-034219be842b',
+          voie_nom: 'rue du Colombier',
+          numero: 1,
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+      },
+      {
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          numero: 1,
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+      },
+      {
+        parsedValues: {
+          id_ban_toponyme: '0246e48c-f33d-433a-8984-034219be842a',
+          voie_nom: 'avenue de la Paix',
+          numero: 1,
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+      },
+      {
+        parsedValues: {
+          voie_nom: 'avenue de la Paix',
+          numero: 3,
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+      },
+    ];
+
+    await validateRows(rows, {
+      addError: (e: string) => errors.push(e),
+    });
+
+    expect(rows[0].parsedValues.id_ban_toponyme).toBe(
+      rows[1].remediations.id_ban_toponyme.value,
+    );
+    expect(rows[2].parsedValues.id_ban_toponyme).toBe(
+      rows[3].remediations.id_ban_toponyme.value,
+    );
+
+    expect(rows[0].parsedValues.id_ban_adresse).toBe(
+      rows[1].remediations.id_ban_adresse.value,
+    );
+    expect(rows[0].parsedValues.id_ban_adresse).not.toBe(
+      rows[2].remediations.id_ban_adresse.value,
+    );
+    expect(rows[2].remediations.id_ban_adresse.value).not.toBe(
+      rows[3].remediations.id_ban_adresse.value,
+    );
+  });
 });
