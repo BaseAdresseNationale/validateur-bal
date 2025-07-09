@@ -30,7 +30,7 @@ export function getVoieIdentifier({ parsedValues }: ValidateRowType) {
 }
 
 export function getNumeroIdentifier({ parsedValues }: ValidateRowType) {
-  return `${parsedValues.numero}#${parsedValues.suffixe}#${parsedValues.commune_deleguee_insee}#${parsedValues.voie_nom}`;
+  return `${parsedValues.numero}#${parsedValues.suffixe}#${parsedValues.voie_nom}#${parsedValues.commune_deleguee_insee}`;
 }
 
 export async function getMapCodeCommuneBanId(
