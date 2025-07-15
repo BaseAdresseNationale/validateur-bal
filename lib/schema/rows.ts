@@ -30,7 +30,7 @@ export function getVoieIdentifier({ parsedValues }: ValidateRowType) {
 }
 
 export function getNumeroIdentifier({ parsedValues }: ValidateRowType) {
-  return `${parsedValues.numero}#${parsedValues.suffixe}#${parsedValues.commune_deleguee_insee}`;
+  return `${parsedValues.numero}#${parsedValues.suffixe}#${parsedValues.voie_nom}#${parsedValues.commune_deleguee_insee}`;
 }
 
 export async function getMapCodeCommuneBanId(
@@ -71,14 +71,21 @@ function getMapNameVoieBanId(
   parsedRows: ValidateRowType[],
 ): Record<string, string> {
   return chain(parsedRows)
-    .keyBy((row) => getVoieIdentifier(row))
-    .map((row) => [
-      getVoieIdentifier(row),
-      row.parsedValues.id_ban_toponyme ||
-        row.additionalValues?.uid_adresse?.idBanToponyme ||
-        uuid(),
-    ])
-    .fromPairs()
+    .groupBy((row) => getVoieIdentifier(row))
+    .mapValues((rows) => {
+      const rowWithValue = rows.find(
+        (row) =>
+          row.parsedValues.id_ban_toponyme ||
+          row.additionalValues?.uid_adresse?.idBanToponyme,
+      );
+      if (rowWithValue) {
+        return (
+          rowWithValue.parsedValues.id_ban_toponyme ||
+          rowWithValue.additionalValues?.uid_adresse?.idBanToponyme
+        );
+      }
+      return uuid();
+    })
     .value();
 }
 
@@ -87,14 +94,21 @@ function getMapNumeroBanId(
 ): Record<string, string> {
   return chain(parsedRows)
     .filter(({ parsedValues }) => parsedValues.numero !== 99_999)
-    .keyBy((row) => getNumeroIdentifier(row))
-    .map((row) => [
-      getNumeroIdentifier(row),
-      row.parsedValues.id_ban_adresse ||
-        row.additionalValues?.uid_adresse?.idBanAdresse ||
-        uuid(),
-    ])
-    .fromPairs()
+    .groupBy((row) => getNumeroIdentifier(row))
+    .mapValues((rows) => {
+      const rowWithValue = rows.find(
+        (row) =>
+          row.parsedValues.id_ban_adresse ||
+          row.additionalValues?.uid_adresse?.idBanAdresse,
+      );
+      if (rowWithValue) {
+        return (
+          rowWithValue.parsedValues.id_ban_adresse ||
+          rowWithValue.additionalValues?.uid_adresse?.idBanAdresse
+        );
+      }
+      return uuid();
+    })
     .value();
 }
 
@@ -141,10 +155,7 @@ function remediationBanIds(
         'rows.every_line_required_id_ban',
         'row.lack_of_id_ban',
       ],
-      value:
-        mapNomVoieBanId[
-          `${normalize(row.parsedValues.voie_nom)}#${row.parsedValues.commune_deleguee_insee}`
-        ],
+      value: mapNomVoieBanId[getVoieIdentifier(row)],
     };
   }
   if (!idBanAdresse && row.parsedValues.numero !== 99_999) {
@@ -155,10 +166,7 @@ function remediationBanIds(
         'rows.every_line_required_id_ban',
         'row.lack_of_id_ban',
       ],
-      value:
-        mapNumeroBanId[
-          `${row.parsedValues.numero}#${row.parsedValues.suffixe}#${row.parsedValues.commune_deleguee_insee}`
-        ],
+      value: mapNumeroBanId[getNumeroIdentifier(row)],
     };
   }
 }
