@@ -4,67 +4,12 @@ import { normalize } from '@ban-team/adresses-util/lib/voies';
 import { chain } from 'lodash';
 import { v4 as uuid } from 'uuid';
 
-const BAN_API_URL = 'https://plateforme.adresse.data.gouv.fr';
-
-type DistrictBanResponse = {
-  status: 'success' | 'error';
-  response: { id: string }[];
-};
-
-export async function getCommuneBanIdByCodeCommune(
-  codeCommune: string,
-): Promise<DistrictBanResponse> {
-  const response = await fetch(
-    `${BAN_API_URL}/api/district/cog/${codeCommune}`,
-  );
-  if (!response.ok) {
-    const body = await response.json();
-    throw new Error(body.message);
-  }
-
-  return response.json();
-}
-
 export function getVoieIdentifier({ parsedValues }: ValidateRowType) {
   return `${normalize(parsedValues.voie_nom)}#${parsedValues.commune_deleguee_insee}`;
 }
 
 export function getNumeroIdentifier({ parsedValues }: ValidateRowType) {
   return `${parsedValues.numero}#${parsedValues.suffixe}#${parsedValues.voie_nom}#${parsedValues.commune_deleguee_insee}`;
-}
-
-export async function getMapCodeCommuneBanId(
-  parsedRows: ValidateRowType[],
-): Promise<Record<string, string>> | undefined {
-  const indexCommuneBanIds: Record<string, string> = {};
-
-  const codeCommunes = new Set<string>([
-    ...parsedRows
-      .filter(
-        ({ parsedValues, additionalValues }) =>
-          parsedValues.commune_insee ||
-          additionalValues?.cle_interop?.codeCommune,
-      )
-      .map(
-        ({ parsedValues, additionalValues }) =>
-          parsedValues.commune_insee ||
-          additionalValues?.cle_interop?.codeCommune,
-      ),
-  ]);
-  try {
-    for (const codeCommune of Array.from(codeCommunes)) {
-      const res = await getCommuneBanIdByCodeCommune(codeCommune);
-      if (res.status == 'success' && res.response) {
-        indexCommuneBanIds[codeCommune] = res.response[0].id;
-      }
-    }
-  } catch {
-    console.error(
-      `Impossible de récupèrer id_ban_commune pour les communes suivantes : ${Array.from(codeCommunes).join(', ')}`,
-    );
-    return undefined;
-  }
-  return indexCommuneBanIds;
 }
 
 function getMapNameVoieBanId(
@@ -118,7 +63,7 @@ function validateRowsEmpty(
 ) {
   // VERIFIE QUE LE FICHIER N'EST PAS VIDE
   if (rows.length <= 0) {
-    addError('rows.empty');
+    addError('empty');
   }
 }
 
@@ -189,11 +134,12 @@ async function validateUseBanIds(
   rows: ValidateRowType[],
   {
     addError,
+    mapCodeCommuneBanId,
   }: {
     addError: (code: string) => void;
+    mapCodeCommuneBanId: Record<string, string>;
   },
 ) {
-  const mapCodeCommuneBanId = await getMapCodeCommuneBanId(rows);
   const mapNomVoieBanId = getMapNameVoieBanId(rows);
   const mapNumeroBanId = getMapNumeroBanId(rows);
   const districtIDs = new Set();
@@ -221,19 +167,11 @@ async function validateUseBanIds(
   if (balAdresseUseBanId === rows.length) {
     // Check district IDs consistency
     if (districtIDs.size > 1) {
-      addError('rows.multi_id_ban_commune');
-    }
-    if (
-      mapCodeCommuneBanId &&
-      !Array.from(districtIDs).every((districtID: string) =>
-        Object.values(mapCodeCommuneBanId).includes(districtID),
-      )
-    ) {
-      addError('rows.cog_no_match_id_ban_commune');
+      addError('multi_id_ban_commune');
     }
     return true;
   } else if (balAdresseUseBanId > 0) {
-    addError('rows.every_line_required_id_ban');
+    addError('every_line_required_id_ban');
   }
 }
 
@@ -241,12 +179,14 @@ async function validateRows(
   rows: ValidateRowType[],
   {
     addError,
+    mapCodeCommuneBanId,
   }: {
     addError: (code: string) => void;
+    mapCodeCommuneBanId: Record<string, string>;
   },
 ) {
   validateRowsEmpty(rows, { addError });
-  await validateUseBanIds(rows, { addError });
+  await validateUseBanIds(rows, { addError, mapCodeCommuneBanId });
 }
 
 export default validateRows;

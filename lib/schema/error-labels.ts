@@ -114,12 +114,12 @@ const errorLabels: Record<string, string> = {
   'row.adresse_incomplete':
     'L’adresse est incomplète (numéro ou nom de la voie non renseignés)',
   'row.lack_of_id_ban': 'Il manque un ou plusieurs ids ban sur la ligne',
+  'row.cog_no_match_id_ban_commune':
+    'Le code_insee ne correspond pas au bon id_ban_commune',
   // ROWS LEVEL ERROR
   'rows.empty': 'Aucune ligne détecté',
   'rows.multi_id_ban_commune':
     'Il ne peut pas y avoir differents id_ban_commune',
-  'rows.cog_no_match_id_ban_commune':
-    'Le code_insee ne correspond pas au bon id_ban_commune',
   'rows.every_line_required_id_ban':
     'Les ids ban sont requis pour toutes les lignes si ils sont utilisés',
 };

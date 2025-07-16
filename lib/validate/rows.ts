@@ -9,6 +9,7 @@ import {
   RemediationsType,
   RemediationValue,
 } from '../schema/shema.type';
+import { getCommuneBanIdByCommuneINSEE } from '../utils/ban';
 
 export async function computeRows(
   parsedRows: Record<string, string>[],
@@ -23,12 +24,15 @@ export async function computeRows(
   },
 ): Promise<ValidateRowType[]> {
   const indexedFields: Record<string, FieldType> = keyBy(fields, 'name');
+  const mapCodeCommuneBanId: Record<string, string> = {};
+
   const computedRows: ValidateRowType[] = await bluebird.map(
     parsedRows,
     async (parsedRow: Record<string, string>, line: number) => {
-      const computedRow: ValidateRowType = validateRow(parsedRow, {
+      const computedRow: ValidateRowType = await validateRow(parsedRow, {
         indexedFields,
         line,
+        mapCodeCommuneBanId,
       });
       for (const e of computedRow.errors) {
         rowsErrors.add(e.code);
@@ -41,8 +45,9 @@ export async function computeRows(
 
   await Schema.rows(computedRows, {
     addError(code: string) {
-      globalErrors.add(code);
+      globalErrors.add(`rows.${code}`);
     },
+    mapCodeCommuneBanId,
   });
 
   return computedRows;
@@ -91,16 +96,18 @@ export function readValue(fieldName: string, rawValue: string): ReadValueType {
   return result;
 }
 
-export function validateRow(
+export async function validateRow(
   row: Record<string, string>,
   {
     indexedFields,
     line,
+    mapCodeCommuneBanId,
   }: {
     indexedFields: Record<string, FieldType>;
     line: number;
+    mapCodeCommuneBanId: Record<string, string>;
   },
-): ValidateRowType {
+): Promise<ValidateRowType> {
   const rawValues: Record<string, string> = {};
   const parsedValues: ParsedValues = {};
   const remediations: RemediationsType = {};
@@ -160,6 +167,14 @@ export function validateRow(
     line,
   };
 
+  // ON RECUPERE L'UUID DISTRICT BAN
+  const communeINSEE =
+    parsedValues.commune_insee || additionalValues?.cle_interop?.codeCommune;
+  if (!Object.keys(mapCodeCommuneBanId).includes(communeINSEE)) {
+    mapCodeCommuneBanId[communeINSEE] =
+      await getCommuneBanIdByCommuneINSEE(communeINSEE);
+  }
+
   Schema.row(validateRow, {
     addError(code: string) {
       errors.push({ code: `row.${code}` });
@@ -167,6 +182,7 @@ export function validateRow(
     addRemediation<T>(key: string, value: RemediationValue<T>) {
       remediations[key] = value;
     },
+    mapCodeCommuneBanId,
   });
 
   return validateRow;

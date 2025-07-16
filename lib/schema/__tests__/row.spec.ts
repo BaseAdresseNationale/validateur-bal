@@ -25,6 +25,7 @@ describe('VALIDATE ROW', () => {
       addError: () => {},
       addRemediation: <T>(key: string, value: RemediationValue<T>) =>
         (remediations[key] = value),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
 
     expect(remediations).toEqual({
@@ -56,6 +57,7 @@ describe('VALIDATE ROW', () => {
       addError: () => {},
       addRemediation: <T>(key: string, value: RemediationValue<T>) =>
         (remediations[key] = value),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
 
     expect(remediations).toEqual({
@@ -83,6 +85,7 @@ describe('VALIDATE ROW', () => {
       addError: () => {},
       addRemediation: <T>(key: string, value: RemediationValue<T>) =>
         (remediations[key] = value),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
 
     expect(remediations).toEqual({
@@ -117,6 +120,7 @@ describe('VALIDATE ROW', () => {
       await validateRow(row, {
         addError,
         addRemediation,
+        mapCodeCommuneBanId: { '91534': undefined },
       });
 
       expect(addError).toHaveBeenCalledWith('chef_lieu_invalide');
@@ -143,6 +147,7 @@ describe('VALIDATE ROW', () => {
       await validateRow(row, {
         addError,
         addRemediation,
+        mapCodeCommuneBanId: { '91534': undefined },
       });
 
       expect(addError).not.toHaveBeenCalledWith('chef_lieu_invalide');
@@ -170,6 +175,7 @@ describe('VALIDATE ROW', () => {
       await validateRow(row, {
         addError,
         addRemediation,
+        mapCodeCommuneBanId: { '91534': undefined },
       });
 
       expect(addError).not.toHaveBeenCalledWith('chef_lieu_invalide');
@@ -199,6 +205,7 @@ describe('VALIDATE ROW', () => {
       await validateRow(row, {
         addError,
         addRemediation,
+        mapCodeCommuneBanId: { '91534': undefined },
       });
 
       expect(addError).not.toHaveBeenCalledWith('chef_lieu_invalide');

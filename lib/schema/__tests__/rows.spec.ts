@@ -38,6 +38,7 @@ describe('VALIDATE ROWS', () => {
     ];
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
     expect(errors).toEqual([]);
   });
@@ -47,8 +48,9 @@ describe('VALIDATE ROWS', () => {
     const rows: any[] = [];
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
-    expect(errors).toContain('rows.empty');
+    expect(errors).toContain('empty');
   });
 
   it('TEST no ban_ids', async () => {
@@ -81,6 +83,7 @@ describe('VALIDATE ROWS', () => {
     ];
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
     expect(errors).toEqual([]);
   });
@@ -115,6 +118,7 @@ describe('VALIDATE ROWS', () => {
     ];
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
     expect(errors).toEqual([]);
   });
@@ -149,8 +153,9 @@ describe('VALIDATE ROWS', () => {
     ];
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
-    expect(errors).toContain('rows.multi_id_ban_commune');
+    expect(errors).toContain('multi_id_ban_commune');
   });
 
   it('TEST rows.every_line_required_id_ban', async () => {
@@ -180,11 +185,12 @@ describe('VALIDATE ROWS', () => {
     ];
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
-    expect(errors).toContain('rows.every_line_required_id_ban');
+    expect(errors).toContain('every_line_required_id_ban');
   });
 
-  it('TEST uuid_adresse rows.every_line_required_id_ban', async () => {
+  it('TEST uuid_adresse every_line_required_id_ban', async () => {
     const errors: string[] = [];
     const rows: any[] = [
       {
@@ -215,50 +221,9 @@ describe('VALIDATE ROWS', () => {
     ];
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
-    expect(errors).toContain('rows.every_line_required_id_ban');
-  });
-
-  it('TEST rows.cog_no_match_id_ban_commune', async () => {
-    const errors: string[] = [];
-    const rows: any[] = [
-      {
-        additionalValues: {
-          uid_adresse: {
-            idBanCommune: '0246e48c-f33d-433a-8984-034219be842e',
-            idBanToponyme: '0246e48c-f33d-433a-8984-034219be842e',
-            idBanAdresse: '0246e48c-f33d-433a-8984-034219be842e',
-          },
-        },
-        parsedValues: {
-          voie_nom: 'rue du Colombier',
-          numero: 1,
-          commune_insee: '91534',
-        },
-        remediations: {},
-        rawValues: {},
-      },
-      {
-        additionalValues: {
-          uid_adresse: {
-            idBanCommune: '0246e48c-f33d-433a-8984-034219be842a',
-            idBanToponyme: '0246e48c-f33d-433a-8984-034219be842e',
-            idBanAdresse: '0246e48c-f33d-433a-8984-034219be842e',
-          },
-        },
-        parsedValues: {
-          voie_nom: 'rue du Colombier',
-          numero: 2,
-          commune_insee: '91534',
-        },
-        remediations: {},
-        rawValues: {},
-      },
-    ];
-    await validateRows(rows, {
-      addError: (e: string) => errors.push(e),
-    });
-    expect(errors).toContain('rows.cog_no_match_id_ban_commune');
+    expect(errors).toContain('every_line_required_id_ban');
   });
 
   it('TEST remediation des id_ban manquants avec changement de commune deleguee', async () => {
@@ -299,6 +264,7 @@ describe('VALIDATE ROWS', () => {
     ];
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
 
     // Vérification que les remediations contiennent les id_ban
@@ -376,6 +342,7 @@ describe('VALIDATE ROWS', () => {
 
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
 
     expect(rows[0].parsedValues.id_ban_toponyme).toBe(

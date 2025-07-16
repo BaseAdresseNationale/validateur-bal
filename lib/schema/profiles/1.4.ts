@@ -9,8 +9,8 @@ const errors: string[] = [
   'id_ban_adresse.type_invalide',
   'uid_adresse.type_invalide',
   'row.lack_of_id_ban',
+  'row.cog_no_match_id_ban_commune',
   'rows.multi_id_ban_commune',
-  'rows.cog_no_match_id_ban_commune',
   'rows.every_line_required_id_ban',
 ];
 
