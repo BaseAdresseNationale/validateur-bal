@@ -1,5 +1,5 @@
-import { getCodeCommune } from '../schema/row';
 import { ValidateRowType } from '../validate/validate.type';
+import { getCodeCommune } from './helpers';
 
 const BAN_API_URL = 'https://plateforme.adresse.data.gouv.fr';
 

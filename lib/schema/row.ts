@@ -5,13 +5,7 @@ import { normalize } from '@ban-team/adresses-util/lib/voies';
 import { ValidateRowType } from '../validate/validate.type';
 import { RemediationValue } from './shema.type';
 import { getErrorMissingOrValeurManquante } from '../utils/remediation';
-
-export function getCodeCommune(row: ValidateRowType) {
-  return (
-    row.parsedValues.commune_insee ||
-    row.additionalValues?.cle_interop?.codeCommune
-  );
-}
+import { getCodeCommune } from '../utils/helpers';
 
 function validateNumero(
   row: ValidateRowType,
