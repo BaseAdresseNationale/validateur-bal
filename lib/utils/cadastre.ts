@@ -1,15 +1,15 @@
-const BAN_API_URL = 'https://plateforme.adresse.data.gouv.fr';
+import { FeatureCollection } from 'geojson';
 
-type DistrictBanResponse = {
+const CADASTRE_API_URL = 'https://cadastre.data.gouv.fr/bundler';
+
+type CadastreResponse = {
   status: 'success' | 'error';
-  response: { id: string }[];
+  response: FeatureCollection;
 };
 
-async function fetchDistrictBan(
-  communeINSEE: string,
-): Promise<DistrictBanResponse> {
+async function fetchCadastre(communeINSEE: string): Promise<CadastreResponse> {
   const response = await fetch(
-    `${BAN_API_URL}/api/district/cog/${communeINSEE}`,
+    `${CADASTRE_API_URL}/cadastre-etalab/communes/${communeINSEE}/geojson/parcelles`,
   );
   if (!response.ok) {
     const body = await response.json();
@@ -19,11 +19,11 @@ async function fetchDistrictBan(
   return response.json();
 }
 
-export async function getCommuneBanIdByCommuneINSEE(
+export async function getCommuneCadastreByCommuneINSEE(
   communeINSEE: string,
-): Promise<string> {
+): Promise<FeatureCollection> {
   try {
-    const res = await fetchDistrictBan(communeINSEE);
+    const res = await fetchCadastre(communeINSEE);
     if (res.status === 'success' && res.response) {
       return res.response[0].id;
     }

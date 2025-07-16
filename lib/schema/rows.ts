@@ -4,7 +4,13 @@ import { normalize } from '@ban-team/adresses-util/lib/voies';
 import { chain } from 'lodash';
 import { v4 as uuid } from 'uuid';
 import * as turf from '@turf/turf';
-import { Feature, Point } from 'geojson';
+import {
+  Feature,
+  FeatureCollection,
+  LineString,
+  Point,
+  Polygon,
+} from 'geojson';
 
 function validateRowsEmpty(
   rows: ValidateRowType[],
@@ -211,10 +217,51 @@ function validateRowsCoords(rows: ValidateRowType[]) {
       .map((otherPoint) => turf.distance(currentPoint, otherPoint))
       .filter((distance) => distance > 0);
     // Si le point de la ligne esT distant de plus 1km de tous les autres points de la même voie
-    if (Math.min(...distances) > 1) {
+    if (distances.length > 0 && Math.min(...distances) > 1) {
       row.errors?.push({
         code: 'row.coord_outlier',
       });
+    }
+  }
+}
+
+function validateRowsCadastreNextToLongLat(
+  rows: ValidateRowType[],
+  { cadastreGeoJSON }: { cadastreGeoJSON: FeatureCollection },
+) {
+  for (const row of rows) {
+    if (
+      !row.parsedValues.long ||
+      !row.parsedValues.lat ||
+      !row.parsedValues.cad_parcelles
+    ) {
+      continue;
+    }
+
+    const point = turf.point([row.parsedValues.long, row.parsedValues.lat]);
+    for (const parcelleId of row.parsedValues.cad_parcelles) {
+      const parcellesGeoJSON = cadastreGeoJSON.features.find(
+        (feature) => feature.id === parcelleId,
+      );
+      if (!parcellesGeoJSON) {
+        continue;
+      }
+
+      const lineString = turf.polygonToLine(
+        parcellesGeoJSON as Feature<Polygon>,
+      );
+
+      const distance = turf.pointToLineDistance(
+        point,
+        lineString as Feature<LineString>,
+      );
+
+      console.log('distance', distance);
+      if (distance > 1) {
+        row.errors?.push({
+          code: 'row.cadastre_outlier',
+        });
+      }
     }
   }
 }
@@ -224,13 +271,18 @@ function validateRows(
   {
     addError,
     mapCodeCommuneBanId,
+    cadastreGeoJSON,
   }: {
     addError: (code: string) => void;
     mapCodeCommuneBanId: Record<string, string>;
+    cadastreGeoJSON: FeatureCollection | undefined;
   },
 ) {
   validateRowsEmpty(rows, { addError });
   validateRowsCoords(rows);
+  if (cadastreGeoJSON) {
+    validateRowsCadastreNextToLongLat(rows, { cadastreGeoJSON });
+  }
   validateUseBanIds(rows, { addError, mapCodeCommuneBanId });
 }
 

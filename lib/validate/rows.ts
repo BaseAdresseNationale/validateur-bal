@@ -10,6 +10,7 @@ import {
   RemediationValue,
 } from '../schema/shema.type';
 import { getCommuneBanIdByCommuneINSEE } from '../utils/ban';
+import { getCommuneCadastreByCommuneINSEE } from '../utils/cadastre';
 
 export async function computeRows(
   parsedRows: Record<string, string>[],
@@ -43,11 +44,19 @@ export async function computeRows(
     { concurrency: 4 },
   );
 
+  let cadastreGeoJSON = undefined;
+  if (Object.keys(mapCodeCommuneBanId).length <= 1) {
+    cadastreGeoJSON = await getCommuneCadastreByCommuneINSEE(
+      Object.keys(mapCodeCommuneBanId)[0],
+    );
+  }
+
   Schema.rows(computedRows, {
     addError(code: string) {
       globalErrors.add(`rows.${code}`);
     },
     mapCodeCommuneBanId,
+    cadastreGeoJSON,
   });
 
   return computedRows;
