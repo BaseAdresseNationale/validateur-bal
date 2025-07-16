@@ -1,6 +1,7 @@
 import proj from '@etalab/project-legal';
 import { format } from 'date-fns';
 import { getCommune } from '../utils/cog';
+import { normalize } from '@ban-team/adresses-util/lib/voies';
 import { ValidateRowType } from '../validate/validate.type';
 import { RemediationValue } from './shema.type';
 import { getErrorMissingOrValeurManquante } from '../utils/remediation';
@@ -56,6 +57,21 @@ function validateCommuneInsee(
       errors: [getErrorMissingOrValeurManquante('commune_nom', row)],
       value: commune?.nom,
     });
+  }
+}
+
+/**
+ * ON VERIFIE QUE LE voie_nom ET LE lieudit_complement_nom SONT DIFFERENT
+ */
+function validateVoieNomDiffComplementNom(
+  row: ValidateRowType,
+  { addError }: { addError: (code: string) => void },
+) {
+  if (
+    normalize(row.parsedValues.voie_nom) ===
+    normalize(row.parsedValues.lieudit_complement_nom)
+  ) {
+    addError('voie_nom_have_same_lieudit_complement_nom');
   }
 }
 
@@ -231,6 +247,7 @@ function validateRow(
 ) {
   validateNumero(row, { addError });
   validateCommuneInsee(row, { addError, addRemediation });
+  validateVoieNomDiffComplementNom(row, { addError });
   validatePositionType(row, { addError });
   validateCoords(row, { addError });
   validateMinimalAdress(row, { addError });

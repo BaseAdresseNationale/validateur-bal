@@ -100,6 +100,8 @@ const errorLabels: Record<string, string> = {
   // ROW LEVEL ERROR
   'row.incoherence_numero':
     'Le numéro ne correspond pas à la valeur présente dans la clé',
+  'row.voie_nom_have_same_lieudit_complement_nom':
+    'Le nom de la voie et le nom du lieudit complémentaire sont identiques',
   'row.position_manquante': 'Position nulle',
   'row.chef_lieu_invalide':
     'La code INSEE de la commune courante ne correspond pas au chef lieu de la commune disparue renseignée',

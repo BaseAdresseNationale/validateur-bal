@@ -68,6 +68,56 @@ describe('VALIDATE ROW', () => {
     });
   });
 
+  it('TEST voie_nom avec lieudit_complement_nom EGAL', async () => {
+    const errors: string[] = [];
+    const row: any = {
+      parsedValues: {
+        commune_insee: '91534',
+        voie_nom: 'rue du Colombier',
+        lieudit_complement_nom: '   rue du  colombier   ',
+        numero: 1,
+        date_der_maj: '2023-12-25',
+      },
+      rawValues: {},
+      remediations: {},
+    };
+
+    await validateRow(row, {
+      addError: (str: string) => {
+        errors.push(str);
+      },
+      addRemediation: () => {},
+      mapCodeCommuneBanId: { '91534': undefined },
+    });
+
+    expect(errors).toContain('voie_nom_have_same_lieudit_complement_nom');
+  });
+
+  it('TEST voie_nom avec lieudit_complement_nom DIFF', async () => {
+    const errors: string[] = [];
+    const row: any = {
+      parsedValues: {
+        commune_insee: '91534',
+        voie_nom: 'rue du Colombier',
+        lieudit_complement_nom: '   la ferme   ',
+        numero: 1,
+        date_der_maj: '2023-12-25',
+      },
+      rawValues: {},
+      remediations: {},
+    };
+
+    await validateRow(row, {
+      addError: (str: string) => {
+        errors.push(str);
+      },
+      addRemediation: () => {},
+      mapCodeCommuneBanId: { '91534': undefined },
+    });
+
+    expect(errors).not.toContain('voie_nom_have_same_lieudit_complement_nom');
+  });
+
   it('TEST date_der_maj default now', async () => {
     const remediations: any = {};
     const row: any = {
