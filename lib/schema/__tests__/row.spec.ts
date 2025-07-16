@@ -146,6 +146,39 @@ describe('VALIDATE ROW', () => {
     });
   });
 
+  it('TEST commune_nom_invalide', async () => {
+    const errors: string[] = [];
+    const remediations: any = {};
+    const row: any = {
+      parsedValues: {
+        commune_insee: '91534',
+        commune_nom: 'Mauvaise Commune',
+        voie_nom: 'rue du Colombier',
+        numero: 1,
+        date_der_maj: '2023-12-25',
+      },
+      rawValues: {},
+      remediations: {},
+    };
+
+    await validateRow(row, {
+      addError: (str: string) => {
+        errors.push(str);
+      },
+      addRemediation: <T>(key: string, value: RemediationValue<T>) =>
+        (remediations[key] = value),
+      mapCodeCommuneBanId: { '91534': undefined },
+    });
+
+    expect(errors).toContain('commune_nom_invalide');
+    expect(remediations).toEqual({
+      commune_nom: {
+        errors: ['commune_nom_invalide'],
+        value: 'Saclay',
+      },
+    });
+  });
+
   describe('code_insee chef lieu', () => {
     it('TEST bad chef lieu', async () => {
       const row: any = {
