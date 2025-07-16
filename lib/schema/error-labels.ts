@@ -106,6 +106,7 @@ const errorLabels: Record<string, string> = {
   'row.chef_lieu_invalide':
     'La code INSEE de la commune courante ne correspond pas au chef lieu de la commune disparue renseignée',
   'row.commune_manquante': 'Aucun code commune valide n’est renseigné',
+  'row.commune_nom_invalide': 'Le nom de la commune est invalide',
   'row.longlat_vides': 'Les coordonnées long/lat ne sont pas renseignées',
   'row.longlat_invalides':
     'Les coordonnées long/lat sont en dehors du territoire ou invalides',

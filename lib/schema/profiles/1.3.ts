@@ -48,6 +48,7 @@ export const warnings: string[] = [
   'date_der_maj.date_future',
   'certification_commune.valeur_invalide',
   'row.voie_nom_have_same_lieudit_complement_nom',
+  'row.commune_nom_invalide',
   'row.position_manquante',
   'row.chef_lieu_invalide',
   'row.longlat_xy_incoherents',
