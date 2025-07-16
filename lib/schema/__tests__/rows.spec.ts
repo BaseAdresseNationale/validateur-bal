@@ -502,7 +502,55 @@ describe('VALIDATE ROWS', () => {
     ]);
   });
 
-  it('TEST no cadastre_outlier', async () => {
+  it('TEST cadastre_no_exist', async () => {
+    const rows: any[] = [
+      {
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 1,
+          long: 2.3522,
+          lat: 48.8566,
+          cad_parcelles: ['914350000A1089'],
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+    ];
+    await validateRows(rows, {
+      addError: () => {},
+      mapCodeCommuneBanId: { '91534': undefined },
+      cadastreGeoJSON: {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            id: '914350000A1080',
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [2.3522, 48.8566],
+                  [2.353, 48.857],
+                  [2.354, 48.856],
+                  [2.3522, 48.8566],
+                ],
+              ],
+            },
+            properties: {},
+          },
+        ],
+      },
+    });
+    expect(rows[0].errors).toEqual([
+      {
+        code: 'row.cadastre_no_exist',
+      },
+    ]);
+  });
+
+  it('TEST no cadastre_outlier and no cadastre_no_exist', async () => {
     const rows: any[] = [
       {
         parsedValues: {

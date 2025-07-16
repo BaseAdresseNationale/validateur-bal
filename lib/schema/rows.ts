@@ -229,6 +229,26 @@ function validateRowsCoords(rows: ValidateRowType[]) {
   }
 }
 
+function validateRowsCadastre(
+  rows: ValidateRowType[],
+  { cadastreGeoJSON }: { cadastreGeoJSON: FeatureCollection },
+) {
+  for (const row of rows) {
+    if (row.parsedValues.cad_parcelles) {
+      for (const parcelleId of row.parsedValues.cad_parcelles) {
+        const parcelleExistInCommune = cadastreGeoJSON.features.some(
+          (feature) => feature.id === parcelleId,
+        );
+        if (!parcelleExistInCommune) {
+          row.errors?.push({
+            code: 'row.cadastre_no_exist',
+          });
+        }
+      }
+    }
+  }
+}
+
 function validateRowsCadastreNextToLongLat(
   rows: ValidateRowType[],
   { cadastreGeoJSON }: { cadastreGeoJSON: FeatureCollection },
@@ -262,7 +282,7 @@ function validateRowsCadastreNextToLongLat(
           lineString as Feature<LineString>,
         );
         // Si la distance est supérieure à 1km, on ajoute un erreur
-        if (distance > 1) {
+        if (distance > 0.5) {
           row.errors?.push({
             code: 'row.cadastre_outlier',
           });
@@ -289,6 +309,7 @@ function validateRows(
   validateRowsEmpty(rows, { addError });
   validateRowsCoords(rows);
   if (cadastreGeoJSON) {
+    validateRowsCadastre(rows, { cadastreGeoJSON });
     validateRowsCadastreNextToLongLat(rows, { cadastreGeoJSON });
   }
   validateUseBanIds(rows, { addError, mapCodeCommuneBanId });
