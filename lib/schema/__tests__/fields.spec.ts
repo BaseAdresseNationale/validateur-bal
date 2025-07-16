@@ -40,6 +40,18 @@ describe('VALIDATE FIELDS', () => {
     });
   });
 
+  describe('numero', () => {
+    it('numero over 99999', () => {
+      const addError: (error: string) => void = jest.fn();
+
+      fields['numero'].parse('9999999', {
+        addError,
+      });
+
+      expect(addError).not.toHaveBeenCalled();
+    });
+  });
+
   describe('commune_insee', () => {
     it('commune_insee inexistante', () => {
       const addError: (error: string) => void = jest.fn();
@@ -65,6 +77,38 @@ describe('VALIDATE FIELDS', () => {
       const addError: (error: string) => void = jest.fn();
 
       fields['commune_insee'].parse('91534', {
+        addError,
+      });
+
+      expect(addError).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('commune_nom', () => {
+    it('commune_nom majuscule', () => {
+      const addError: (error: string) => void = jest.fn();
+
+      fields['commune_nom'].parse('SACLAY', {
+        addError,
+      });
+
+      expect(addError).toHaveBeenCalledWith('casse_incorrecte');
+    });
+
+    it('commune_nom minuscule', () => {
+      const addError: (error: string) => void = jest.fn();
+
+      fields['commune_nom'].parse('saclay', {
+        addError,
+      });
+
+      expect(addError).toHaveBeenCalledWith('casse_incorrecte');
+    });
+
+    it('commune_nom GOOD', () => {
+      const addError: (error: string) => void = jest.fn();
+
+      fields['commune_nom'].parse('Saclay', {
         addError,
       });
 

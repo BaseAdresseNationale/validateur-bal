@@ -1,116 +1,15 @@
-import { IS_TOPO_NB, ValidateRowType } from '../validate/validate.type';
-import { getCodeCommune } from './row';
-import { normalize } from '@ban-team/adresses-util/lib/voies';
+import { ValidateRowType } from '../validate/validate.type';
 import { chain } from 'lodash';
-import { v4 as uuid } from 'uuid';
-
-const BAN_API_URL = 'https://plateforme.adresse.data.gouv.fr';
-
-type DistrictBanResponse = {
-  status: 'success' | 'error';
-  response: { id: string }[];
-};
-
-export async function getCommuneBanIdByCodeCommune(
-  codeCommune: string,
-): Promise<DistrictBanResponse> {
-  const response = await fetch(
-    `${BAN_API_URL}/api/district/cog/${codeCommune}`,
-  );
-  if (!response.ok) {
-    const body = await response.json();
-    throw new Error(body.message);
-  }
-
-  return response.json();
-}
-
-export function getVoieIdentifier({ parsedValues }: ValidateRowType) {
-  return `${normalize(parsedValues.voie_nom)}#${parsedValues.commune_deleguee_insee}`;
-}
-
-export function getNumeroIdentifier({ parsedValues }: ValidateRowType) {
-  return `${parsedValues.numero}#${parsedValues.suffixe}#${parsedValues.voie_nom}#${parsedValues.commune_deleguee_insee}`;
-}
-
-export async function getMapCodeCommuneBanId(
-  parsedRows: ValidateRowType[],
-): Promise<Record<string, string>> | undefined {
-  const indexCommuneBanIds: Record<string, string> = {};
-
-  const codeCommunes = new Set<string>([
-    ...parsedRows
-      .filter(
-        ({ parsedValues, additionalValues }) =>
-          parsedValues.commune_insee ||
-          additionalValues?.cle_interop?.codeCommune,
-      )
-      .map(
-        ({ parsedValues, additionalValues }) =>
-          parsedValues.commune_insee ||
-          additionalValues?.cle_interop?.codeCommune,
-      ),
-  ]);
-  try {
-    for (const codeCommune of Array.from(codeCommunes)) {
-      const res = await getCommuneBanIdByCodeCommune(codeCommune);
-      if (res.status == 'success' && res.response) {
-        indexCommuneBanIds[codeCommune] = res.response[0].id;
-      }
-    }
-  } catch {
-    console.error(
-      `Impossible de récupèrer id_ban_commune pour les communes suivantes : ${Array.from(codeCommunes).join(', ')}`,
-    );
-    return undefined;
-  }
-  return indexCommuneBanIds;
-}
-
-function getMapNameVoieBanId(
-  parsedRows: ValidateRowType[],
-): Record<string, string> {
-  return chain(parsedRows)
-    .groupBy((row) => getVoieIdentifier(row))
-    .mapValues((rows) => {
-      const rowWithValue = rows.find(
-        (row) =>
-          row.parsedValues.id_ban_toponyme ||
-          row.additionalValues?.uid_adresse?.idBanToponyme,
-      );
-      if (rowWithValue) {
-        return (
-          rowWithValue.parsedValues.id_ban_toponyme ||
-          rowWithValue.additionalValues?.uid_adresse?.idBanToponyme
-        );
-      }
-      return uuid();
-    })
-    .value();
-}
-
-function getMapNumeroBanId(
-  parsedRows: ValidateRowType[],
-): Record<string, string> {
-  return chain(parsedRows)
-    .filter(({ parsedValues }) => parsedValues.numero !== 99_999)
-    .groupBy((row) => getNumeroIdentifier(row))
-    .mapValues((rows) => {
-      const rowWithValue = rows.find(
-        (row) =>
-          row.parsedValues.id_ban_adresse ||
-          row.additionalValues?.uid_adresse?.idBanAdresse,
-      );
-      if (rowWithValue) {
-        return (
-          rowWithValue.parsedValues.id_ban_adresse ||
-          rowWithValue.additionalValues?.uid_adresse?.idBanAdresse
-        );
-      }
-      return uuid();
-    })
-    .value();
-}
+import * as turf from '@turf/turf';
+import {
+  Feature,
+  FeatureCollection,
+  LineString,
+  Point,
+  Polygon,
+} from 'geojson';
+import { getVoieIdentifier } from '../utils/helpers';
+import { validateUseBanIds, validateVoieBanIds } from './rows/ban_ids';
 
 function validateRowsEmpty(
   rows: ValidateRowType[],
@@ -118,135 +17,147 @@ function validateRowsEmpty(
 ) {
   // VERIFIE QUE LE FICHIER N'EST PAS VIDE
   if (rows.length <= 0) {
-    addError('rows.empty');
+    addError('empty');
   }
 }
 
-function remediationBanIds(
-  row: ValidateRowType,
-  { idBanCommune, idBanToponyme, idBanAdresse },
-  {
-    mapCodeCommuneBanId,
-    mapNomVoieBanId,
-    mapNumeroBanId,
-  }: {
-    mapCodeCommuneBanId: Record<string, string> | undefined;
-    mapNomVoieBanId: Record<string, string>;
-    mapNumeroBanId: Record<string, string>;
-  },
-) {
-  const codeCommune = getCodeCommune(row);
-  if (!idBanCommune && mapCodeCommuneBanId) {
-    row.remediations.id_ban_commune = {
-      errors: [
-        `field.id_ban_commune.missing`,
-        `id_ban_commune.valeur_manquante`,
-        'rows.every_line_required_id_ban',
-        'row.lack_of_id_ban',
-      ],
-      value: mapCodeCommuneBanId[codeCommune],
-    };
-  }
-  if (!idBanToponyme) {
-    row.remediations.id_ban_toponyme = {
-      errors: [
-        `field.id_ban_toponyme.missing`,
-        `id_ban_toponyme.valeur_manquante`,
-        'rows.every_line_required_id_ban',
-        'row.lack_of_id_ban',
-      ],
-      value: mapNomVoieBanId[getVoieIdentifier(row)],
-    };
-  }
-  if (!idBanAdresse && row.parsedValues.numero !== 99_999) {
-    row.remediations.id_ban_adresse = {
-      errors: [
-        `field.id_ban_adresse.missing`,
-        `id_ban_adresse.valeur_manquante`,
-        'rows.every_line_required_id_ban',
-        'row.lack_of_id_ban',
-      ],
-      value: mapNumeroBanId[getNumeroIdentifier(row)],
-    };
-  }
-}
-
-function getBanIdsFromRow(row: ValidateRowType) {
-  return {
-    idBanCommune:
-      row.parsedValues.id_ban_commune ||
-      row.additionalValues?.uid_adresse?.idBanCommune,
-    idBanToponyme:
-      row.parsedValues.id_ban_toponyme ||
-      row.additionalValues?.uid_adresse?.idBanToponyme,
-    idBanAdresse:
-      row.parsedValues.id_ban_adresse ||
-      row.additionalValues?.uid_adresse?.idBanAdresse,
-  };
-}
-
-async function validateUseBanIds(
-  rows: ValidateRowType[],
-  {
-    addError,
-  }: {
-    addError: (code: string) => void;
-  },
-) {
-  const mapCodeCommuneBanId = await getMapCodeCommuneBanId(rows);
-  const mapNomVoieBanId = getMapNameVoieBanId(rows);
-  const mapNumeroBanId = getMapNumeroBanId(rows);
-  const districtIDs = new Set();
-  let balAdresseUseBanId = 0;
-
-  for (const row of rows) {
-    const { idBanCommune, idBanToponyme, idBanAdresse } = getBanIdsFromRow(row);
-    const numero = row.parsedValues.numero;
-
-    if (
-      idBanCommune &&
-      idBanToponyme &&
-      (idBanAdresse || (!idBanAdresse && numero === Number(IS_TOPO_NB)))
-    ) {
-      balAdresseUseBanId++;
-      districtIDs.add(idBanCommune);
-    } else {
-      remediationBanIds(
-        row,
-        { idBanCommune, idBanToponyme, idBanAdresse },
-        { mapCodeCommuneBanId, mapNomVoieBanId, mapNumeroBanId },
+function getFeaturesPointsByVoie(
+  parsedRows: ValidateRowType[],
+): Record<string, Array<Feature<Point>>> {
+  return chain(parsedRows)
+    .filter(
+      ({ parsedValues }) =>
+        parsedValues.numero !== 99_999 && parsedValues.long && parsedValues.lat,
+    )
+    .groupBy((row) => getVoieIdentifier(row))
+    .mapValues((rows) => {
+      return rows.map(({ parsedValues }) =>
+        turf.point([parsedValues.long, parsedValues.lat]),
       );
+    })
+    .value();
+}
+
+function validateRowsCoords(rows: ValidateRowType[]) {
+  try {
+    // On créer un répètoire de features de points par voie
+    const pointsByVoie = getFeaturesPointsByVoie(rows);
+
+    for (const row of rows) {
+      if (
+        row.parsedValues.numero === 99_999 ||
+        !row.parsedValues.long ||
+        !row.parsedValues.lat
+      ) {
+        continue;
+      }
+      // On récupère les coordonnées du point de la ligne
+      const currentPoint = turf.point([
+        row.parsedValues.long,
+        row.parsedValues.lat,
+      ]);
+      // On calcule chaques distance avec les autres points de la même voie (sauf 0 le même point)
+      const voie = getVoieIdentifier(row);
+      const distances = pointsByVoie[voie]
+        .map((otherPoint) => turf.distance(currentPoint, otherPoint))
+        .filter((distance) => distance > 0);
+      // Si le point de la ligne esT distant de plus 1km de tous les autres points de la même voie
+      if (distances.length > 0 && Math.min(...distances) > 1) {
+        row.errors?.push({
+          code: 'row.coord_outlier',
+        });
+      }
     }
-  }
-  if (balAdresseUseBanId === rows.length) {
-    // Check district IDs consistency
-    if (districtIDs.size > 1) {
-      addError('rows.multi_id_ban_commune');
-    }
-    if (
-      mapCodeCommuneBanId &&
-      !Array.from(districtIDs).every((districtID: string) =>
-        Object.values(mapCodeCommuneBanId).includes(districtID),
-      )
-    ) {
-      addError('rows.cog_no_match_id_ban_commune');
-    }
-    return true;
-  } else if (balAdresseUseBanId > 0) {
-    addError('rows.every_line_required_id_ban');
+  } catch (error) {
+    console.error('Problème lors de la validation des coordonnées', error);
   }
 }
 
-async function validateRows(
+function validateRowsCadastre(
+  rows: ValidateRowType[],
+  { cadastreGeoJSON }: { cadastreGeoJSON: FeatureCollection },
+) {
+  for (const row of rows) {
+    if (row.parsedValues.cad_parcelles) {
+      for (const parcelleId of row.parsedValues.cad_parcelles) {
+        const parcelleExistInCommune = cadastreGeoJSON.features.some(
+          (feature) => feature.id === parcelleId,
+        );
+        if (!parcelleExistInCommune) {
+          row.errors?.push({
+            code: 'row.cadastre_no_exist',
+          });
+        }
+      }
+    }
+  }
+}
+
+function validateRowsCadastreNextToLongLat(
+  rows: ValidateRowType[],
+  { cadastreGeoJSON }: { cadastreGeoJSON: FeatureCollection },
+) {
+  try {
+    for (const row of rows) {
+      if (
+        !row.parsedValues.long ||
+        !row.parsedValues.lat ||
+        !row.parsedValues.cad_parcelles
+      ) {
+        continue;
+      }
+      // On crée un point à partir des coordonnées de la ligne
+      const point = turf.point([row.parsedValues.long, row.parsedValues.lat]);
+      for (const parcelleId of row.parsedValues.cad_parcelles) {
+        // On récupère le geoJSON de la parcelle dans le cadastre
+        const parcellesGeoJSON = cadastreGeoJSON.features.find(
+          (feature) => feature.id === parcelleId,
+        );
+        if (!parcellesGeoJSON) {
+          continue;
+        }
+        // On créer un ligne a partir du polygone
+        const lineString = turf.polygonToLine(
+          parcellesGeoJSON as Feature<Polygon>,
+        );
+        // On calcule la distance entre le point et la ligne
+        const distance = turf.pointToLineDistance(
+          point,
+          lineString as Feature<LineString>,
+        );
+        // Si la distance est supérieure à 1km, on ajoute un erreur
+        if (distance > 0.5) {
+          row.errors?.push({
+            code: 'row.cadastre_outlier',
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Problème lors de la validation du cadastre', error);
+  }
+}
+
+function validateRows(
   rows: ValidateRowType[],
   {
     addError,
+    mapCodeCommuneBanId,
+    cadastreGeoJSON,
   }: {
     addError: (code: string) => void;
+    mapCodeCommuneBanId: Record<string, string>;
+    cadastreGeoJSON: FeatureCollection | undefined;
   },
 ) {
   validateRowsEmpty(rows, { addError });
-  await validateUseBanIds(rows, { addError });
+  validateRowsCoords(rows);
+  if (cadastreGeoJSON) {
+    validateRowsCadastre(rows, { cadastreGeoJSON });
+    validateRowsCadastreNextToLongLat(rows, { cadastreGeoJSON });
+  }
+  validateUseBanIds(rows, { addError, mapCodeCommuneBanId });
+  validateVoieBanIds(rows);
 }
 
 export default validateRows;

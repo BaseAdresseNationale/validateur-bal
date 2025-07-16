@@ -239,11 +239,6 @@ const fields: Record<string, FieldsSchema> = {
 
       const n = Number.parseInt(v, 10);
 
-      if (n > 9999 && n !== 99_999) {
-        addError('trop_grand');
-        return undefined;
-      }
-
       return n;
     },
   },
@@ -289,6 +284,17 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.1', '1.2', '1.3', '1.4'],
     trim: true,
     allowRegionalLang: true,
+    parse(v: string, { addError }) {
+      if (v.toLowerCase() === v) {
+        addError('casse_incorrecte');
+      }
+
+      if (v.toUpperCase() === v) {
+        addError('casse_incorrecte');
+      }
+
+      return v;
+    },
   },
 
   commune_deleguee_insee: {

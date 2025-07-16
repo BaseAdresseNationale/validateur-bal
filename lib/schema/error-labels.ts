@@ -43,8 +43,6 @@ const errorLabels: Record<string, string> = {
     'La valeur du champ numéro doit être un nombre entier',
   'numero.contient_prefixe':
     'La valeur du champ numéro ne doit pas être préfixée par des zéros',
-  'numero.trop_grand':
-    'Le numéro doit être compris entre 0 et 9999 (sauf toponyme)',
 
   // suffixe
   'suffixe.debut_invalide':
@@ -102,24 +100,37 @@ const errorLabels: Record<string, string> = {
   // ROW LEVEL ERROR
   'row.incoherence_numero':
     'Le numéro ne correspond pas à la valeur présente dans la clé',
+  'row.voie_nom_have_same_lieudit_complement_nom':
+    'Le nom de la voie et le nom du lieudit complémentaire sont identiques',
   'row.position_manquante': 'Position nulle',
   'row.chef_lieu_invalide':
-    'La code INSEE de la commune courante ne correspond pas au chef lieu de la commune disparue renseignée',
+    'La code INSEE de la commune courante ne correspond pas au chef lieu de la commune precedente renseignée',
   'row.commune_manquante': 'Aucun code commune valide n’est renseigné',
+  'row.commune_nom_invalide': 'Le nom de la commune est invalide',
   'row.longlat_vides': 'Les coordonnées long/lat ne sont pas renseignées',
   'row.longlat_invalides':
     'Les coordonnées long/lat sont en dehors du territoire ou invalides',
   'row.longlat_xy_incoherents':
     'Les coordonnées long/lat et x/y ne sont pas cohérentes',
+  'row.coord_outlier':
+    'Les coordonnées long/lat sont trop éloignées des autres adresses de la voie (plus de 1km)',
+  'row.cadastre_outlier':
+    'Les coordonnées long/lat sont trop éloignées des parcelles du cadastre (plus de 0.5km)',
+  'row.cadastre_no_exist':
+    'La parcelle n’existe pas dans le cadastre de la commune',
   'row.adresse_incomplete':
     'L’adresse est incomplète (numéro ou nom de la voie non renseignés)',
   'row.lack_of_id_ban': 'Il manque un ou plusieurs ids ban sur la ligne',
+  'row.cog_no_match_id_ban_commune':
+    'Le code_insee ne correspond pas au bon id_ban_commune',
+  'row.different_voie_nom_with_same_id_ban_toponyme':
+    'Le nom de la voie est différent pour le même id_ban_toponyme',
+  'row.different_id_ban_toponyme_with_same_voie_nom':
+    'L’id_ban_toponyme est différent pour le même nom de voie',
   // ROWS LEVEL ERROR
   'rows.empty': 'Aucune ligne détecté',
   'rows.multi_id_ban_commune':
     'Il ne peut pas y avoir differents id_ban_commune',
-  'rows.cog_no_match_id_ban_commune':
-    'Le code_insee ne correspond pas au bon id_ban_commune',
   'rows.every_line_required_id_ban':
     'Les ids ban sont requis pour toutes les lignes si ils sont utilisés',
 };
