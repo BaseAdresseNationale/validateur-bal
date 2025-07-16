@@ -192,9 +192,10 @@ function validateCommuneDelegueeInsee(
   }
   const commune = getCommune(codeCommune);
 
+  // On vérifie si commune_insee est chefLieu de commune_deleguee_insee
   if (
     !commune.anciensCodes?.includes(row.parsedValues.commune_deleguee_insee) &&
-    row.parsedValues.commune_deleguee_insee != codeCommune
+    row.parsedValues.commune_deleguee_insee !== codeCommune
   ) {
     addError('chef_lieu_invalide');
   }

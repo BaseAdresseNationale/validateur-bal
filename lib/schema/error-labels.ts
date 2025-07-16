@@ -104,7 +104,7 @@ const errorLabels: Record<string, string> = {
     'Le nom de la voie et le nom du lieudit complémentaire sont identiques',
   'row.position_manquante': 'Position nulle',
   'row.chef_lieu_invalide':
-    'La code INSEE de la commune courante ne correspond pas au chef lieu de la commune disparue renseignée',
+    'La code INSEE de la commune courante ne correspond pas au chef lieu de la commune precedente renseignée',
   'row.commune_manquante': 'Aucun code commune valide n’est renseigné',
   'row.commune_nom_invalide': 'Le nom de la commune est invalide',
   'row.longlat_vides': 'Les coordonnées long/lat ne sont pas renseignées',
