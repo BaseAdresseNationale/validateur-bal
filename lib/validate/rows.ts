@@ -43,7 +43,7 @@ export async function computeRows(
     { concurrency: 4 },
   );
 
-  await Schema.rows(computedRows, {
+  Schema.rows(computedRows, {
     addError(code: string) {
       globalErrors.add(`rows.${code}`);
     },

@@ -362,4 +362,62 @@ describe('VALIDATE ROWS', () => {
       rows[3].remediations.id_ban_adresse.value,
     );
   });
+
+  it('TEST coord_outlier', async () => {
+    const rows: any[] = [
+      {
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 1,
+          long: 2.3522,
+          lat: 48.8566,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 2,
+          long: 2.353,
+          lat: 48.857,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 3,
+          long: 2.354,
+          lat: 48.856,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 4,
+          long: 7.2619,
+          lat: 43.7102,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+    ];
+    await validateRows(rows, {
+      addError: () => {},
+      mapCodeCommuneBanId: { '91534': undefined },
+    });
+    expect(rows[3].errors).toEqual([{ code: 'row.coord_outlier' }]);
+  });
 });

@@ -52,6 +52,7 @@ export const warnings: string[] = [
   'row.position_manquante',
   'row.chef_lieu_invalide',
   'row.longlat_xy_incoherents',
+  'row.coord_outlier',
   'field.suffixe.missing',
   'field.cle_interop.missing',
   'field.position.missing',

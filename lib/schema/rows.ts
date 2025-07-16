@@ -3,12 +3,24 @@ import { getCodeCommune } from './row';
 import { normalize } from '@ban-team/adresses-util/lib/voies';
 import { chain } from 'lodash';
 import { v4 as uuid } from 'uuid';
+import * as turf from '@turf/turf';
+import { Feature, Point } from 'geojson';
 
-export function getVoieIdentifier({ parsedValues }: ValidateRowType) {
+function validateRowsEmpty(
+  rows: ValidateRowType[],
+  { addError }: { addError: (code: string) => void },
+) {
+  // VERIFIE QUE LE FICHIER N'EST PAS VIDE
+  if (rows.length <= 0) {
+    addError('empty');
+  }
+}
+
+function getVoieIdentifier({ parsedValues }: ValidateRowType) {
   return `${normalize(parsedValues.voie_nom)}#${parsedValues.commune_deleguee_insee}`;
 }
 
-export function getNumeroIdentifier({ parsedValues }: ValidateRowType) {
+function getNumeroIdentifier({ parsedValues }: ValidateRowType) {
   return `${parsedValues.numero}#${parsedValues.suffixe}#${parsedValues.voie_nom}#${parsedValues.commune_deleguee_insee}`;
 }
 
@@ -57,14 +69,13 @@ function getMapNumeroBanId(
     .value();
 }
 
-function validateRowsEmpty(
-  rows: ValidateRowType[],
-  { addError }: { addError: (code: string) => void },
-) {
-  // VERIFIE QUE LE FICHIER N'EST PAS VIDE
-  if (rows.length <= 0) {
-    addError('empty');
-  }
+function getErrorIdBanCorrected(field: string): string[] {
+  return [
+    `field.${field}.missing`,
+    `id_ban_${field}.valeur_manquante`,
+    'row.lack_of_id_ban',
+    'rows.every_line_required_id_ban',
+  ];
 }
 
 function remediationBanIds(
@@ -83,34 +94,19 @@ function remediationBanIds(
   const codeCommune = getCodeCommune(row);
   if (!idBanCommune && mapCodeCommuneBanId) {
     row.remediations.id_ban_commune = {
-      errors: [
-        `field.id_ban_commune.missing`,
-        `id_ban_commune.valeur_manquante`,
-        'rows.every_line_required_id_ban',
-        'row.lack_of_id_ban',
-      ],
+      errors: getErrorIdBanCorrected('id_ban_commune'),
       value: mapCodeCommuneBanId[codeCommune],
     };
   }
   if (!idBanToponyme) {
     row.remediations.id_ban_toponyme = {
-      errors: [
-        `field.id_ban_toponyme.missing`,
-        `id_ban_toponyme.valeur_manquante`,
-        'rows.every_line_required_id_ban',
-        'row.lack_of_id_ban',
-      ],
+      errors: getErrorIdBanCorrected('id_ban_toponyme'),
       value: mapNomVoieBanId[getVoieIdentifier(row)],
     };
   }
   if (!idBanAdresse && row.parsedValues.numero !== 99_999) {
     row.remediations.id_ban_adresse = {
-      errors: [
-        `field.id_ban_adresse.missing`,
-        `id_ban_adresse.valeur_manquante`,
-        'rows.every_line_required_id_ban',
-        'row.lack_of_id_ban',
-      ],
+      errors: getErrorIdBanCorrected('id_ban_adresse'),
       value: mapNumeroBanId[getNumeroIdentifier(row)],
     };
   }
@@ -130,7 +126,7 @@ function getBanIdsFromRow(row: ValidateRowType) {
   };
 }
 
-async function validateUseBanIds(
+function validateUseBanIds(
   rows: ValidateRowType[],
   {
     addError,
@@ -175,7 +171,55 @@ async function validateUseBanIds(
   }
 }
 
-async function validateRows(
+function getFeaturesPointsByVoie(
+  parsedRows: ValidateRowType[],
+): Record<string, Array<Feature<Point>>> {
+  return chain(parsedRows)
+    .filter(
+      ({ parsedValues }) =>
+        parsedValues.numero !== 99_999 && parsedValues.long && parsedValues.lat,
+    )
+    .groupBy((row) => getVoieIdentifier(row))
+    .mapValues((rows) => {
+      return rows.map(({ parsedValues }) =>
+        turf.point([parsedValues.long, parsedValues.lat]),
+      );
+    })
+    .value();
+}
+
+function validateRowsCoords(rows: ValidateRowType[]) {
+  // On créer un répètoire de features de points par voie
+  const pointsByVoie = getFeaturesPointsByVoie(rows);
+
+  for (const row of rows) {
+    if (
+      row.parsedValues.numero === 99_999 ||
+      !row.parsedValues.long ||
+      !row.parsedValues.lat
+    ) {
+      continue;
+    }
+    // On récupère les coordonnées du point de la ligne
+    const currentPoint = turf.point([
+      row.parsedValues.long,
+      row.parsedValues.lat,
+    ]);
+    // On calcule chaques distance avec les autres points de la même voie (sauf 0 le même point)
+    const voie = getVoieIdentifier(row);
+    const distances = pointsByVoie[voie]
+      .map((otherPoint) => turf.distance(currentPoint, otherPoint))
+      .filter((distance) => distance > 0);
+    // Si le point de la ligne esT distant de plus 1km de tous les autres points de la même voie
+    if (Math.min(...distances) > 1) {
+      row.errors?.push({
+        code: 'row.coord_outlier',
+      });
+    }
+  }
+}
+
+function validateRows(
   rows: ValidateRowType[],
   {
     addError,
@@ -186,7 +230,8 @@ async function validateRows(
   },
 ) {
   validateRowsEmpty(rows, { addError });
-  await validateUseBanIds(rows, { addError, mapCodeCommuneBanId });
+  validateRowsCoords(rows);
+  validateUseBanIds(rows, { addError, mapCodeCommuneBanId });
 }
 
 export default validateRows;

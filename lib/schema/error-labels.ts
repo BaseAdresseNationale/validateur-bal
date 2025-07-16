@@ -112,6 +112,8 @@ const errorLabels: Record<string, string> = {
     'Les coordonnées long/lat sont en dehors du territoire ou invalides',
   'row.longlat_xy_incoherents':
     'Les coordonnées long/lat et x/y ne sont pas cohérentes',
+  'row.coord_outlier':
+    'Les coordonnées long/lat sont trop éloignées des autres adresses de la voie (plus de 1km)',
   'row.adresse_incomplete':
     'L’adresse est incomplète (numéro ou nom de la voie non renseignés)',
   'row.lack_of_id_ban': 'Il manque un ou plusieurs ids ban sur la ligne',
