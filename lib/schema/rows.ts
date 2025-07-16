@@ -151,6 +151,18 @@ function validateUseBanIds(
     const { idBanCommune, idBanToponyme, idBanAdresse } = getBanIdsFromRow(row);
     const numero = row.parsedValues.numero;
 
+    // On verifie que l'idBanCommune correspond bien a celui délivré par l'api BAN
+    const communeInsee = getCodeCommune(row);
+    if (
+      idBanCommune &&
+      mapCodeCommuneBanId[communeInsee] &&
+      mapCodeCommuneBanId[communeInsee] !== idBanCommune
+    ) {
+      row.errors?.push({
+        code: 'row.cog_no_match_id_ban_commune',
+      });
+    }
+
     if (
       idBanCommune &&
       idBanToponyme &&

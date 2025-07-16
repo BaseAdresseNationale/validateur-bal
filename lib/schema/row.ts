@@ -205,10 +205,8 @@ function validateBanIds(
   row: ValidateRowType,
   {
     addError,
-    mapCodeCommuneBanId,
   }: {
     addError: (code: string) => void;
-    mapCodeCommuneBanId: Record<string, string>;
   },
 ) {
   const idBanCommune =
@@ -225,11 +223,6 @@ function validateBanIds(
   if (idBanCommune || idBanToponyme || idBanAdresse) {
     if (!idBanCommune) {
       addError('lack_of_id_ban');
-    } else if (
-      mapCodeCommuneBanId[getCodeCommune(row)] !== undefined &&
-      mapCodeCommuneBanId[getCodeCommune(row)] !== idBanCommune
-    ) {
-      addError('cog_no_match_id_ban_commune');
     }
     if (!idBanToponyme) {
       addError('lack_of_id_ban');
@@ -261,11 +254,9 @@ function validateRow(
   {
     addError,
     addRemediation,
-    mapCodeCommuneBanId,
   }: {
     addError: (code: string) => void;
     addRemediation: <T>(key: string, remediation: RemediationValue<T>) => void;
-    mapCodeCommuneBanId: Record<string, string>;
   },
 ) {
   validateNumero(row, { addError });
@@ -276,7 +267,7 @@ function validateRow(
   validateCoords(row, { addError });
   validateMinimalAdress(row, { addError });
   validateCommuneDelegueeInsee(row, { addError });
-  validateBanIds(row, { addError, mapCodeCommuneBanId });
+  validateBanIds(row, { addError });
   validateDateDerMaj(row, { addRemediation });
 }
 

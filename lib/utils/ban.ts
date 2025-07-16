@@ -1,3 +1,6 @@
+import { getCodeCommune } from '../schema/row';
+import { ValidateRowType } from '../validate/validate.type';
+
 const BAN_API_URL = 'https://plateforme.adresse.data.gouv.fr';
 
 type DistrictBanResponse = {
@@ -19,7 +22,7 @@ async function fetchDistrictBan(
   return response.json();
 }
 
-export async function getCommuneBanIdByCommuneINSEE(
+async function getCommuneBanIdByCommuneINSEE(
   communeINSEE: string,
 ): Promise<string> {
   try {
@@ -34,4 +37,23 @@ export async function getCommuneBanIdByCommuneINSEE(
     );
     return undefined;
   }
+}
+
+export async function getMapCodeCommuneBanId(
+  parsedRows: ValidateRowType[],
+): Promise<Record<string, string>> | undefined {
+  const indexCommuneBanIds: Record<string, string> = {};
+
+  const codeCommunes = new Set<string>([
+    ...parsedRows
+      .filter((row) => getCodeCommune(row))
+      .map((row) => getCodeCommune(row)),
+  ]);
+  for (const codeCommune of Array.from(codeCommunes)) {
+    const communeBanId = await getCommuneBanIdByCommuneINSEE(codeCommune);
+    if (communeBanId) {
+      indexCommuneBanIds[codeCommune] = communeBanId;
+    }
+  }
+  return indexCommuneBanIds;
 }

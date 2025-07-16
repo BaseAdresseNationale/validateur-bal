@@ -233,6 +233,53 @@ describe('VALIDATE ROWS', () => {
     expect(errors).toContain('every_line_required_id_ban');
   });
 
+  it('TEST rows.cog_no_match_id_ban_commune', async () => {
+    const rows: any[] = [
+      {
+        additionalValues: {
+          uid_adresse: {
+            idBanCommune: '0246e48c-f33d-433a-8984-034219be842e',
+            idBanToponyme: '0246e48c-f33d-433a-8984-034219be842e',
+            idBanAdresse: '0246e48c-f33d-433a-8984-034219be842e',
+          },
+        },
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          numero: 1,
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        additionalValues: {
+          uid_adresse: {
+            idBanCommune: '0246e48c-f33d-433a-8984-034219be842a',
+            idBanToponyme: '0246e48c-f33d-433a-8984-034219be842e',
+            idBanAdresse: '0246e48c-f33d-433a-8984-034219be842e',
+          },
+        },
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          numero: 2,
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+    ];
+    await validateRows(rows, {
+      addError: () => {},
+      mapCodeCommuneBanId: { '91534': '0246e48c-f33d-433a-8984-034219be842e' },
+      cadastreGeoJSON: undefined,
+    });
+    expect(rows[1].errors).toEqual([
+      { code: 'row.cog_no_match_id_ban_commune' },
+    ]);
+  });
+
   it('TEST remediation des id_ban manquants avec changement de commune deleguee', async () => {
     const errors: string[] = [];
     const rows: any[] = [
