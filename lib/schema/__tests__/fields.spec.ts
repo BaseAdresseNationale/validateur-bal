@@ -72,6 +72,38 @@ describe('VALIDATE FIELDS', () => {
     });
   });
 
+  describe('commune_nom', () => {
+    it('commune_nom majuscule', () => {
+      const addError: (error: string) => void = jest.fn();
+
+      fields['commune_nom'].parse('SACLAY', {
+        addError,
+      });
+
+      expect(addError).toHaveBeenCalledWith('casse_incorrecte');
+    });
+
+    it('commune_nom minuscule', () => {
+      const addError: (error: string) => void = jest.fn();
+
+      fields['commune_nom'].parse('saclay', {
+        addError,
+      });
+
+      expect(addError).toHaveBeenCalledWith('casse_incorrecte');
+    });
+
+    it('commune_nom GOOD', () => {
+      const addError: (error: string) => void = jest.fn();
+
+      fields['commune_nom'].parse('Saclay', {
+        addError,
+      });
+
+      expect(addError).not.toHaveBeenCalled();
+    });
+  });
+
   describe('date_der_maj', () => {
     it('devrait ajouter une remediation pour une date au format dd/mm/yyyy', () => {
       const addError = jest.fn();
