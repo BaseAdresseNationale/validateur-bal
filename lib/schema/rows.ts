@@ -9,7 +9,7 @@ import {
   Polygon,
 } from 'geojson';
 import { getVoieIdentifier } from '../utils/helpers';
-import { validateUseBanIds } from './rows/ban_ids';
+import { validateUseBanIds, validateVoieBanIds } from './rows/ban_ids';
 
 function validateRowsEmpty(
   rows: ValidateRowType[],
@@ -157,6 +157,7 @@ function validateRows(
     validateRowsCadastreNextToLongLat(rows, { cadastreGeoJSON });
   }
   validateUseBanIds(rows, { addError, mapCodeCommuneBanId });
+  validateVoieBanIds(rows);
 }
 
 export default validateRows;

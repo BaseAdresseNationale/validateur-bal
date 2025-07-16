@@ -95,17 +95,32 @@ function remediationBanIds(
   }
 }
 
+function getIdBanCommune(row: ValidateRowType): string {
+  return (
+    row.parsedValues.id_ban_commune ||
+    row.additionalValues?.uid_adresse?.idBanCommune
+  );
+}
+
+function getIdBanToponyme(row: ValidateRowType): string {
+  return (
+    row.parsedValues.id_ban_toponyme ||
+    row.additionalValues?.uid_adresse?.idBanToponyme
+  );
+}
+
+function getIdBanAdresse(row: ValidateRowType): string {
+  return (
+    row.parsedValues.id_ban_adresse ||
+    row.additionalValues?.uid_adresse?.idBanAdresse
+  );
+}
+
 function getBanIdsFromRow(row: ValidateRowType) {
   return {
-    idBanCommune:
-      row.parsedValues.id_ban_commune ||
-      row.additionalValues?.uid_adresse?.idBanCommune,
-    idBanToponyme:
-      row.parsedValues.id_ban_toponyme ||
-      row.additionalValues?.uid_adresse?.idBanToponyme,
-    idBanAdresse:
-      row.parsedValues.id_ban_adresse ||
-      row.additionalValues?.uid_adresse?.idBanAdresse,
+    idBanCommune: getIdBanCommune(row),
+    idBanToponyme: getIdBanToponyme(row),
+    idBanAdresse: getIdBanAdresse(row),
   };
 }
 
@@ -163,5 +178,45 @@ export function validateUseBanIds(
     return true;
   } else if (balAdresseUseBanId > 0) {
     addError('every_line_required_id_ban');
+  }
+}
+
+export function validateVoieBanIds(rows: ValidateRowType[]) {
+  // On regarde si les voie_nom sont les mêmes lorsque les id_ban_toponyme sont identique
+  const rowsByIdBanToponymes = chain(rows)
+    .groupBy((row) => getIdBanToponyme(row))
+    .value();
+
+  for (const toponyme of Object.keys(rowsByIdBanToponymes)) {
+    const rowsByIdBanToponyme = rowsByIdBanToponymes[toponyme];
+    // Vérifier que toutes les lignes avec le même id_ban_toponyme ont le même voie_nom
+    const voieNoms = new Set(
+      rowsByIdBanToponyme.map((row) => row.parsedValues.voie_nom),
+    );
+    if (voieNoms.size > 1) {
+      for (const row of rowsByIdBanToponyme) {
+        row.errors?.push({
+          code: 'row.different_voie_nom_with_same_id_ban_toponyme',
+        });
+      }
+    }
+  }
+  // On regarde si les id_ban_toponyme sont les mêmes lorsque les voie_nom et commune_deleguee_insee sont identique
+  const rowsByVoies = chain(rows)
+    .groupBy((row) => getVoieIdentifier(row))
+    .value();
+  for (const voieId of Object.keys(rowsByVoies)) {
+    const rowsByVoie = rowsByVoies[voieId];
+    // Vérifier que toutes les lignes avec le même id_ban_toponyme ont le même voie_nom
+    const idBanToponymes = new Set(
+      rowsByVoie.map((row) => row.parsedValues.voie_nom),
+    );
+    if (idBanToponymes.size > 1) {
+      for (const row of rowsByVoies) {
+        row.errors?.push({
+          code: 'row.different_id_ban_toponyme_with_same_voie_nom',
+        });
+      }
+    }
   }
 }

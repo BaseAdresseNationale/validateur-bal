@@ -123,6 +123,10 @@ const errorLabels: Record<string, string> = {
   'row.lack_of_id_ban': 'Il manque un ou plusieurs ids ban sur la ligne',
   'row.cog_no_match_id_ban_commune':
     'Le code_insee ne correspond pas au bon id_ban_commune',
+  'row.different_voie_nom_with_same_id_ban_toponyme':
+    'Le nom de la voie est différent pour le même id_ban_toponyme',
+  'row.different_id_ban_toponyme_with_same_voie_nom':
+    'L’id_ban_toponyme est différent pour le même nom de voie',
   // ROWS LEVEL ERROR
   'rows.empty': 'Aucune ligne détecté',
   'rows.multi_id_ban_commune':
