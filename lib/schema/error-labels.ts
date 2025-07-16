@@ -43,8 +43,6 @@ const errorLabels: Record<string, string> = {
     'La valeur du champ numéro doit être un nombre entier',
   'numero.contient_prefixe':
     'La valeur du champ numéro ne doit pas être préfixée par des zéros',
-  'numero.trop_grand':
-    'Le numéro doit être compris entre 0 et 9999 (sauf toponyme)',
 
   // suffixe
   'suffixe.debut_invalide':

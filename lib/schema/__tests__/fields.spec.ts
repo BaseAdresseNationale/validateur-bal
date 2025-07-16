@@ -40,6 +40,18 @@ describe('VALIDATE FIELDS', () => {
     });
   });
 
+  describe('numero', () => {
+    it('numero over 99999', () => {
+      const addError: (error: string) => void = jest.fn();
+
+      fields['numero'].parse('9999999', {
+        addError,
+      });
+
+      expect(addError).not.toHaveBeenCalled();
+    });
+  });
+
   describe('commune_insee', () => {
     it('commune_insee inexistante', () => {
       const addError: (error: string) => void = jest.fn();

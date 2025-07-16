@@ -239,11 +239,6 @@ const fields: Record<string, FieldsSchema> = {
 
       const n = Number.parseInt(v, 10);
 
-      if (n > 9999 && n !== 99_999) {
-        addError('trop_grand');
-        return undefined;
-      }
-
       return n;
     },
   },

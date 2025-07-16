@@ -10,7 +10,6 @@ export const errors: string[] = [
   'voie_nom.caractere_invalide',
   'numero.valeur_manquante',
   'numero.type_invalide',
-  'numero.trop_grand',
   'suffixe.debut_invalide',
   'suffixe.trop_long',
   'commune_insee.commune_invalide',
