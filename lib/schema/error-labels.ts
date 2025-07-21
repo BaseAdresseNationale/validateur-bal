@@ -127,6 +127,10 @@ const errorLabels: Record<string, string> = {
     'Le nom de la voie est différent pour le même id_ban_toponyme',
   'row.different_id_ban_toponyme_with_same_voie_nom':
     'L’id_ban_toponyme est différent pour le même nom de voie',
+  'row.different_adresse_with_same_id_ban_adresse':
+    'L’adresse est différente pour le même id_ban_adresse',
+  'row.different_id_ban_adresses_with_same_adresse':
+    'L’id_ban_adresse est différent pour la même adresse',
   // ROWS LEVEL ERROR
   'rows.empty': 'Aucune ligne détecté',
   'rows.multi_id_ban_commune':
