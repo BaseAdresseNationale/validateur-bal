@@ -826,4 +826,28 @@ describe('VALIDATE ROWS', () => {
       { code: 'row.different_id_ban_adresses_with_same_adresse' },
     ]);
   });
+
+  it('TEST row.lieudit_complement_nom_not_declared', async () => {
+    const rows: any[] = [
+      {
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          numero: 1,
+          commune_insee: '91534',
+          lieudit_complement_nom: 'paradis',
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+    ];
+    await validateRows(rows, {
+      addError: () => {},
+      mapCodeCommuneBanId: { '91534': undefined },
+      cadastreGeoJSON: undefined,
+    });
+    expect(rows[0].errors).toEqual([
+      { code: 'row.lieudit_complement_nom_not_declared' },
+    ]);
+  });
 });

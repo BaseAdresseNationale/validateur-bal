@@ -131,6 +131,8 @@ const errorLabels: Record<string, string> = {
     'L’adresse est différente pour le même id_ban_adresse',
   'row.different_id_ban_adresses_with_same_adresse':
     'L’id_ban_adresse est différent pour la même adresse',
+  'row.lieudit_complement_nom_not_declared':
+    'Le nom du lieudit complémentaire n’est pas déclaré en ligne 99999',
   // ROWS LEVEL ERROR
   'rows.empty': 'Aucune ligne détecté',
   'rows.multi_id_ban_commune':

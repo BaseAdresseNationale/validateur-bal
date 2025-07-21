@@ -59,6 +59,7 @@ export const warnings: string[] = [
   'row.different_id_ban_toponyme_with_same_voie_nom',
   'row.different_adresse_with_same_id_ban_adresse',
   'row.different_id_ban_adresses_with_same_adresse',
+  'row.lieudit_complement_nom_not_declared',
   'field.suffixe.missing',
   'field.cle_interop.missing',
   'field.position.missing',

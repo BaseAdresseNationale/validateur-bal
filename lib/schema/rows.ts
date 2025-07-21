@@ -1,4 +1,4 @@
-import { ValidateRowType } from '../validate/validate.type';
+import { IS_TOPO_NB, ValidateRowType } from '../validate/validate.type';
 import { chain } from 'lodash';
 import * as turf from '@turf/turf';
 import {
@@ -142,6 +142,26 @@ function validateRowsCadastreNextToLongLat(
   }
 }
 
+function validateComplementIsDeclared(rows: ValidateRowType[]) {
+  const complementDeclareds: Set<string> = new Set();
+
+  for (const row of rows) {
+    if (row.parsedValues.numero === Number(IS_TOPO_NB)) {
+      complementDeclareds.add(row.parsedValues.voie_nom);
+    }
+  }
+  for (const row of rows) {
+    if (
+      'lieudit_complement_nom' in row.parsedValues &&
+      !complementDeclareds.has(row.parsedValues.lieudit_complement_nom)
+    ) {
+      row.errors?.push({
+        code: 'row.lieudit_complement_nom_not_declared',
+      });
+    }
+  }
+}
+
 function validateRows(
   rows: ValidateRowType[],
   {
@@ -163,6 +183,7 @@ function validateRows(
   validateUseBanIds(rows, { addError, mapCodeCommuneBanId });
   validateVoieBanIds(rows);
   validateAdresseBanIds(rows);
+  validateComplementIsDeclared(rows);
 }
 
 export default validateRows;
