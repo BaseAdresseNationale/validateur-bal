@@ -184,13 +184,14 @@ export function validateUseBanIds(
 export function validateVoieBanIds(rows: ValidateRowType[]) {
   // On regarde si les voie_nom sont les mêmes lorsque les id_ban_toponyme sont identique
   const rowsByIdBanToponymes = chain(rows)
+    .filter((row) => getIdBanToponyme(row))
     .groupBy((row) => getIdBanToponyme(row))
     .value();
   for (const toponyme of Object.keys(rowsByIdBanToponymes)) {
     const rowsByIdBanToponyme = rowsByIdBanToponymes[toponyme];
     // Vérifier que toutes les lignes avec le même id_ban_toponyme ont le même voie_nom
     const voieNoms = new Set(
-      rowsByIdBanToponyme.map((row) => row.parsedValues.voie_nom),
+      rowsByIdBanToponyme.map((row) => getVoieIdentifier(row)),
     );
     if (voieNoms.size > 1) {
       for (const row of rowsByIdBanToponyme) {
@@ -214,6 +215,45 @@ export function validateVoieBanIds(rows: ValidateRowType[]) {
       for (const row of rowsByVoie) {
         row.errors?.push({
           code: 'row.different_id_ban_toponyme_with_same_voie_nom',
+        });
+      }
+    }
+  }
+}
+
+export function validateAdresseBanIds(rows: ValidateRowType[]) {
+  // On regarde si les nom_voie + numero + suffixe sont les mêmes lorsque les id_ban_adresse sont identiques
+  const rowsByIdBanAdresses = chain(rows)
+    .filter((row) => getIdBanAdresse(row) && row.parsedValues.numero !== 99_999)
+    .groupBy((row) => getIdBanAdresse(row))
+    .value();
+  for (const idBanAdresse of Object.keys(rowsByIdBanAdresses)) {
+    const rowsByIdBanAdresse = rowsByIdBanAdresses[idBanAdresse];
+    const numeroIdentifiers = new Set(
+      rowsByIdBanAdresse.map((row) => getNumeroIdentifier(row)),
+    );
+    if (numeroIdentifiers.size > 1) {
+      for (const row of rowsByIdBanAdresse) {
+        row.errors?.push({
+          code: 'row.different_adresse_with_same_id_ban_adresse',
+        });
+      }
+    }
+  }
+  // On regarde si les id_ban_adresse sont les mêmes lorsque les nom_voie + numero + suffixe sont identiques
+  const rowsByAdresses = chain(rows)
+    .filter((row) => row.parsedValues.numero !== 99_999)
+    .groupBy((row) => getNumeroIdentifier(row))
+    .value();
+  for (const numeroIdentifier of Object.keys(rowsByAdresses)) {
+    const rowsByAdresse = rowsByAdresses[numeroIdentifier];
+    const idBanAdresses = new Set(
+      rowsByAdresse.map((row) => getIdBanAdresse(row)),
+    );
+    if (idBanAdresses.size > 1) {
+      for (const row of rowsByAdresse) {
+        row.errors?.push({
+          code: 'row.different_id_ban_adresses_with_same_adresse',
         });
       }
     }

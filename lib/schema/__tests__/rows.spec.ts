@@ -240,7 +240,7 @@ describe('VALIDATE ROWS', () => {
           uid_adresse: {
             idBanCommune: '0246e48c-f33d-433a-8984-034219be842e',
             idBanToponyme: '0246e48c-f33d-433a-8984-034219be842e',
-            idBanAdresse: '0246e48c-f33d-433a-8984-034219be842e',
+            idBanAdresse: '0246e48c-f33d-433a-8984-034219be842a',
           },
         },
         parsedValues: {
@@ -666,6 +666,17 @@ describe('VALIDATE ROWS', () => {
         rawValues: {},
         errors: [],
       },
+      {
+        parsedValues: {
+          id_ban_toponyme: idBanToponyme,
+          voie_nom: 'toponyme',
+          commune_insee: '91534',
+          numero: 99999,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
     ];
     await validateRows(rows, {
       addError: () => {},
@@ -676,6 +687,9 @@ describe('VALIDATE ROWS', () => {
       { code: 'row.different_voie_nom_with_same_id_ban_toponyme' },
     ]);
     expect(rows[1].errors).toEqual([
+      { code: 'row.different_voie_nom_with_same_id_ban_toponyme' },
+    ]);
+    expect(rows[2].errors).toEqual([
       { code: 'row.different_voie_nom_with_same_id_ban_toponyme' },
     ]);
   });
@@ -704,6 +718,17 @@ describe('VALIDATE ROWS', () => {
         rawValues: {},
         errors: [],
       },
+      {
+        parsedValues: {
+          id_ban_toponyme: '33333333-3333-3333-3333-333333333333',
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 99999,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
     ];
     await validateRows(rows, {
       addError: () => {},
@@ -715,6 +740,90 @@ describe('VALIDATE ROWS', () => {
     ]);
     expect(rows[1].errors).toEqual([
       { code: 'row.different_id_ban_toponyme_with_same_voie_nom' },
+    ]);
+    expect(rows[2].errors).toEqual([
+      { code: 'row.different_id_ban_toponyme_with_same_voie_nom' },
+    ]);
+  });
+
+  it('TEST row.different_adresse_with_same_id_ban_adresse', async () => {
+    const idBanAdresse = '33333333-3333-3333-3333-333333333333';
+    const rows: any[] = [
+      {
+        parsedValues: {
+          id_ban_adresse: idBanAdresse,
+          voie_nom: 'rue du Colombier',
+          numero: 1,
+          suffixe: 'A',
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          id_ban_adresse: idBanAdresse,
+          voie_nom: 'avenue de la Paix', // voie_nom différent
+          numero: 2, // numero différent
+          suffixe: 'B', // suffixe différent
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+    ];
+    await validateRows(rows, {
+      addError: () => {},
+      mapCodeCommuneBanId: { '91534': undefined },
+      cadastreGeoJSON: undefined,
+    });
+    expect(rows[0].errors).toEqual([
+      { code: 'row.different_adresse_with_same_id_ban_adresse' },
+    ]);
+    expect(rows[1].errors).toEqual([
+      { code: 'row.different_adresse_with_same_id_ban_adresse' },
+    ]);
+  });
+
+  it('TEST row.different_id_ban_adresses_with_same_adresse', async () => {
+    const rows: any[] = [
+      {
+        parsedValues: {
+          id_ban_adresse: '44444444-4444-4444-4444-444444444444',
+          voie_nom: 'rue du Colombier',
+          numero: 1,
+          suffixe: 'A',
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          id_ban_adresse: '55555555-5555-5555-5555-555555555555',
+          voie_nom: 'rue du Colombier', // même voie_nom
+          numero: 1, // même numero
+          suffixe: 'A', // même suffixe
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+    ];
+    await validateRows(rows, {
+      addError: () => {},
+      mapCodeCommuneBanId: { '91534': undefined },
+      cadastreGeoJSON: undefined,
+    });
+    expect(rows[0].errors).toEqual([
+      { code: 'row.different_id_ban_adresses_with_same_adresse' },
+    ]);
+    expect(rows[1].errors).toEqual([
+      { code: 'row.different_id_ban_adresses_with_same_adresse' },
     ]);
   });
 });

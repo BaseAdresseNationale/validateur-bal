@@ -9,7 +9,11 @@ import {
   Polygon,
 } from 'geojson';
 import { getVoieIdentifier } from '../utils/helpers';
-import { validateUseBanIds, validateVoieBanIds } from './rows/ban_ids';
+import {
+  validateAdresseBanIds,
+  validateUseBanIds,
+  validateVoieBanIds,
+} from './rows/ban_ids';
 
 function validateRowsEmpty(
   rows: ValidateRowType[],
@@ -158,6 +162,7 @@ function validateRows(
   }
   validateUseBanIds(rows, { addError, mapCodeCommuneBanId });
   validateVoieBanIds(rows);
+  validateAdresseBanIds(rows);
 }
 
 export default validateRows;
