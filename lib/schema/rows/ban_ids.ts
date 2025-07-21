@@ -186,7 +186,6 @@ export function validateVoieBanIds(rows: ValidateRowType[]) {
   const rowsByIdBanToponymes = chain(rows)
     .groupBy((row) => getIdBanToponyme(row))
     .value();
-
   for (const toponyme of Object.keys(rowsByIdBanToponymes)) {
     const rowsByIdBanToponyme = rowsByIdBanToponymes[toponyme];
     // Vérifier que toutes les lignes avec le même id_ban_toponyme ont le même voie_nom
@@ -209,10 +208,10 @@ export function validateVoieBanIds(rows: ValidateRowType[]) {
     const rowsByVoie = rowsByVoies[voieId];
     // Vérifier que toutes les lignes avec le même id_ban_toponyme ont le même voie_nom
     const idBanToponymes = new Set(
-      rowsByVoie.map((row) => row.parsedValues.voie_nom),
+      rowsByVoie.map((row) => getIdBanToponyme(row)),
     );
     if (idBanToponymes.size > 1) {
-      for (const row of rowsByVoies) {
+      for (const row of rowsByVoie) {
         row.errors?.push({
           code: 'row.different_id_ban_toponyme_with_same_voie_nom',
         });

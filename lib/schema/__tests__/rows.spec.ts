@@ -640,4 +640,81 @@ describe('VALIDATE ROWS', () => {
     });
     expect(rows[0].errors).toEqual([]);
   });
+
+  it('TEST row.different_voie_nom_with_same_id_ban_toponyme', async () => {
+    const idBanToponyme = '11111111-1111-1111-1111-111111111111';
+    const rows: any[] = [
+      {
+        parsedValues: {
+          id_ban_toponyme: idBanToponyme,
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 1,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          id_ban_toponyme: idBanToponyme,
+          voie_nom: 'avenue de la Paix',
+          commune_insee: '91534',
+          numero: 2,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+    ];
+    await validateRows(rows, {
+      addError: () => {},
+      mapCodeCommuneBanId: { '91534': undefined },
+      cadastreGeoJSON: undefined,
+    });
+    expect(rows[0].errors).toEqual([
+      { code: 'row.different_voie_nom_with_same_id_ban_toponyme' },
+    ]);
+    expect(rows[1].errors).toEqual([
+      { code: 'row.different_voie_nom_with_same_id_ban_toponyme' },
+    ]);
+  });
+
+  it('TEST row.different_id_ban_toponyme_with_same_voie_nom', async () => {
+    const rows: any[] = [
+      {
+        parsedValues: {
+          id_ban_toponyme: '11111111-1111-1111-1111-111111111111',
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 1,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          id_ban_toponyme: '22222222-2222-2222-2222-222222222222',
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 2,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+    ];
+    await validateRows(rows, {
+      addError: () => {},
+      mapCodeCommuneBanId: { '91534': undefined },
+      cadastreGeoJSON: undefined,
+    });
+    expect(rows[0].errors).toEqual([
+      { code: 'row.different_id_ban_toponyme_with_same_voie_nom' },
+    ]);
+    expect(rows[1].errors).toEqual([
+      { code: 'row.different_id_ban_toponyme_with_same_voie_nom' },
+    ]);
+  });
 });
