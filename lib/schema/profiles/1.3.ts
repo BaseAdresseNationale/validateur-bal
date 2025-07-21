@@ -67,6 +67,7 @@ export const warnings: string[] = [
   'lieudit_complement_nom.espaces_debut_fin',
   'lieudit_complement_nom_@@.espaces_debut_fin',
   'numero.espaces_debut_fin',
+  'numero.not_to_be_zero',
   'position.espaces_debut_fin',
   'long.espaces_debut_fin',
   'lat.espaces_debut_fin',

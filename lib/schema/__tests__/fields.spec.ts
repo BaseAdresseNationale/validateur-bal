@@ -50,6 +50,18 @@ describe('VALIDATE FIELDS', () => {
 
       expect(addError).not.toHaveBeenCalled();
     });
+
+    it('déclenche l\'alerte "not_to_be_zero" si la valeur est 0', () => {
+      const addError: (error: string) => void = jest.fn();
+      fields['numero'].parse('0000', { addError });
+      expect(addError).toHaveBeenCalledWith('not_to_be_zero');
+    });
+
+    it('déclenche l\'alerte "contient_prefixe" si la valeur commence par 0 mais n\'est pas 0', () => {
+      const addError: (error: string) => void = jest.fn();
+      fields['numero'].parse('012', { addError });
+      expect(addError).toHaveBeenCalledWith('contient_prefixe');
+    });
   });
 
   describe('commune_insee', () => {

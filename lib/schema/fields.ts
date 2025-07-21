@@ -233,11 +233,15 @@ const fields: Record<string, FieldsSchema> = {
         return undefined;
       }
 
-      if (v.startsWith('0') && v !== '0') {
-        addError('contient_prefixe');
+      const n = Number.parseInt(v, 10);
+
+      if (n === 0) {
+        addError('not_to_be_zero');
       }
 
-      const n = Number.parseInt(v, 10);
+      if (v.startsWith('0') && n !== 0) {
+        addError('contient_prefixe');
+      }
 
       return n;
     },
