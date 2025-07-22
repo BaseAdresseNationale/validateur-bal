@@ -51,7 +51,7 @@ function getCsvRow(
 ): ParsedValues {
   return {
     ...getIdsBan(parsedValues, remediations, additionalValues),
-    cle_interop: parsedValues.cle_interop,
+    cle_interop: remediations.cle_interop?.value || parsedValues.cle_interop,
     commune_insee:
       remediations.commune_insee?.value || parsedValues.commune_insee,
     commune_nom: remediations.commune_nom?.value || parsedValues.commune_nom,

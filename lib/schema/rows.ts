@@ -14,6 +14,7 @@ import {
   validateUseBanIds,
   validateVoieBanIds,
 } from './rows/ban_ids';
+import { FantoirVoie } from '../utils/fantoir';
 
 function validateRowsEmpty(
   rows: ValidateRowType[],
@@ -162,18 +163,56 @@ function validateComplementIsDeclared(rows: ValidateRowType[]) {
   }
 }
 
+function addRemediationCleInterop(
+  row: ValidateRowType,
+  { fantoirVoies, errors }: { fantoirVoies: FantoirVoie[]; errors: string[] },
+) {
+  const fantoirVoie = fantoirVoies.find(
+    (voie) =>
+      voie.libelleVoie === row.parsedValues.voie_nom.toUpperCase() ||
+      voie.libelleVoieComplet === row.parsedValues.voie_nom.toUpperCase(),
+  );
+  if (fantoirVoie) {
+    const codeVoie = `${row.parsedValues.commune_insee}_${fantoirVoie.codeRivoli}`;
+    const codeNumero = `${String(row.parsedValues.numero).padStart(5, '0')}${row.parsedValues.suffixe ? `_${row.parsedValues.suffixe}` : ''}`;
+    row.remediations.cle_interop = {
+      errors,
+      value: `${codeVoie}_${codeNumero}`.toLowerCase(),
+    };
+  }
+}
+
+function validateRowsFantoir(
+  rows: ValidateRowType[],
+  { fantoirVoies }: { fantoirVoies: FantoirVoie[] },
+) {
+  for (const row of rows) {
+    if (!row.parsedValues.cle_interop) {
+      addRemediationCleInterop(row, {
+        fantoirVoies,
+        errors: ['cle_interop.valeur_manquante', 'field.cle_interop.missing'],
+      });
+    }
+  }
+}
+
 function validateRows(
   rows: ValidateRowType[],
   {
     addError,
     mapCodeCommuneBanId,
     cadastreGeoJSON,
+    fantoirVoies,
   }: {
     addError: (code: string) => void;
     mapCodeCommuneBanId: Record<string, string>;
     cadastreGeoJSON: FeatureCollection | undefined;
+    fantoirVoies: FantoirVoie[] | undefined;
   },
 ) {
+  if (fantoirVoies) {
+    validateRowsFantoir(rows, { fantoirVoies });
+  }
   validateRowsEmpty(rows, { addError });
   validateRowsCoords(rows);
   if (cadastreGeoJSON) {

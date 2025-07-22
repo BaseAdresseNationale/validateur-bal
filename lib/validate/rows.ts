@@ -11,6 +11,7 @@ import {
 } from '../schema/shema.type';
 import { getCommuneCadastreByCommuneINSEE } from '../utils/cadastre';
 import { getMapCodeCommuneBanId } from '../utils/ban';
+import { getFantoirVoiesByCommuneINSEE } from '../utils/fantoir';
 
 export async function computeRows(
   parsedRows: Record<string, string>[],
@@ -40,8 +41,12 @@ export async function computeRows(
   const mapCodeCommuneBanId = await getMapCodeCommuneBanId(computedRows);
 
   let cadastreGeoJSON = undefined;
-  if (Object.keys(mapCodeCommuneBanId).length <= 1) {
+  let fantoirVoies = undefined;
+  if (Object.keys(mapCodeCommuneBanId).length === 1) {
     cadastreGeoJSON = await getCommuneCadastreByCommuneINSEE(
+      Object.keys(mapCodeCommuneBanId)[0],
+    );
+    fantoirVoies = await getFantoirVoiesByCommuneINSEE(
       Object.keys(mapCodeCommuneBanId)[0],
     );
   }
@@ -52,6 +57,7 @@ export async function computeRows(
     },
     mapCodeCommuneBanId,
     cadastreGeoJSON,
+    fantoirVoies,
   });
 
   for (const e of computedRows.flatMap((row) => row.errors)) {

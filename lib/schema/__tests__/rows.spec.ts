@@ -40,6 +40,7 @@ describe('VALIDATE ROWS', () => {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
     expect(errors).toEqual([]);
   });
@@ -51,6 +52,7 @@ describe('VALIDATE ROWS', () => {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
     expect(errors).toContain('empty');
   });
@@ -87,6 +89,7 @@ describe('VALIDATE ROWS', () => {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
     expect(errors).toEqual([]);
   });
@@ -123,6 +126,7 @@ describe('VALIDATE ROWS', () => {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
     expect(errors).toEqual([]);
   });
@@ -159,6 +163,7 @@ describe('VALIDATE ROWS', () => {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
     expect(errors).toContain('multi_id_ban_commune');
   });
@@ -192,6 +197,7 @@ describe('VALIDATE ROWS', () => {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
     expect(errors).toContain('every_line_required_id_ban');
   });
@@ -229,6 +235,7 @@ describe('VALIDATE ROWS', () => {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
     expect(errors).toContain('every_line_required_id_ban');
   });
@@ -274,6 +281,7 @@ describe('VALIDATE ROWS', () => {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': '0246e48c-f33d-433a-8984-034219be842e' },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
     expect(rows[1].errors).toEqual([
       { code: 'row.cog_no_match_id_ban_commune' },
@@ -320,6 +328,7 @@ describe('VALIDATE ROWS', () => {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
 
     // Vérification que les remediations contiennent les id_ban
@@ -399,6 +408,7 @@ describe('VALIDATE ROWS', () => {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
 
     expect(rows[0].parsedValues.id_ban_toponyme).toBe(
@@ -474,6 +484,7 @@ describe('VALIDATE ROWS', () => {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
     expect(rows[3].errors).toEqual([{ code: 'row.coord_outlier' }]);
   });
@@ -497,6 +508,7 @@ describe('VALIDATE ROWS', () => {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
     expect(rows[0].errors).toEqual([]);
   });
@@ -541,6 +553,7 @@ describe('VALIDATE ROWS', () => {
           },
         ],
       },
+      fantoirVoies: undefined,
     });
     expect(rows[0].errors).toEqual([
       {
@@ -589,6 +602,7 @@ describe('VALIDATE ROWS', () => {
           },
         ],
       },
+      fantoirVoies: undefined,
     });
     expect(rows[0].errors).toEqual([
       {
@@ -637,6 +651,7 @@ describe('VALIDATE ROWS', () => {
           },
         ],
       },
+      fantoirVoies: undefined,
     });
     expect(rows[0].errors).toEqual([]);
   });
@@ -682,6 +697,7 @@ describe('VALIDATE ROWS', () => {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
     expect(rows[0].errors).toEqual([
       { code: 'row.different_voie_nom_with_same_id_ban_toponyme' },
@@ -734,6 +750,7 @@ describe('VALIDATE ROWS', () => {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
     expect(rows[0].errors).toEqual([
       { code: 'row.different_id_ban_toponyme_with_same_voie_nom' },
@@ -778,6 +795,7 @@ describe('VALIDATE ROWS', () => {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
     expect(rows[0].errors).toEqual([
       { code: 'row.different_adresse_with_same_id_ban_adresse' },
@@ -818,6 +836,7 @@ describe('VALIDATE ROWS', () => {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
     expect(rows[0].errors).toEqual([
       { code: 'row.different_id_ban_adresses_with_same_adresse' },
@@ -845,9 +864,56 @@ describe('VALIDATE ROWS', () => {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
       cadastreGeoJSON: undefined,
+      fantoirVoies: undefined,
     });
     expect(rows[0].errors).toEqual([
       { code: 'row.lieudit_complement_nom_not_declared' },
+    ]);
+  });
+
+  it('TEST remediation cle_interop', async () => {
+    const rows: any[] = [
+      {
+        parsedValues: {
+          voie_nom: 'Rue du Test',
+          numero: 12,
+          suffixe: 'B',
+          commune_insee: '99999',
+        },
+        remediations: {},
+        rawValues: {},
+      },
+    ];
+    // Mock FantoirVoie correspondant à la voie
+    const fantoirVoies = [
+      {
+        type: 'VOIE',
+        codeTypeVoie: 'RUE',
+        typeVoie: 'RUE',
+        codeRivoli: 'ABCD',
+        cleRivoli: '1',
+        libelleVoie: 'DU TEST',
+        voiePrivee: false,
+        codeMajic: '1234',
+        motDirecteur: 'TEST',
+        dateAjout: '2020-01-01',
+        id: '1',
+        codeNatureVoie: 'VOIE',
+        natureVoie: 'Voie',
+        libelleVoieComplet: 'RUE DU TEST',
+      },
+    ];
+    await validateRows(rows, {
+      addError: () => {},
+      mapCodeCommuneBanId: { '99999': undefined },
+      cadastreGeoJSON: undefined,
+      fantoirVoies,
+    });
+    expect(rows[0].remediations).toHaveProperty('cle_interop');
+    expect(rows[0].remediations.cle_interop.value).toBe('99999_abcd_00012_b');
+    expect(rows[0].remediations.cle_interop.errors).toEqual([
+      'cle_interop.valeur_manquante',
+      'field.cle_interop.missing',
     ]);
   });
 });
