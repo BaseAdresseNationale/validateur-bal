@@ -10,7 +10,7 @@ export type CommuneMiniCOG = {
 
 const communesIndex: Record<string, CommuneMiniCOG> = communes.reduce(
   (acc, commune) => {
-    if (!acc[commune.code] || Boolean(commune.anciensCodes)) {
+    if (!acc[commune.code] || commune.anciensCodes?.length > 0) {
       acc[commune.code] = commune;
     }
 
