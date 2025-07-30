@@ -15,14 +15,10 @@ async function main() {
     )
     .map((c) => ({ code: c.code, nom: c.nom, anciensCodes: c.anciensCodes }));
 
-  const communesDelegueesAssociees = communes
-    .filter((c) => ['commune-associee', 'commune-deleguee'].includes(c.type))
-    .map((c) => ({ code: c.code, nom: c.nom, chefLieu: c.chefLieu }));
-
-  await outputJson(path.join(__dirname, '..', 'minicog.json'), [
-    ...communesActuelles,
-    ...communesDelegueesAssociees,
-  ]);
+  await outputJson(
+    path.join(__dirname, '..', 'minicog.json'),
+    communesActuelles,
+  );
 }
 
 main().catch((error) => {
