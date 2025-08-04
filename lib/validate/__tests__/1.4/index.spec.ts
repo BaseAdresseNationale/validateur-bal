@@ -17,12 +17,18 @@ function readAsBuffer(relativePath) {
 
 describe('VALIDATE 1.4 TEST', () => {
   beforeEach(() => {
-    fetchMock.doMock(async () => {
-      return JSON.stringify({
-        status: 'success',
-        response: [{ id: '0246e48c-f33d-433a-8984-034219be842e' }],
-      });
-    });
+    fetchMock.mockIf(
+      /^https:\/\/plateforme\.adresse\.data\.gouv\.fr\/api\/district\/cog\/.*/,
+      async () => {
+        return {
+          status: 200,
+          body: JSON.stringify({
+            status: 'success',
+            response: [{ id: '0246e48c-f33d-433a-8984-034219be842e' }],
+          }),
+        };
+      },
+    );
   });
 
   test('Valid file 1.3', async () => {
@@ -301,7 +307,7 @@ describe('VALIDATE 1.4 TEST', () => {
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
     const error = report.profilErrors.filter(
-      (e) => e.code === 'rows.cog_no_match_id_ban_commune',
+      (e) => e.code === 'row.cog_no_match_id_ban_commune',
     );
     expect(error.length).toBe(1);
     expect(error[0].level).toBe(ErrorLevelEnum.ERROR);
