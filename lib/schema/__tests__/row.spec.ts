@@ -66,6 +66,54 @@ describe('VALIDATE ROW', () => {
     });
   });
 
+  it('TEST voie_nom avec lieudit_complement_nom EGAL', async () => {
+    const errors: string[] = [];
+    const row: any = {
+      parsedValues: {
+        commune_insee: '91534',
+        voie_nom: 'rue du Colombier',
+        lieudit_complement_nom: '   rue du  colombier   ',
+        numero: 1,
+        date_der_maj: '2023-12-25',
+      },
+      rawValues: {},
+      remediations: {},
+    };
+
+    await validateRow(row, {
+      addError: (str: string) => {
+        errors.push(str);
+      },
+      addRemediation: () => {},
+    });
+
+    expect(errors).toContain('voie_nom_have_same_lieudit_complement_nom');
+  });
+
+  it('TEST voie_nom avec lieudit_complement_nom DIFF', async () => {
+    const errors: string[] = [];
+    const row: any = {
+      parsedValues: {
+        commune_insee: '91534',
+        voie_nom: 'rue du Colombier',
+        lieudit_complement_nom: '   la ferme   ',
+        numero: 1,
+        date_der_maj: '2023-12-25',
+      },
+      rawValues: {},
+      remediations: {},
+    };
+
+    await validateRow(row, {
+      addError: (str: string) => {
+        errors.push(str);
+      },
+      addRemediation: () => {},
+    });
+
+    expect(errors).not.toContain('voie_nom_have_same_lieudit_complement_nom');
+  });
+
   it('TEST date_der_maj default now', async () => {
     const remediations: any = {};
     const row: any = {
@@ -89,6 +137,38 @@ describe('VALIDATE ROW', () => {
       date_der_maj: {
         errors: ['field.date_der_maj.missing'],
         value: format(new Date(), 'yyyy-MM-dd'),
+      },
+    });
+  });
+
+  it('TEST commune_nom_invalide', async () => {
+    const errors: string[] = [];
+    const remediations: any = {};
+    const row: any = {
+      parsedValues: {
+        commune_insee: '91534',
+        commune_nom: 'Mauvaise Commune',
+        voie_nom: 'rue du Colombier',
+        numero: 1,
+        date_der_maj: '2023-12-25',
+      },
+      rawValues: {},
+      remediations: {},
+    };
+
+    await validateRow(row, {
+      addError: (str: string) => {
+        errors.push(str);
+      },
+      addRemediation: <T>(key: string, value: RemediationValue<T>) =>
+        (remediations[key] = value),
+    });
+
+    expect(errors).toContain('commune_nom_invalide');
+    expect(remediations).toEqual({
+      commune_nom: {
+        errors: ['commune_nom_invalide'],
+        value: 'Saclay',
       },
     });
   });
