@@ -284,4 +284,94 @@ describe('VALIDATE ROW', () => {
       expect(addError).not.toHaveBeenCalledWith('chef_lieu_invalide');
     });
   });
+
+  describe('validation des coordonnées', () => {
+    it('TEST alerte longlat_vides quand numero est "0" et pas de long/lat', async () => {
+      const row: any = {
+        parsedValues: {
+          commune_insee: '91534',
+          commune_nom: 'Saclay',
+          voie_nom: 'rue du Colombier',
+          numero: 0,
+          date_der_maj: '2023-12-25',
+        },
+        rawValues: {
+          // Pas de longitude ni latitude
+        },
+        remediations: {},
+      };
+
+      const addError: (error: string) => void = jest.fn();
+      const addRemediation: <T>(
+        key: string,
+        value: RemediationValue<T>,
+      ) => void = jest.fn();
+
+      await validateRow(row, {
+        addError,
+        addRemediation,
+      });
+
+      expect(addError).toHaveBeenCalledWith('longlat_vides');
+    });
+
+    it('TEST pas d\'alerte longlat_vides quand numero est "0" mais long/lat présents', async () => {
+      const row: any = {
+        parsedValues: {
+          commune_insee: '91534',
+          commune_nom: 'Saclay',
+          voie_nom: 'rue du Colombier',
+          numero: 0,
+          date_der_maj: '2023-12-25',
+        },
+        rawValues: {
+          long: 2.1699,
+          lat: 48.7069,
+        },
+        remediations: {},
+      };
+
+      const addError: (error: string) => void = jest.fn();
+      const addRemediation: <T>(
+        key: string,
+        value: RemediationValue<T>,
+      ) => void = jest.fn();
+
+      await validateRow(row, {
+        addError,
+        addRemediation,
+      });
+
+      expect(addError).not.toHaveBeenCalledWith('longlat_vides');
+    });
+
+    it("TEST pas d'alerte longlat_vides quand numero est 99999 (toponyme)", async () => {
+      const row: any = {
+        parsedValues: {
+          commune_insee: '91534',
+          commune_nom: 'Saclay',
+          voie_nom: 'rue du Colombier',
+          numero: 99999,
+          date_der_maj: '2023-12-25',
+        },
+        rawValues: {
+          // Pas de longitude ni latitude
+        },
+        remediations: {},
+      };
+
+      const addError: (error: string) => void = jest.fn();
+      const addRemediation: <T>(
+        key: string,
+        value: RemediationValue<T>,
+      ) => void = jest.fn();
+
+      await validateRow(row, {
+        addError,
+        addRemediation,
+      });
+
+      expect(addError).not.toHaveBeenCalledWith('longlat_vides');
+    });
+  });
 });
