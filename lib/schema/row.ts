@@ -87,7 +87,7 @@ function validateCoords(
 ) {
   // VERIFIE QU'IL Y AI LONG/LAT SI C'EST UN NUMERO (NON TOPONYME)
   if (
-    row.parsedValues.numero &&
+    'numero' in row.parsedValues &&
     row.parsedValues.numero !== 99_999 &&
     (!row.rawValues.long || !row.rawValues.lat)
   ) {
