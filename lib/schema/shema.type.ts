@@ -65,6 +65,7 @@ export type RemediationValue<T> = {
 };
 
 export type RemediationsType = {
+  cle_interop?: RemediationValue<string>;
   id_ban_commune?: RemediationValue<string>;
   id_ban_toponyme?: RemediationValue<string>;
   id_ban_adresse?: RemediationValue<string>;
