@@ -395,4 +395,89 @@ describe('VALIDATE ROWS', () => {
       rows[3].remediations.id_ban_adresse.value,
     );
   });
+
+  it('TEST remediation des id_ban_toponyme avec codeVoie différents', async () => {
+    const errors: string[] = [];
+    const rows: any[] = [
+      {
+        additionalValues: {
+          cle_interop: {
+            codeVoie: 'ABCD',
+          },
+        },
+        parsedValues: {
+          id_ban_toponyme: '0246e48c-f33d-433a-8984-034219be842e',
+          voie_nom: 'rue du Colombier',
+          numero: 1,
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+      },
+      {
+        additionalValues: {
+          cle_interop: {
+            codeVoie: 'EFGH',
+          },
+        },
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          numero: 1,
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+      },
+      {
+        additionalValues: {
+          cle_interop: {
+            codeVoie: 'ABCD',
+          },
+        },
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          numero: 2,
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+      },
+      {
+        additionalValues: {
+          cle_interop: {
+            codeVoie: 'EFGH',
+          },
+        },
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          numero: 2,
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+      },
+    ];
+
+    await validateRows(rows, {
+      addError: (e: string) => errors.push(e),
+    });
+    // Vérification que les remediations contiennent les id_ban_toponyme
+    expect(rows[1].remediations).toHaveProperty('id_ban_toponyme');
+    expect(rows[2].remediations).toHaveProperty('id_ban_toponyme');
+    expect(rows[3].remediations).toHaveProperty('id_ban_toponyme');
+
+    // Vérification que les voies avec le même nom mais codeVoie différents ont des id_ban_toponyme différents
+    expect(rows[0].parsedValues.id_ban_toponyme).toBe(
+      rows[2].remediations.id_ban_toponyme.value,
+    );
+    expect(rows[1].remediations.id_ban_toponyme.value).toBe(
+      rows[3].remediations.id_ban_toponyme.value,
+    );
+    expect(rows[0].parsedValues.id_ban_toponyme).not.toBe(
+      rows[1].remediations.id_ban_toponyme.value,
+    );
+    expect(rows[2].remediations.id_ban_toponyme.value).not.toBe(
+      rows[3].remediations.id_ban_toponyme.value,
+    );
+  });
 });
