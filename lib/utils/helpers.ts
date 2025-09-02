@@ -1,14 +1,34 @@
 import languesRegionales from '@ban-team/shared-data/langues-regionales.json';
+import { normalize } from '@ban-team/adresses-util/lib/voies';
 
 import profiles from '../schema/profiles';
 import errorLabels from '../schema/error-labels';
 import Schema from '../schema/index';
 import { ProfileType } from '../schema/profiles/profile.type';
+import { ValidateRowType } from '../validate/validate.type';
 
 export enum ErrorLevelEnum {
   ERROR = 'E',
   WARNING = 'W',
   INFO = 'I',
+}
+
+export function getCodeCommune(row: ValidateRowType) {
+  return (
+    row.parsedValues.commune_insee ||
+    row.additionalValues?.cle_interop?.codeCommune
+  );
+}
+
+export function getVoieIdentifier({
+  parsedValues,
+  additionalValues,
+}: ValidateRowType) {
+  return `${normalize(parsedValues.voie_nom)}#${parsedValues.commune_deleguee_insee}#${additionalValues?.cle_interop?.codeVoie}`;
+}
+
+export function getNumeroIdentifier({ parsedValues }: ValidateRowType) {
+  return `${parsedValues.numero}#${parsedValues.suffixe}#${parsedValues.voie_nom}#${parsedValues.commune_deleguee_insee}`;
 }
 
 // On fait une liste des langues régional que l'on peut utiliser

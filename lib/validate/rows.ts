@@ -9,6 +9,7 @@ import {
   RemediationsType,
   RemediationValue,
 } from '../schema/shema.type';
+import { getMapCodeCommuneBanId } from '../utils/ban';
 
 export async function computeRows(
   parsedRows: Record<string, string>[],
@@ -23,27 +24,30 @@ export async function computeRows(
   },
 ): Promise<ValidateRowType[]> {
   const indexedFields: Record<string, FieldType> = keyBy(fields, 'name');
+
   const computedRows: ValidateRowType[] = await bluebird.map(
     parsedRows,
     async (parsedRow: Record<string, string>, line: number) => {
-      const computedRow: ValidateRowType = validateRow(parsedRow, {
+      return await validateRow(parsedRow, {
         indexedFields,
         line,
       });
-      for (const e of computedRow.errors) {
-        rowsErrors.add(e.code);
-      }
-
-      return computedRow;
     },
     { concurrency: 4 },
   );
 
-  await Schema.rows(computedRows, {
+  const mapCodeCommuneBanId = await getMapCodeCommuneBanId(computedRows);
+
+  Schema.rows(computedRows, {
     addError(code: string) {
-      globalErrors.add(code);
+      globalErrors.add(`rows.${code}`);
     },
+    mapCodeCommuneBanId,
   });
+
+  for (const e of computedRows.flatMap((row) => row.errors)) {
+    rowsErrors.add(e.code);
+  }
 
   return computedRows;
 }
@@ -91,7 +95,7 @@ export function readValue(fieldName: string, rawValue: string): ReadValueType {
   return result;
 }
 
-export function validateRow(
+export async function validateRow(
   row: Record<string, string>,
   {
     indexedFields,
@@ -100,7 +104,7 @@ export function validateRow(
     indexedFields: Record<string, FieldType>;
     line: number;
   },
-): ValidateRowType {
+): Promise<ValidateRowType> {
   const rawValues: Record<string, string> = {};
   const parsedValues: ParsedValues = {};
   const remediations: RemediationsType = {};
