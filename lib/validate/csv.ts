@@ -70,10 +70,10 @@ function getCsvRow(
     y: parsedValues.y,
     long: parsedValues.long,
     lat: parsedValues.lat,
-    cad_parcelles: parsedValues.cad_parcelles,
+    cad_parcelles: parsedValues.cad_parcelles?.join('|') || '',
     source: parsedValues.source,
     date_der_maj: remediations.date_der_maj?.value || parsedValues.date_der_maj,
-    certification_commune: parsedValues.certification_commune,
+    certification_commune: parsedValues.certification_commune ? '1' : '0',
   };
 }
 

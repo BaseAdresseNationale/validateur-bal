@@ -1,18 +1,15 @@
-import { keyBy, flatten } from 'lodash';
+import { flatten, keyBy } from 'lodash';
 import communes from '../../minicog.json';
 
 export type CommuneMiniCOG = {
   code: string;
   nom: string;
-  chefLieu?: string;
   anciensCodes?: string[];
 };
 
 const communesIndex: Record<string, CommuneMiniCOG> = keyBy(communes, 'code');
 
-const codesCommunesActuelles = new Set(
-  communes.filter((c) => !c.chefLieu).map((c) => c.code),
-);
+const codesCommunesActuelles = new Set(Object.keys(communesIndex));
 
 const codesCommunesAnciennes = new Set(
   flatten(communes.map((c) => c.anciensCodes || [])),
