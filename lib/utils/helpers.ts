@@ -20,8 +20,11 @@ export function getCodeCommune(row: ValidateRowType) {
   );
 }
 
-export function getVoieIdentifier({ parsedValues }: ValidateRowType) {
-  return `${normalize(parsedValues.voie_nom)}#${parsedValues.commune_deleguee_insee}`;
+export function getVoieIdentifier({
+  parsedValues,
+  additionalValues,
+}: ValidateRowType) {
+  return `${normalize(parsedValues.voie_nom)}#${parsedValues.commune_deleguee_insee}#${additionalValues?.cle_interop?.codeVoie}`;
 }
 
 export function getNumeroIdentifier({ parsedValues }: ValidateRowType) {
