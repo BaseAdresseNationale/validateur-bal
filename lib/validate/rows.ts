@@ -39,19 +39,11 @@ export async function computeRows(
 
   const mapCodeCommuneBanId = await getMapCodeCommuneBanId(computedRows);
 
-  let cadastreGeoJSON = undefined;
-  if (Object.keys(mapCodeCommuneBanId).length <= 1) {
-    cadastreGeoJSON = await getCommuneCadastreByCommuneINSEE(
-      Object.keys(mapCodeCommuneBanId)[0],
-    );
-  }
-
   Schema.rows(computedRows, {
     addError(code: string) {
       globalErrors.add(`rows.${code}`);
     },
     mapCodeCommuneBanId,
-    cadastreGeoJSON,
   });
 
   for (const e of computedRows.flatMap((row) => row.errors)) {

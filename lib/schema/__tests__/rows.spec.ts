@@ -39,7 +39,7 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: undefined,
+      
     });
     expect(errors).toEqual([]);
   });
@@ -50,7 +50,7 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: undefined,
+      
     });
     expect(errors).toContain('empty');
   });
@@ -86,7 +86,7 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: undefined,
+      
     });
     expect(errors).toEqual([]);
   });
@@ -122,7 +122,7 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: undefined,
+      
     });
     expect(errors).toEqual([]);
   });
@@ -158,7 +158,7 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: undefined,
+      
     });
     expect(errors).toContain('multi_id_ban_commune');
   });
@@ -191,7 +191,7 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: undefined,
+      
     });
     expect(errors).toContain('every_line_required_id_ban');
   });
@@ -228,7 +228,7 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: undefined,
+      
     });
     expect(errors).toContain('every_line_required_id_ban');
   });
@@ -273,7 +273,7 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': '0246e48c-f33d-433a-8984-034219be842e' },
-      cadastreGeoJSON: undefined,
+      
     });
     expect(rows[1].errors).toEqual([
       { code: 'row.cog_no_match_id_ban_commune' },
@@ -319,7 +319,7 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: undefined,
+      
     });
 
     // Vérification que les remediations contiennent les id_ban
@@ -398,7 +398,7 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: undefined,
+      
     });
 
     expect(rows[0].parsedValues.id_ban_toponyme).toBe(
@@ -417,228 +417,6 @@ describe('VALIDATE ROWS', () => {
     expect(rows[2].remediations.id_ban_adresse.value).not.toBe(
       rows[3].remediations.id_ban_adresse.value,
     );
-  });
-
-  it('TEST coord_outlier', async () => {
-    const rows: any[] = [
-      {
-        parsedValues: {
-          voie_nom: 'rue du Colombier',
-          commune_insee: '91534',
-          numero: 1,
-          long: 2.3522,
-          lat: 48.8566,
-        },
-        remediations: {},
-        rawValues: {},
-        errors: [],
-      },
-      {
-        parsedValues: {
-          voie_nom: 'rue du Colombier',
-          commune_insee: '91534',
-          numero: 2,
-          long: 2.353,
-          lat: 48.857,
-        },
-        remediations: {},
-        rawValues: {},
-        errors: [],
-      },
-      {
-        parsedValues: {
-          voie_nom: 'rue du Colombier',
-          commune_insee: '91534',
-          numero: 3,
-          long: 2.354,
-          lat: 48.856,
-        },
-        remediations: {},
-        rawValues: {},
-        errors: [],
-      },
-      {
-        parsedValues: {
-          voie_nom: 'rue du Colombier',
-          commune_insee: '91534',
-          numero: 4,
-          long: 7.2619,
-          lat: 43.7102,
-        },
-        remediations: {},
-        rawValues: {},
-        errors: [],
-      },
-    ];
-    await validateRows(rows, {
-      addError: () => {},
-      mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: undefined,
-    });
-    expect(rows[3].errors).toEqual([{ code: 'row.coord_outlier' }]);
-  });
-
-  it('TEST no coord_outlier', async () => {
-    const rows: any[] = [
-      {
-        parsedValues: {
-          voie_nom: 'rue du Colombier',
-          commune_insee: '91534',
-          numero: 1,
-          long: 2.3522,
-          lat: 48.8566,
-        },
-        remediations: {},
-        rawValues: {},
-        errors: [],
-      },
-    ];
-    await validateRows(rows, {
-      addError: () => {},
-      mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: undefined,
-    });
-    expect(rows[0].errors).toEqual([]);
-  });
-
-  it('TEST cadastre_outlier', async () => {
-    const rows: any[] = [
-      {
-        parsedValues: {
-          voie_nom: 'rue du Colombier',
-          commune_insee: '91534',
-          numero: 1,
-          long: 7.2619,
-          lat: 43.7102,
-          cad_parcelles: ['914350000A1089'],
-        },
-        remediations: {},
-        rawValues: {},
-        errors: [],
-      },
-    ];
-    await validateRows(rows, {
-      addError: () => {},
-      mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            id: '914350000A1089',
-            geometry: {
-              type: 'Polygon',
-              coordinates: [
-                [
-                  [2.3522, 48.8566],
-                  [2.353, 48.857],
-                  [2.354, 48.856],
-                  [2.3522, 48.8566],
-                ],
-              ],
-            },
-            properties: {},
-          },
-        ],
-      },
-    });
-    expect(rows[0].errors).toEqual([
-      {
-        code: 'row.cadastre_outlier',
-      },
-    ]);
-  });
-
-  it('TEST cadastre_no_exist', async () => {
-    const rows: any[] = [
-      {
-        parsedValues: {
-          voie_nom: 'rue du Colombier',
-          commune_insee: '91534',
-          numero: 1,
-          long: 2.3522,
-          lat: 48.8566,
-          cad_parcelles: ['914350000A1089'],
-        },
-        remediations: {},
-        rawValues: {},
-        errors: [],
-      },
-    ];
-    await validateRows(rows, {
-      addError: () => {},
-      mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            id: '914350000A1080',
-            geometry: {
-              type: 'Polygon',
-              coordinates: [
-                [
-                  [2.3522, 48.8566],
-                  [2.353, 48.857],
-                  [2.354, 48.856],
-                  [2.3522, 48.8566],
-                ],
-              ],
-            },
-            properties: {},
-          },
-        ],
-      },
-    });
-    expect(rows[0].errors).toEqual([
-      {
-        code: 'row.cadastre_no_exist',
-      },
-    ]);
-  });
-
-  it('TEST no cadastre_outlier and no cadastre_no_exist', async () => {
-    const rows: any[] = [
-      {
-        parsedValues: {
-          voie_nom: 'rue du Colombier',
-          commune_insee: '91534',
-          numero: 1,
-          long: 2.3522,
-          lat: 48.8566,
-          cad_parcelles: ['914350000A1089'],
-        },
-        remediations: {},
-        rawValues: {},
-        errors: [],
-      },
-    ];
-    await validateRows(rows, {
-      addError: () => {},
-      mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            id: '914350000A1089',
-            geometry: {
-              type: 'Polygon',
-              coordinates: [
-                [
-                  [2.3522, 48.8566],
-                  [2.353, 48.857],
-                  [2.354, 48.856],
-                  [2.3522, 48.8566],
-                ],
-              ],
-            },
-            properties: {},
-          },
-        ],
-      },
-    });
-    expect(rows[0].errors).toEqual([]);
   });
 
   it('TEST row.different_voie_nom_with_same_id_ban_toponyme', async () => {
@@ -681,7 +459,7 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: undefined,
+      
     });
     expect(rows[0].errors).toEqual([
       { code: 'row.different_voie_nom_with_same_id_ban_toponyme' },
@@ -733,7 +511,7 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: undefined,
+      
     });
     expect(rows[0].errors).toEqual([
       { code: 'row.different_id_ban_toponyme_with_same_voie_nom' },
@@ -777,7 +555,7 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: undefined,
+      
     });
     expect(rows[0].errors).toEqual([
       { code: 'row.different_adresse_with_same_id_ban_adresse' },
@@ -817,7 +595,7 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: undefined,
+      
     });
     expect(rows[0].errors).toEqual([
       { code: 'row.different_id_ban_adresses_with_same_adresse' },
@@ -844,7 +622,7 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
-      cadastreGeoJSON: undefined,
+      
     });
     expect(rows[0].errors).toEqual([
       { code: 'row.lieudit_complement_nom_not_declared' },
@@ -913,6 +691,7 @@ describe('VALIDATE ROWS', () => {
 
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
     // Vérification que les remediations contiennent les id_ban_toponyme
     expect(rows[1].remediations).toHaveProperty('id_ban_toponyme');
