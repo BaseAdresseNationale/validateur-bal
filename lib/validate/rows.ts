@@ -9,7 +9,6 @@ import {
   RemediationsType,
   RemediationValue,
 } from '../schema/shema.type';
-import { getCommuneCadastreByCommuneINSEE } from '../utils/cadastre';
 import { getMapCodeCommuneBanId } from '../utils/ban';
 
 export async function computeRows(

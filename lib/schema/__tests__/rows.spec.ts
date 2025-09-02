@@ -39,7 +39,6 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      
     });
     expect(errors).toEqual([]);
   });
@@ -50,7 +49,6 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      
     });
     expect(errors).toContain('empty');
   });
@@ -86,7 +84,6 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      
     });
     expect(errors).toEqual([]);
   });
@@ -122,7 +119,6 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      
     });
     expect(errors).toEqual([]);
   });
@@ -158,7 +154,6 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      
     });
     expect(errors).toContain('multi_id_ban_commune');
   });
@@ -191,7 +186,6 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      
     });
     expect(errors).toContain('every_line_required_id_ban');
   });
@@ -228,7 +222,6 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      
     });
     expect(errors).toContain('every_line_required_id_ban');
   });
@@ -273,7 +266,6 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': '0246e48c-f33d-433a-8984-034219be842e' },
-      
     });
     expect(rows[1].errors).toEqual([
       { code: 'row.cog_no_match_id_ban_commune' },
@@ -319,7 +311,6 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      
     });
 
     // Vérification que les remediations contiennent les id_ban
@@ -398,7 +389,6 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
       mapCodeCommuneBanId: { '91534': undefined },
-      
     });
 
     expect(rows[0].parsedValues.id_ban_toponyme).toBe(
@@ -459,7 +449,6 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
-      
     });
     expect(rows[0].errors).toEqual([
       { code: 'row.different_voie_nom_with_same_id_ban_toponyme' },
@@ -511,7 +500,6 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
-      
     });
     expect(rows[0].errors).toEqual([
       { code: 'row.different_id_ban_toponyme_with_same_voie_nom' },
@@ -555,7 +543,6 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
-      
     });
     expect(rows[0].errors).toEqual([
       { code: 'row.different_adresse_with_same_id_ban_adresse' },
@@ -595,7 +582,6 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
-      
     });
     expect(rows[0].errors).toEqual([
       { code: 'row.different_id_ban_adresses_with_same_adresse' },
@@ -622,11 +608,11 @@ describe('VALIDATE ROWS', () => {
     await validateRows(rows, {
       addError: () => {},
       mapCodeCommuneBanId: { '91534': undefined },
-      
     });
     expect(rows[0].errors).toEqual([
       { code: 'row.lieudit_complement_nom_not_declared' },
     ]);
+  });
   it('TEST remediation des id_ban_toponyme avec codeVoie différents', async () => {
     const errors: string[] = [];
     const rows: any[] = [
