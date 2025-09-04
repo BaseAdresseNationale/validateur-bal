@@ -65,7 +65,7 @@ function validatePositionType(
 ) {
   // VERIFIE QU'IL Y A UN TYPE POSITION SI C'EST BIEN UN NUMERO (NON UN TOPONYME)
   if (
-    row.parsedValues.numero &&
+    'numero' in row.parsedValues &&
     row.parsedValues.numero !== 99_999 &&
     !row.rawValues.position
   ) {
