@@ -85,21 +85,19 @@ function validateCoords(
   row: ValidateRowType,
   { addError }: { addError: (code: string) => void },
 ) {
-  // VERIFIE QU'IL Y AI LONG/LAT SI C'EST UN NUMERO (NON TOPONYME)
-  if (
-    'numero' in row.parsedValues &&
-    row.parsedValues.numero !== 99_999 &&
-    (!row.rawValues.long || !row.rawValues.lat)
-  ) {
-    addError('longlat_vides');
-  }
-
   const long: number = row.parsedValues.long as number;
   const lat: number = row.parsedValues.lat as number;
   const x: number = row.parsedValues.x as number;
   const y: number = row.parsedValues.y as number;
 
-  if (long !== undefined && lat !== undefined) {
+  // VERIFIE QU'IL Y AI LONG/LAT SI C'EST UN NUMERO (NON TOPONYME)
+  if (
+    'numero' in row.parsedValues &&
+    row.parsedValues.numero !== 99_999 &&
+    (!long || !lat)
+  ) {
+    addError('longlat_vides');
+  } else {
     const projectedCoordInMeters = harmlessProj([long, lat]);
     if (projectedCoordInMeters) {
       if (x !== undefined && y !== undefined) {
