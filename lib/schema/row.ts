@@ -97,7 +97,7 @@ function validatePositionType(
 ) {
   // VERIFIE QU'IL Y A UN TYPE POSITION SI C'EST BIEN UN NUMERO (NON UN TOPONYME)
   if (
-    row.parsedValues.numero &&
+    'numero' in row.parsedValues &&
     row.parsedValues.numero !== 99_999 &&
     !row.rawValues.position
   ) {
@@ -117,6 +117,11 @@ function validateCoords(
   row: ValidateRowType,
   { addError }: { addError: (code: string) => void },
 ) {
+  const long: number = row.parsedValues.long as number;
+  const lat: number = row.parsedValues.lat as number;
+  const x: number = row.parsedValues.x as number;
+  const y: number = row.parsedValues.y as number;
+
   // VERIFIE QU'IL Y AI LONG/LAT SI C'EST UN NUMERO (NON TOPONYME)
   if (
     'numero' in row.parsedValues &&
@@ -124,14 +129,7 @@ function validateCoords(
     (!row.rawValues.long || !row.rawValues.lat)
   ) {
     addError('longlat_vides');
-  }
-
-  const long: number = row.parsedValues.long as number;
-  const lat: number = row.parsedValues.lat as number;
-  const x: number = row.parsedValues.x as number;
-  const y: number = row.parsedValues.y as number;
-
-  if (long !== undefined && lat !== undefined) {
+  } else {
     const projectedCoordInMeters = harmlessProj([long, lat]);
     if (projectedCoordInMeters) {
       if (x !== undefined && y !== undefined) {
