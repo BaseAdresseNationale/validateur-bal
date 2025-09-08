@@ -55,7 +55,7 @@ export async function computeRows(
 export function readValue(
   fieldName: string,
   rawValue: string,
-  isLocalized: boolean,
+  isLocalized: boolean = false,
 ): ReadValueType {
   if (!(fieldName in Schema.fields)) {
     throw new Error(`Unknown field name: ${fieldName}`);
