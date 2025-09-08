@@ -94,7 +94,7 @@ function validateCoords(
   if (
     'numero' in row.parsedValues &&
     row.parsedValues.numero !== 99_999 &&
-    (!long || !lat)
+    (!row.rawValues.long || !row.rawValues.lat)
   ) {
     addError('longlat_vides');
   } else {
