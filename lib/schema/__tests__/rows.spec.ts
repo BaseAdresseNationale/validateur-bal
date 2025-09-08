@@ -512,6 +512,56 @@ describe('VALIDATE ROWS', () => {
     ]);
   });
 
+  it('TEST NO row.different_id_ban_toponyme_with_same_voie_nom', async () => {
+    const rows: any[] = [
+      {
+        parsedValues: {
+          id_ban_toponyme: '11111111-1111-1111-1111-111111111111',
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 1,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          id_ban_toponyme: '22222222-2222-2222-2222-222222222222',
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 2,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 99999,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+    ];
+    await validateRows(rows, {
+      addError: () => {},
+      mapCodeCommuneBanId: { '91534': undefined },
+    });
+    expect(rows[0].errors).toEqual([
+      {
+        code: 'row.different_id_ban_toponyme_with_same_voie_nom',
+      },
+    ]);
+    expect(rows[1].errors).toEqual([
+      { code: 'row.different_id_ban_toponyme_with_same_voie_nom' },
+    ]);
+    expect(rows[2].errors).toEqual([]);
+  });
+
   it('TEST row.different_adresse_with_same_id_ban_adresse', async () => {
     const idBanAdresse = '33333333-3333-3333-3333-333333333333';
     const rows: any[] = [

@@ -203,16 +203,17 @@ export function validateVoieBanIds(rows: ValidateRowType[]) {
   }
   // On regarde si les id_ban_toponyme sont les mêmes lorsque les voie_nom et commune_deleguee_insee sont identique
   const rowsByVoies = chain(rows)
+    .filter((row) => getIdBanToponyme(row))
     .groupBy((row) => getVoieIdentifier(row))
     .value();
-  for (const voieId of Object.keys(rowsByVoies)) {
-    const rowsByVoie = rowsByVoies[voieId];
+  for (const voieIdentifier of Object.keys(rowsByVoies)) {
+    const rowsByVoieIdentifier = rowsByVoies[voieIdentifier];
     // Vérifier que toutes les lignes avec le même id_ban_toponyme ont le même voie_nom
     const idBanToponymes = new Set(
-      rowsByVoie.map((row) => getIdBanToponyme(row)),
+      rowsByVoieIdentifier.map((row) => getIdBanToponyme(row)),
     );
     if (idBanToponymes.size > 1) {
-      for (const row of rowsByVoie) {
+      for (const row of rowsByVoieIdentifier) {
         row.errors?.push({
           code: 'row.different_id_ban_toponyme_with_same_voie_nom',
         });
