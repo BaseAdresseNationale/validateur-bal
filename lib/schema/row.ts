@@ -1,16 +1,11 @@
 import proj from '@etalab/project-legal';
 import { format } from 'date-fns';
 import { getCommune } from '../utils/cog';
+import { normalize } from '@ban-team/adresses-util/lib/voies';
 import { ValidateRowType } from '../validate/validate.type';
 import { RemediationValue } from './shema.type';
 import { getErrorMissingOrValeurManquante } from '../utils/remediation';
-
-export function getCodeCommune(row: ValidateRowType) {
-  return (
-    row.parsedValues.commune_insee ||
-    row.additionalValues?.cle_interop?.codeCommune
-  );
-}
+import { getCodeCommune } from '../utils/helpers';
 
 function validateNumero(
   row: ValidateRowType,
@@ -45,17 +40,54 @@ function validateCommuneInsee(
       errors: [getErrorMissingOrValeurManquante('commune_insee', row)],
       value: row.additionalValues?.cle_interop?.codeCommune,
     });
-    const commune = getCommune(row.additionalValues?.cle_interop?.codeCommune);
+  }
+}
+
+function validateCommuneNom(
+  row: ValidateRowType,
+  {
+    addError,
+    addRemediation,
+  }: {
+    addError: (code: string) => void;
+    addRemediation: <T>(key: string, remediation: RemediationValue<T>) => void;
+  },
+) {
+  const codeCommune = getCodeCommune(row);
+  if (!codeCommune) {
+    return;
+  }
+  const commune = getCommune(codeCommune);
+  if (!commune) {
+    return;
+  }
+
+  if (!row.parsedValues.commune_nom) {
     addRemediation<string>('commune_nom', {
       errors: [getErrorMissingOrValeurManquante('commune_nom', row)],
       value: commune?.nom,
     });
-  } else if (!row.parsedValues.commune_nom) {
-    const commune = getCommune(row.parsedValues.commune_insee);
+  } else if (row.parsedValues.commune_nom !== commune.nom) {
+    addError('commune_nom_invalide');
     addRemediation<string>('commune_nom', {
-      errors: [getErrorMissingOrValeurManquante('commune_nom', row)],
+      errors: ['commune_nom_invalide'],
       value: commune?.nom,
     });
+  }
+}
+
+/**
+ * ON VERIFIE QUE LE voie_nom ET LE lieudit_complement_nom SONT DIFFERENT
+ */
+function validateVoieNomDiffComplementNom(
+  row: ValidateRowType,
+  { addError }: { addError: (code: string) => void },
+) {
+  if (
+    normalize(row.parsedValues.voie_nom) ===
+    normalize(row.parsedValues.lieudit_complement_nom)
+  ) {
+    addError('voie_nom_have_same_lieudit_complement_nom');
   }
 }
 
@@ -154,9 +186,10 @@ function validateCommuneDelegueeInsee(
   }
   const commune = getCommune(codeCommune);
 
+  // On vérifie si commune_insee est chefLieu de commune_deleguee_insee
   if (
     !commune.anciensCodes?.includes(row.parsedValues.commune_deleguee_insee) &&
-    row.parsedValues.commune_deleguee_insee != codeCommune
+    row.parsedValues.commune_deleguee_insee !== codeCommune
   ) {
     addError('chef_lieu_invalide');
   }
@@ -222,6 +255,8 @@ function validateRow(
 ) {
   validateNumero(row, { addError });
   validateCommuneInsee(row, { addError, addRemediation });
+  validateCommuneNom(row, { addError, addRemediation });
+  validateVoieNomDiffComplementNom(row, { addError });
   validatePositionType(row, { addError });
   validateCoords(row, { addError });
   validateMinimalAdress(row, { addError });

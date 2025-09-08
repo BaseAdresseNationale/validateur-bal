@@ -301,7 +301,7 @@ describe('VALIDATE 1.4 TEST', () => {
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
     const error = report.profilErrors.filter(
-      (e) => e.code === 'rows.cog_no_match_id_ban_commune',
+      (e) => e.code === 'row.cog_no_match_id_ban_commune',
     );
     expect(error.length).toBe(1);
     expect(error[0].level).toBe(ErrorLevelEnum.ERROR);

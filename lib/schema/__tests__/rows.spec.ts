@@ -38,6 +38,7 @@ describe('VALIDATE ROWS', () => {
     ];
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
     expect(errors).toEqual([]);
   });
@@ -47,8 +48,9 @@ describe('VALIDATE ROWS', () => {
     const rows: any[] = [];
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
-    expect(errors).toContain('rows.empty');
+    expect(errors).toContain('empty');
   });
 
   it('TEST no ban_ids', async () => {
@@ -81,6 +83,7 @@ describe('VALIDATE ROWS', () => {
     ];
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
     expect(errors).toEqual([]);
   });
@@ -115,6 +118,7 @@ describe('VALIDATE ROWS', () => {
     ];
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
     expect(errors).toEqual([]);
   });
@@ -149,8 +153,9 @@ describe('VALIDATE ROWS', () => {
     ];
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
-    expect(errors).toContain('rows.multi_id_ban_commune');
+    expect(errors).toContain('multi_id_ban_commune');
   });
 
   it('TEST rows.every_line_required_id_ban', async () => {
@@ -180,11 +185,12 @@ describe('VALIDATE ROWS', () => {
     ];
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
-    expect(errors).toContain('rows.every_line_required_id_ban');
+    expect(errors).toContain('every_line_required_id_ban');
   });
 
-  it('TEST uuid_adresse rows.every_line_required_id_ban', async () => {
+  it('TEST uuid_adresse every_line_required_id_ban', async () => {
     const errors: string[] = [];
     const rows: any[] = [
       {
@@ -215,19 +221,19 @@ describe('VALIDATE ROWS', () => {
     ];
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
-    expect(errors).toContain('rows.every_line_required_id_ban');
+    expect(errors).toContain('every_line_required_id_ban');
   });
 
   it('TEST rows.cog_no_match_id_ban_commune', async () => {
-    const errors: string[] = [];
     const rows: any[] = [
       {
         additionalValues: {
           uid_adresse: {
             idBanCommune: '0246e48c-f33d-433a-8984-034219be842e',
             idBanToponyme: '0246e48c-f33d-433a-8984-034219be842e',
-            idBanAdresse: '0246e48c-f33d-433a-8984-034219be842e',
+            idBanAdresse: '0246e48c-f33d-433a-8984-034219be842a',
           },
         },
         parsedValues: {
@@ -237,6 +243,7 @@ describe('VALIDATE ROWS', () => {
         },
         remediations: {},
         rawValues: {},
+        errors: [],
       },
       {
         additionalValues: {
@@ -253,12 +260,16 @@ describe('VALIDATE ROWS', () => {
         },
         remediations: {},
         rawValues: {},
+        errors: [],
       },
     ];
     await validateRows(rows, {
-      addError: (e: string) => errors.push(e),
+      addError: () => {},
+      mapCodeCommuneBanId: { '91534': '0246e48c-f33d-433a-8984-034219be842e' },
     });
-    expect(errors).toContain('rows.cog_no_match_id_ban_commune');
+    expect(rows[1].errors).toEqual([
+      { code: 'row.cog_no_match_id_ban_commune' },
+    ]);
   });
 
   it('TEST remediation des id_ban manquants avec changement de commune deleguee', async () => {
@@ -299,6 +310,7 @@ describe('VALIDATE ROWS', () => {
     ];
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
 
     // Vérification que les remediations contiennent les id_ban
@@ -376,6 +388,7 @@ describe('VALIDATE ROWS', () => {
 
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
 
     expect(rows[0].parsedValues.id_ban_toponyme).toBe(
@@ -396,6 +409,260 @@ describe('VALIDATE ROWS', () => {
     );
   });
 
+  it('TEST row.different_voie_nom_with_same_id_ban_toponyme', async () => {
+    const idBanToponyme = '11111111-1111-1111-1111-111111111111';
+    const rows: any[] = [
+      {
+        parsedValues: {
+          id_ban_toponyme: idBanToponyme,
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 1,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          id_ban_toponyme: idBanToponyme,
+          voie_nom: 'avenue de la Paix',
+          commune_insee: '91534',
+          numero: 2,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          id_ban_toponyme: idBanToponyme,
+          voie_nom: 'toponyme',
+          commune_insee: '91534',
+          numero: 99999,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+    ];
+    await validateRows(rows, {
+      addError: () => {},
+      mapCodeCommuneBanId: { '91534': undefined },
+    });
+    expect(rows[0].errors).toEqual([
+      { code: 'row.different_voie_nom_with_same_id_ban_toponyme' },
+    ]);
+    expect(rows[1].errors).toEqual([
+      { code: 'row.different_voie_nom_with_same_id_ban_toponyme' },
+    ]);
+    expect(rows[2].errors).toEqual([
+      { code: 'row.different_voie_nom_with_same_id_ban_toponyme' },
+    ]);
+  });
+
+  it('TEST row.different_id_ban_toponyme_with_same_voie_nom', async () => {
+    const rows: any[] = [
+      {
+        parsedValues: {
+          id_ban_toponyme: '11111111-1111-1111-1111-111111111111',
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 1,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          id_ban_toponyme: '22222222-2222-2222-2222-222222222222',
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 2,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          id_ban_toponyme: '33333333-3333-3333-3333-333333333333',
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 99999,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+    ];
+    await validateRows(rows, {
+      addError: () => {},
+      mapCodeCommuneBanId: { '91534': undefined },
+    });
+    expect(rows[0].errors).toEqual([
+      { code: 'row.different_id_ban_toponyme_with_same_voie_nom' },
+    ]);
+    expect(rows[1].errors).toEqual([
+      { code: 'row.different_id_ban_toponyme_with_same_voie_nom' },
+    ]);
+    expect(rows[2].errors).toEqual([
+      { code: 'row.different_id_ban_toponyme_with_same_voie_nom' },
+    ]);
+  });
+
+  it('TEST NO row.different_id_ban_toponyme_with_same_voie_nom', async () => {
+    const rows: any[] = [
+      {
+        parsedValues: {
+          id_ban_toponyme: '11111111-1111-1111-1111-111111111111',
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 1,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          id_ban_toponyme: '22222222-2222-2222-2222-222222222222',
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 2,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          commune_insee: '91534',
+          numero: 99999,
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+    ];
+    await validateRows(rows, {
+      addError: () => {},
+      mapCodeCommuneBanId: { '91534': undefined },
+    });
+    expect(rows[0].errors).toEqual([
+      {
+        code: 'row.different_id_ban_toponyme_with_same_voie_nom',
+      },
+    ]);
+    expect(rows[1].errors).toEqual([
+      { code: 'row.different_id_ban_toponyme_with_same_voie_nom' },
+    ]);
+    expect(rows[2].errors).toEqual([]);
+  });
+
+  it('TEST row.different_adresse_with_same_id_ban_adresse', async () => {
+    const idBanAdresse = '33333333-3333-3333-3333-333333333333';
+    const rows: any[] = [
+      {
+        parsedValues: {
+          id_ban_adresse: idBanAdresse,
+          voie_nom: 'rue du Colombier',
+          numero: 1,
+          suffixe: 'A',
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          id_ban_adresse: idBanAdresse,
+          voie_nom: 'avenue de la Paix', // voie_nom différent
+          numero: 2, // numero différent
+          suffixe: 'B', // suffixe différent
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+    ];
+    await validateRows(rows, {
+      addError: () => {},
+      mapCodeCommuneBanId: { '91534': undefined },
+    });
+    expect(rows[0].errors).toEqual([
+      { code: 'row.different_adresse_with_same_id_ban_adresse' },
+    ]);
+    expect(rows[1].errors).toEqual([
+      { code: 'row.different_adresse_with_same_id_ban_adresse' },
+    ]);
+  });
+
+  it('TEST row.different_id_ban_adresses_with_same_adresse', async () => {
+    const rows: any[] = [
+      {
+        parsedValues: {
+          id_ban_adresse: '44444444-4444-4444-4444-444444444444',
+          voie_nom: 'rue du Colombier',
+          numero: 1,
+          suffixe: 'A',
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+      {
+        parsedValues: {
+          id_ban_adresse: '55555555-5555-5555-5555-555555555555',
+          voie_nom: 'rue du Colombier', // même voie_nom
+          numero: 1, // même numero
+          suffixe: 'A', // même suffixe
+          commune_insee: '91534',
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+    ];
+    await validateRows(rows, {
+      addError: () => {},
+      mapCodeCommuneBanId: { '91534': undefined },
+    });
+    expect(rows[0].errors).toEqual([
+      { code: 'row.different_id_ban_adresses_with_same_adresse' },
+    ]);
+    expect(rows[1].errors).toEqual([
+      { code: 'row.different_id_ban_adresses_with_same_adresse' },
+    ]);
+  });
+
+  it('TEST row.lieudit_complement_nom_not_declared', async () => {
+    const rows: any[] = [
+      {
+        parsedValues: {
+          voie_nom: 'rue du Colombier',
+          numero: 1,
+          commune_insee: '91534',
+          lieudit_complement_nom: 'paradis',
+        },
+        remediations: {},
+        rawValues: {},
+        errors: [],
+      },
+    ];
+    await validateRows(rows, {
+      addError: () => {},
+      mapCodeCommuneBanId: { '91534': undefined },
+    });
+    expect(rows[0].errors).toEqual([
+      { code: 'row.lieudit_complement_nom_not_declared' },
+    ]);
+  });
   it('TEST remediation des id_ban_toponyme avec codeVoie différents', async () => {
     const errors: string[] = [];
     const rows: any[] = [
@@ -460,6 +727,7 @@ describe('VALIDATE ROWS', () => {
 
     await validateRows(rows, {
       addError: (e: string) => errors.push(e),
+      mapCodeCommuneBanId: { '91534': undefined },
     });
     // Vérification que les remediations contiennent les id_ban_toponyme
     expect(rows[1].remediations).toHaveProperty('id_ban_toponyme');

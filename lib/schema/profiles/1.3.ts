@@ -47,9 +47,6 @@ export const warnings: string[] = [
   'date_der_maj.date_ancienne',
   'date_der_maj.date_future',
   'certification_commune.valeur_invalide',
-  'row.position_manquante',
-  'row.chef_lieu_invalide',
-  'row.longlat_xy_incoherents',
   'field.suffixe.missing',
   'field.cle_interop.missing',
   'field.position.missing',
@@ -70,6 +67,7 @@ export const warnings: string[] = [
   'lieudit_complement_nom.espaces_debut_fin',
   'lieudit_complement_nom_@@.espaces_debut_fin',
   'numero.espaces_debut_fin',
+  'numero.not_to_be_zero',
   'position.espaces_debut_fin',
   'long.espaces_debut_fin',
   'lat.espaces_debut_fin',
@@ -80,6 +78,12 @@ export const warnings: string[] = [
   'date_der_maj.espaces_debut_fin',
   'uid_adresse.type_invalide',
   'uid_adresse.incoherence_ids_ban',
+  'row.voie_nom_have_same_lieudit_complement_nom',
+  'row.commune_nom_invalide',
+  'row.position_manquante',
+  'row.chef_lieu_invalide',
+  'row.longlat_xy_incoherents',
+  'row.lieudit_complement_nom_not_declared',
 ];
 
 const infos = ['cle_interop.voie_non_renseignee'];

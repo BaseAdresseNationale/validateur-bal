@@ -233,15 +233,14 @@ const fields: Record<string, FieldsSchema> = {
         return undefined;
       }
 
-      if (v.startsWith('0') && v !== '0') {
-        addError('contient_prefixe');
-      }
-
       const n = Number.parseInt(v, 10);
 
-      if (n > 9999 && n !== 99_999) {
-        addError('trop_grand');
-        return undefined;
+      if (n === 0) {
+        addError('not_to_be_zero');
+      }
+
+      if (v.startsWith('0') && n !== 0) {
+        addError('contient_prefixe');
       }
 
       return n;
@@ -289,6 +288,17 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.1', '1.2', '1.3', '1.4'],
     trim: true,
     allowRegionalLang: true,
+    parse(v: string, { addError }) {
+      if (v.toLowerCase() === v) {
+        addError('casse_incorrecte');
+      }
+
+      if (v.toUpperCase() === v) {
+        addError('casse_incorrecte');
+      }
+
+      return v;
+    },
   },
 
   commune_deleguee_insee: {
