@@ -52,7 +52,11 @@ export async function computeRows(
   return computedRows;
 }
 
-export function readValue(fieldName: string, rawValue: string): ReadValueType {
+export function readValue(
+  fieldName: string,
+  rawValue: string,
+  isLocalized: boolean,
+): ReadValueType {
   if (!(fieldName in Schema.fields)) {
     throw new Error(`Unknown field name: ${fieldName}`);
   }
@@ -72,7 +76,7 @@ export function readValue(fieldName: string, rawValue: string): ReadValueType {
     result.errors.push('espaces_debut_fin');
   }
 
-  if (fieldSchema.required && !trimmedValue) {
+  if (fieldSchema.required && !trimmedValue && !isLocalized) {
     result.errors.push('valeur_manquante');
   } else if (!trimmedValue) {
     // Ne rien faire
@@ -124,7 +128,11 @@ export async function validateRow(
       return;
     }
 
-    const result: ReadValueType = readValue(field.schemaName, rawValue);
+    const result: ReadValueType = readValue(
+      field.schemaName,
+      rawValue,
+      Boolean(field.locale),
+    );
 
     for (const error of result.errors) {
       errors.push({
