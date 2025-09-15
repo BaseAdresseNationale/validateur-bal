@@ -343,6 +343,7 @@ describe('VALIDATE ROW', () => {
       });
 
       expect(addError).not.toHaveBeenCalledWith('longlat_vides');
+      expect(addError).toHaveBeenCalledWith('longlat_invalides');
     });
 
     it("TEST pas d'alerte longlat_vides quand numero est 99999 (toponyme)", async () => {
