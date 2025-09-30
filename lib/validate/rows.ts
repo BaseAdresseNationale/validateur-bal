@@ -10,6 +10,7 @@ import {
   RemediationValue,
 } from '../schema/shema.type';
 import { getMapCodeCommuneBanId } from '../utils/ban';
+import { computeMinimalFields } from './fields';
 
 export async function computeRows(
   parsedRows: Record<string, string>[],
@@ -99,11 +100,20 @@ export function readValue(
   return result;
 }
 
+export async function validateRowWithMinimalFields(
+  row: Record<string, string>,
+): Promise<ValidateRowType> {
+  const originalFields = Object.keys(row);
+  const computeFields = computeMinimalFields(originalFields);
+  const indexedFields: Record<string, FieldType> = keyBy(computeFields, 'name');
+  return validateRow(row, { indexedFields, line: 0 });
+}
+
 export async function validateRow(
   row: Record<string, string>,
   {
-    indexedFields,
-    line,
+    indexedFields = {},
+    line = 0,
   }: {
     indexedFields: Record<string, FieldType>;
     line: number;
