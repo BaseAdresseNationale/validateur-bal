@@ -1,23 +1,12 @@
-import { validate, prevalidate, autofix } from './validate';
-import { validateProfile } from './validate/profiles';
-import { readValue, validateRowWithMinimalFields } from './validate/rows';
-import { getErrorLevel, getLabel, ErrorLevelEnum } from './utils/helpers';
-import profiles from './schema/profiles';
-import { PositionTypeEnum } from './schema/shema.type';
-
+export { validate as validateFile, prevalidate, autofix } from './validate';
+export { validateProfile } from './validate/profiles';
 export {
-  validate as validateFile,
+  readValue as validateValue,
   validateRowWithMinimalFields as validateRow,
-  readValue as validateField,
-  validateProfile,
-  autofix,
-  prevalidate,
-  getLabel,
-  getErrorLevel,
-  profiles,
-  ErrorLevelEnum,
-  PositionTypeEnum,
-};
+} from './validate/rows';
+export { getErrorLevel, getLabel, ErrorLevelEnum } from './utils/helpers';
+export { default as profiles } from './schema/profiles';
+export { PositionTypeEnum } from './schema/shema.type';
 
 export type { ParseFileType } from './validate/parse/parse.type';
 
