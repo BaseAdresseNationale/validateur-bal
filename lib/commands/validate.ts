@@ -1,6 +1,6 @@
 import { readFile } from 'fs-extra';
 import chalk from 'chalk';
-import { validate, getLabel, ValidateType } from '../index';
+import { validateFile, getLabel, ValidateType } from '../index';
 
 module.exports = {
   command: 'validate [options] <file>',
@@ -22,7 +22,7 @@ module.exports = {
   async handler(argv) {
     const file = await readFile(argv.file);
     try {
-      const report: ValidateType = (await validate(file, {
+      const report: ValidateType = (await validateFile(file, {
         relaxFieldsDetection: argv.relaxFieldsDetection,
         profile: argv.profile,
       })) as ValidateType;

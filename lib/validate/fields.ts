@@ -3,12 +3,35 @@ import Schema from '../schema';
 import { allowedRegionalLangs } from '../utils/helpers';
 import { FieldType, NotFoundFieldType } from './validate.type';
 
+export function computeMinimalFields(originalFields: string[]): FieldType[] {
+  const fields: FieldType[] = [];
+  for (const schemaName of Object.keys(Schema.fields)) {
+    if (originalFields.some((f) => f === schemaName)) {
+      fields.push({ name: schemaName, schemaName: schemaName });
+    } else {
+      for (const locale of allowedRegionalLangs) {
+        const localizedSchemaName = `${schemaName}_${locale}`;
+        if (originalFields.some((f) => f === localizedSchemaName)) {
+          fields.push({
+            name: localizedSchemaName,
+            localizedSchemaName,
+            schemaName: schemaName,
+            locale,
+          });
+          break;
+        }
+      }
+    }
+  }
+  return fields;
+}
+
 export function computeFields(
   originalFields: string[],
   format: string,
   { globalErrors }: { globalErrors: Set<string> },
 ): {
-  fields;
+  fields: FieldType[];
   notFoundFields: NotFoundFieldType[];
 } {
   const fields: FieldType[] = originalFields.map((field) => ({ name: field }));
