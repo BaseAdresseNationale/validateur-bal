@@ -144,7 +144,7 @@ function validateCoords(
           addError('longlat_xy_incoherents');
         }
       }
-    } else {
+    } else if (row.parsedValues.numero !== 99_999) {
       // LES COORDONEE NE SONT PAS EN FRANCE
       addError('longlat_invalides');
     }
