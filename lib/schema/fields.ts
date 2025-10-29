@@ -235,6 +235,11 @@ const fields: Record<string, FieldsSchema> = {
 
       const n = Number.parseInt(v, 10);
 
+      if (n > 99999) {
+        addError('trop_grand');
+        return undefined;
+      }
+
       if (n === 0) {
         addError('not_to_be_zero');
       }

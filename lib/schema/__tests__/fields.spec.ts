@@ -41,6 +41,26 @@ describe('VALIDATE FIELDS', () => {
   });
 
   describe('numero', () => {
+    it('numero bon', () => {
+      const addError: (error: string) => void = jest.fn();
+
+      fields['numero'].parse('123', {
+        addError,
+      });
+
+      expect(addError).not.toHaveBeenCalled();
+    });
+
+    it('numero under 99999', () => {
+      const addError: (error: string) => void = jest.fn();
+
+      fields['numero'].parse('12345', {
+        addError,
+      });
+
+      expect(addError).not.toHaveBeenCalled();
+    });
+
     it('numero over 99999', () => {
       const addError: (error: string) => void = jest.fn();
 
@@ -48,7 +68,7 @@ describe('VALIDATE FIELDS', () => {
         addError,
       });
 
-      expect(addError).not.toHaveBeenCalled();
+      expect(addError).toHaveBeenCalledWith('trop_grand');
     });
 
     it('déclenche l\'alerte "not_to_be_zero" si la valeur est 0', () => {
