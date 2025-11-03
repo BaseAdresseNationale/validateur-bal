@@ -121,7 +121,7 @@ const errorLabels: Record<string, string> = {
   'row.cog_no_match_id_ban_commune':
     'Le code_insee ne correspond pas au bon id_ban_commune',
   'row.different_voie_nom_with_same_id_ban_toponyme':
-    'Le nom de la voie est différent pour le même id_ban_toponyme',
+    'Le nom de la voie (avec la commune déléguée) est différent pour le même id_ban_toponyme',
   'row.different_id_ban_toponyme_with_same_voie_nom':
     'L’id_ban_toponyme est différent pour le même nom de voie',
   'row.different_adresse_with_same_id_ban_adresse':

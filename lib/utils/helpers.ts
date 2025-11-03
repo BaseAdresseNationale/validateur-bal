@@ -5,7 +5,7 @@ import profiles from '../schema/profiles';
 import errorLabels from '../schema/error-labels';
 import Schema from '../schema/index';
 import { ProfileType } from '../schema/profiles/profile.type';
-import { ValidateRowType } from '../validate/validate.type';
+import { IS_TOPO_NB, ValidateRowType } from '../validate/validate.type';
 
 export enum ErrorLevelEnum {
   ERROR = 'E',
@@ -20,11 +20,14 @@ export function getCodeCommune(row: ValidateRowType) {
   );
 }
 
-export function getVoieIdentifier({
-  parsedValues,
-  additionalValues,
-}: ValidateRowType) {
-  return `${normalize(parsedValues.voie_nom)}#${parsedValues.commune_deleguee_insee}#${additionalValues?.cle_interop?.codeVoie}`;
+export function getVoieIdentifier(
+  { parsedValues, additionalValues }: ValidateRowType,
+  isToponyme = false,
+) {
+  return `${normalize(parsedValues.voie_nom)}
+    #${parsedValues.commune_deleguee_insee}
+    #${additionalValues?.cle_interop?.codeVoie}
+    ${isToponyme && `#${parsedValues.numero === Number(IS_TOPO_NB) ? 'toponyme' : 'voie'}`}`;
 }
 
 export function getNumeroIdentifier({ parsedValues }: ValidateRowType) {

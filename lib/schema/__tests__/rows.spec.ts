@@ -507,9 +507,7 @@ describe('VALIDATE ROWS', () => {
     expect(rows[1].errors).toEqual([
       { code: 'row.different_id_ban_toponyme_with_same_voie_nom' },
     ]);
-    expect(rows[2].errors).toEqual([
-      { code: 'row.different_id_ban_toponyme_with_same_voie_nom' },
-    ]);
+    expect(rows[2].errors).toEqual([]);
   });
 
   it('TEST NO row.different_id_ban_toponyme_with_same_voie_nom', async () => {

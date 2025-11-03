@@ -204,7 +204,7 @@ export function validateVoieBanIds(rows: ValidateRowType[]) {
   // On regarde si les id_ban_toponyme sont les mêmes lorsque les voie_nom et commune_deleguee_insee sont identique
   const rowsByVoies = chain(rows)
     .filter((row) => getIdBanToponyme(row))
-    .groupBy((row) => getVoieIdentifier(row))
+    .groupBy((row) => getVoieIdentifier(row, true))
     .value();
   for (const voieIdentifier of Object.keys(rowsByVoies)) {
     const rowsByVoieIdentifier = rowsByVoies[voieIdentifier];
