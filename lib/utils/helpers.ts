@@ -25,7 +25,6 @@ export function getVoieIdentifier(
   isToponyme = false,
 ) {
   return `${normalize(parsedValues.voie_nom)}
-    #${parsedValues.commune_deleguee_insee}
     #${additionalValues?.cle_interop?.codeVoie}
     ${isToponyme && `#${parsedValues.numero === Number(IS_TOPO_NB) ? 'toponyme' : 'voie'}`}`;
 }

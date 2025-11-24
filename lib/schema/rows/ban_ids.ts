@@ -187,8 +187,8 @@ export function validateVoieBanIds(rows: ValidateRowType[]) {
     .filter((row) => getIdBanToponyme(row))
     .groupBy((row) => getIdBanToponyme(row))
     .value();
-  for (const toponyme of Object.keys(rowsByIdBanToponymes)) {
-    const rowsByIdBanToponyme = rowsByIdBanToponymes[toponyme];
+  for (const idBanToponyme of Object.keys(rowsByIdBanToponymes)) {
+    const rowsByIdBanToponyme = rowsByIdBanToponymes[idBanToponyme];
     // Vérifier que toutes les lignes avec le même id_ban_toponyme ont le même voie_nom
     const voieNoms = new Set(
       rowsByIdBanToponyme.map((row) => getVoieIdentifier(row)),
@@ -202,12 +202,12 @@ export function validateVoieBanIds(rows: ValidateRowType[]) {
     }
   }
   // On regarde si les id_ban_toponyme sont les mêmes lorsque les voie_nom et commune_deleguee_insee sont identique
-  const rowsByVoies = chain(rows)
+  const rowsByVoiesIdentifier = chain(rows)
     .filter((row) => getIdBanToponyme(row))
     .groupBy((row) => getVoieIdentifier(row, true))
     .value();
-  for (const voieIdentifier of Object.keys(rowsByVoies)) {
-    const rowsByVoieIdentifier = rowsByVoies[voieIdentifier];
+  for (const voieIdentifier of Object.keys(rowsByVoiesIdentifier)) {
+    const rowsByVoieIdentifier = rowsByVoiesIdentifier[voieIdentifier];
     // Vérifier que toutes les lignes avec le même id_ban_toponyme ont le même voie_nom
     const idBanToponymes = new Set(
       rowsByVoieIdentifier.map((row) => getIdBanToponyme(row)),

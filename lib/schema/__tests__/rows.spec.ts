@@ -327,7 +327,7 @@ describe('VALIDATE ROWS', () => {
     expect(rows[2].remediations).toHaveProperty('id_ban_adresse');
 
     // Check reconnaissance des commune_deleguee
-    expect(rows[0].remediations.id_ban_toponyme.value).not.toBe(
+    expect(rows[0].remediations.id_ban_toponyme.value).toBe(
       rows[1].remediations.id_ban_toponyme.value,
     );
     expect(rows[1].remediations.id_ban_toponyme.value).toBe(
