@@ -44,7 +44,7 @@ const errorLabels: Record<string, string> = {
   'numero.contient_prefixe':
     'La valeur du champ numéro ne doit pas être préfixée par des zéros',
   'numero.trop_grand':
-    'Le numéro doit être compris entre 0 et 9999 (sauf toponyme)',
+    'Le numéro doit être compris entre 0 et 99998 (sauf toponyme)',
   'numero.not_to_be_zero': 'La valeur du champ numéro ne doit pas être zéro',
 
   // suffixe
@@ -121,7 +121,7 @@ const errorLabels: Record<string, string> = {
   'row.cog_no_match_id_ban_commune':
     'Le code_insee ne correspond pas au bon id_ban_commune',
   'row.different_voie_nom_with_same_id_ban_toponyme':
-    'Le nom de la voie est différent pour le même id_ban_toponyme',
+    'Le nom de la voie (avec la commune déléguée) est différent pour le même id_ban_toponyme',
   'row.different_id_ban_toponyme_with_same_voie_nom':
     'L’id_ban_toponyme est différent pour le même nom de voie',
   'row.different_adresse_with_same_id_ban_adresse':
