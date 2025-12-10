@@ -24,6 +24,10 @@ export type FieldsSchema = {
   ) => ParsedValue;
 };
 
+function isAlphaNumeric(str: string): boolean {
+  return Boolean(/^[a-zA-Z0-9\s]+$/.test(str));
+}
+
 function isValidFloat(str: string): boolean {
   return Boolean(/^-?(0|[1-9]\d*)(\.\d+)?\d?$/.test(str));
 }
@@ -264,6 +268,10 @@ const fields: Record<string, FieldsSchema> = {
       if (v.length > 9) {
         addError('trop_long');
         return undefined;
+      }
+
+      if (!isAlphaNumeric(v)) {
+        addError('caractere_invalide');
       }
 
       return v;

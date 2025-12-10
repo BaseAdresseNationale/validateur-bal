@@ -48,6 +48,7 @@ export const warnings: string[] = [
   'date_der_maj.date_future',
   'certification_commune.valeur_invalide',
   'field.suffixe.missing',
+  'suffixe.caractere_invalide',
   'field.cle_interop.missing',
   'field.position.missing',
   'field.long.missing',
