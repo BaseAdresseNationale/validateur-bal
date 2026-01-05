@@ -24,8 +24,12 @@ export type FieldsSchema = {
   ) => ParsedValue;
 };
 
-function isAlphaNumeric(str: string): boolean {
-  return Boolean(/^[a-zA-Z0-9\s]+$/.test(str));
+function isAlphaNumericWithAccents(str: string): boolean {
+  return Boolean(
+    /^[a-zA-ZàáâãäåæçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝŸ0-9\s]+$/u.test(
+      str,
+    ),
+  );
 }
 
 function isValidFloat(str: string): boolean {
@@ -270,7 +274,7 @@ const fields: Record<string, FieldsSchema> = {
         return undefined;
       }
 
-      if (!isAlphaNumeric(v)) {
+      if (!isAlphaNumericWithAccents(v)) {
         addError('caractere_invalide');
       }
 
