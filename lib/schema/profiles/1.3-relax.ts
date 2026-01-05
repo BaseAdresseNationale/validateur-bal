@@ -84,6 +84,8 @@ export const warnings: string[] = [
   'date_der_maj.espaces_debut_fin',
   'uid_adresse.type_invalide',
   'uid_adresse.incoherence_ids_ban',
+  'suffixe.caractere_invalide',
+
   // ERROR IN PROFILE 1.3
   'cle_interop.valeur_manquante',
   'cle_interop.numero_prefixe_manquant',

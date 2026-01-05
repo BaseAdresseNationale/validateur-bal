@@ -195,4 +195,36 @@ describe('VALIDATE FIELDS', () => {
       expect(setRemediation).not.toHaveBeenCalledWith();
     });
   });
+
+  describe('suffixe', () => {
+    it('devrait déclencher l\'erreur "caractere_invalide" si la valeur contient des caractères spéciaux', () => {
+      const addError: (error: string) => void = jest.fn();
+
+      fields['suffixe'].parse('A@B', {
+        addError,
+      });
+
+      expect(addError).toHaveBeenCalledWith('caractere_invalide');
+    });
+
+    it('devrait déclencher l\'erreur "caractere_invalide" pour un suffixe avec tiret', () => {
+      const addError: (error: string) => void = jest.fn();
+
+      fields['suffixe'].parse('A-B', {
+        addError,
+      });
+
+      expect(addError).toHaveBeenCalledWith('caractere_invalide');
+    });
+
+    it('devrait accepter un suffixe valide alphanumérique', () => {
+      const addError: (error: string) => void = jest.fn();
+
+      fields['suffixe'].parse('A1B', {
+        addError,
+      });
+
+      expect(addError).not.toHaveBeenCalledWith('caractere_invalide');
+    });
+  });
 });
