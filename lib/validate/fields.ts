@@ -1,4 +1,5 @@
 /* eslint no-inner-declarations: off */
+import schema from '../schema';
 import Schema from '../schema';
 import { allowedRegionalLangs } from '../utils/helpers';
 import { FieldType, NotFoundFieldType } from './validate.type';
@@ -40,8 +41,15 @@ export function computeFields(
       !foundFields.has(schemaName) &&
       Schema.fields[schemaName].formats.includes(format)
     ) {
-      notFoundFields.add(schemaName);
-      globalErrors.add(`field.${schemaName}.missing`);
+      if (
+        schemaName === 'voie_nom' &&
+        fields.find(({ name }) => name === 'toponyme')
+      ) {
+        // Ajout d'une execption pour le champ voie_nom si le champ toponyme existe
+      } else {
+        notFoundFields.add(schemaName);
+        globalErrors.add(`field.${schemaName}.missing`);
+      }
     }
 
     // On définit la fonction helper de recherche des variantes localisées

@@ -4,9 +4,11 @@ import profiles13Strict from './1.3-strict';
 import profiles13Relax from './1.3-relax';
 import profiles13 from './1.3';
 import profiles14 from './1.4';
+import profiles15 from './1.5';
 import { ProfileType } from './profile.type';
 
 const profiles: Record<string, ProfileType> = {
+  1.5: profiles15,
   1.4: profiles14,
   1.3: profiles13,
   '1.3-relax': profiles13Relax,

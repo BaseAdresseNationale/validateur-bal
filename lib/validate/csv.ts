@@ -3,6 +3,7 @@ import { pick } from 'lodash';
 import languesRegionales from '@ban-team/shared-data/langues-regionales.json';
 import { FieldType, PrevalidateType, ValidateRowType } from './validate.type';
 import { ParsedValues, RemediationsType } from '../schema/shema.type';
+import { getVoieNom } from '../utils/helpers';
 
 const langs = languesRegionales.map(({ code }) => code);
 
@@ -59,7 +60,7 @@ function getCsvRow(
     commune_deleguee_insee: parsedValues.commune_deleguee_insee,
     commune_deleguee_nom: parsedValues.commune_deleguee_nom,
     ...getMultiLangField(fields, parsedValues, 'commune_deleguee_nom'),
-    voie_nom: parsedValues.voie_nom,
+    toponyme: getVoieNom(parsedValues),
     ...getMultiLangField(fields, parsedValues, 'voie_nom'),
     lieudit_complement_nom: parsedValues.lieudit_complement_nom,
     ...getMultiLangField(fields, parsedValues, 'lieudit_complement_nom'),

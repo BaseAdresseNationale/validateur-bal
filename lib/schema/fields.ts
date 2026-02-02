@@ -9,6 +9,7 @@ export type FieldsSchema = {
   trim: boolean;
   required?: boolean;
   formats?: string[];
+  alternative?: string;
   allowRegionalLang?: boolean;
   parse?: (
     value: string,
@@ -192,9 +193,45 @@ const fields: Record<string, FieldsSchema> = {
   },
 
   voie_nom: {
-    required: true,
+    required: false,
     formats: ['1.1', '1.2', '1.3', '1.4'],
+    alternative: 'toponyme',
     trim: true,
+    allowRegionalLang: true,
+    parse(v: string, { addError }) {
+      if (v.length < 3) {
+        addError('trop_court');
+        return undefined;
+      }
+
+      if (v.length > 200) {
+        addError('trop_long');
+        return undefined;
+      }
+
+      if (includesInvalidChar(v)) {
+        addError('caractere_invalide');
+        return undefined;
+      }
+
+      if (v.includes('_')) {
+        addError('contient_tiret_bas');
+        v = v.replace(/_/g, ' ');
+      }
+
+      if (v.toUpperCase() === v) {
+        addError('casse_incorrecte');
+      }
+
+      return v;
+    },
+  },
+
+  toponyme: {
+    required: false,
+    formats: ['1.5'],
+    trim: true,
+    alternative: 'voie_nom',
     allowRegionalLang: true,
     parse(v: string, { addError }) {
       if (v.length < 3) {
