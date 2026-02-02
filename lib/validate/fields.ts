@@ -1,5 +1,4 @@
 /* eslint no-inner-declarations: off */
-import schema from '../schema';
 import Schema from '../schema';
 import { allowedRegionalLangs } from '../utils/helpers';
 import { FieldType, NotFoundFieldType } from './validate.type';
