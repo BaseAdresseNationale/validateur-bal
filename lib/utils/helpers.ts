@@ -6,11 +6,16 @@ import errorLabels from '../schema/error-labels';
 import Schema from '../schema/index';
 import { ProfileType } from '../schema/profiles/profile.type';
 import { IS_TOPO_NB, ValidateRowType } from '../validate/validate.type';
+import { ParsedValues } from '../schema/shema.type';
 
 export enum ErrorLevelEnum {
   ERROR = 'E',
   WARNING = 'W',
   INFO = 'I',
+}
+
+export function getVoieNom(parsedValues: ParsedValues) {
+  return parsedValues.voie_nom || parsedValues.toponyme;
 }
 
 export function getCodeCommune(row: ValidateRowType) {
@@ -24,13 +29,13 @@ export function getVoieIdentifier(
   { parsedValues, additionalValues }: ValidateRowType,
   isToponyme = false,
 ) {
-  return `${normalize(parsedValues.voie_nom)}
+  return `${normalize(getVoieNom(parsedValues))}
     #${additionalValues?.cle_interop?.codeVoie}
     ${isToponyme && `#${parsedValues.numero === Number(IS_TOPO_NB) ? 'toponyme' : 'voie'}`}`;
 }
 
 export function getNumeroIdentifier({ parsedValues }: ValidateRowType) {
-  return `${parsedValues.numero}#${parsedValues.suffixe}#${parsedValues.voie_nom}#${parsedValues.commune_deleguee_insee}`;
+  return `${parsedValues.numero}#${parsedValues.suffixe}#${normalize(getVoieNom(parsedValues))}#${parsedValues.commune_deleguee_insee}`;
 }
 
 // On fait une liste des langues régional que l'on peut utiliser

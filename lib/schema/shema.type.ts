@@ -41,6 +41,7 @@ export type ParsedValues = {
   commune_deleguee_insee?: string;
   commune_deleguee_nom?: string;
   voie_nom?: string;
+  toponyme?: string;
   lieudit_complement_nom?: string;
   numero?: number;
   suffixe?: string;

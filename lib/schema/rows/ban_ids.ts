@@ -246,6 +246,7 @@ export function validateAdresseBanIds(rows: ValidateRowType[]) {
     .filter((row) => row.parsedValues.numero !== 99_999)
     .groupBy((row) => getNumeroIdentifier(row))
     .value();
+
   for (const numeroIdentifier of Object.keys(rowsByAdresses)) {
     const rowsByAdresse = rowsByAdresses[numeroIdentifier];
     const idBanAdresses = new Set(

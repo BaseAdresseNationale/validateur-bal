@@ -1,7 +1,7 @@
 import { errors as Errors13, warnings as Warnings13 } from './1.3';
 import { ProfileType } from './profile.type';
 
-const errors: string[] = [
+export const errors: string[] = [
   ...Errors13,
   // BAN IDS
   'id_ban_commune.type_invalide',
@@ -14,7 +14,7 @@ const errors: string[] = [
   'rows.every_line_required_id_ban',
 ];
 
-const warnings: string[] = [
+export const warnings: string[] = [
   ...Warnings13,
   // BAN IDS
   'field.id_ban_commune.missing',

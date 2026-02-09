@@ -72,7 +72,7 @@ function parse(
 
 export const date_der_maj = {
   required: true,
-  formats: ['1.1', '1.2', '1.3', '1.4'],
+  formats: ['1.1', '1.2', '1.3', '1.4', '1.5'],
   trim: true,
   parse,
 };

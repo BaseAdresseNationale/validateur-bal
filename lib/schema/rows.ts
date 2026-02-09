@@ -1,3 +1,4 @@
+import { getVoieNom } from '../utils/helpers';
 import { IS_TOPO_NB, ValidateRowType } from '../validate/validate.type';
 import {
   validateAdresseBanIds,
@@ -20,7 +21,7 @@ function validateComplementIsDeclared(rows: ValidateRowType[]) {
 
   for (const row of rows) {
     if (row.parsedValues.numero === Number(IS_TOPO_NB)) {
-      complementDeclareds.add(row.parsedValues.voie_nom);
+      complementDeclareds.add(getVoieNom(row.parsedValues));
     }
   }
   for (const row of rows) {

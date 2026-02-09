@@ -5,7 +5,7 @@ import { normalize } from '@ban-team/adresses-util/lib/voies';
 import { ValidateRowType } from '../validate/validate.type';
 import { RemediationValue } from './shema.type';
 import { getErrorMissingOrValeurManquante } from '../utils/remediation';
-import { getCodeCommune } from '../utils/helpers';
+import { getCodeCommune, getVoieNom } from '../utils/helpers';
 
 function validateNumero(
   row: ValidateRowType,
@@ -84,7 +84,7 @@ function validateVoieNomDiffComplementNom(
   { addError }: { addError: (code: string) => void },
 ) {
   if (
-    normalize(row.parsedValues.voie_nom) ===
+    normalize(getVoieNom(row.parsedValues)) ===
     normalize(row.parsedValues.lieudit_complement_nom)
   ) {
     addError('voie_nom_have_same_lieudit_complement_nom');
@@ -156,7 +156,7 @@ function validateMinimalAdress(
   { addError }: { addError: (code: string) => void },
 ) {
   // VERIFIE QU'IL Y AI UN NUMERO ET UN NOM DE VOIE
-  if (row.parsedValues.numero === undefined || !row.parsedValues.voie_nom) {
+  if (row.parsedValues.numero === undefined || !getVoieNom(row.parsedValues)) {
     addError('adresse_incomplete');
   }
 }

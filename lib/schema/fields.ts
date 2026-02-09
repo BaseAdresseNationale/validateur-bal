@@ -153,7 +153,7 @@ const fields: Record<string, FieldsSchema> = {
   },
 
   id_ban_commune: {
-    formats: ['1.4'],
+    formats: ['1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
       if (!isUuid(v)) {
@@ -166,7 +166,7 @@ const fields: Record<string, FieldsSchema> = {
   },
 
   id_ban_toponyme: {
-    formats: ['1.4'],
+    formats: ['1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
       if (!isUuid(v)) {
@@ -179,7 +179,7 @@ const fields: Record<string, FieldsSchema> = {
   },
 
   id_ban_adresse: {
-    formats: ['1.4'],
+    formats: ['1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
       if (!isUuid(v)) {
@@ -192,7 +192,7 @@ const fields: Record<string, FieldsSchema> = {
   },
 
   voie_nom: {
-    required: true,
+    required: false,
     formats: ['1.1', '1.2', '1.3', '1.4'],
     trim: true,
     allowRegionalLang: true,
@@ -225,15 +225,49 @@ const fields: Record<string, FieldsSchema> = {
     },
   },
 
+  toponyme: {
+    required: false,
+    formats: ['1.5'],
+    trim: true,
+    allowRegionalLang: true,
+    parse(v: string, { addError }) {
+      if (v.length < 3) {
+        addError('trop_court');
+        return undefined;
+      }
+
+      if (v.length > 200) {
+        addError('trop_long');
+        return undefined;
+      }
+
+      if (includesInvalidChar(v)) {
+        addError('caractere_invalide');
+        return undefined;
+      }
+
+      if (v.includes('_')) {
+        addError('contient_tiret_bas');
+        v = v.replace(/_/g, ' ');
+      }
+
+      if (v.toUpperCase() === v) {
+        addError('casse_incorrecte');
+      }
+
+      return v;
+    },
+  },
+
   lieudit_complement_nom: {
-    formats: ['1.2', '1.3', '1.4'],
+    formats: ['1.2', '1.3', '1.4', '1.5'],
     trim: true,
     allowRegionalLang: true,
   },
 
   numero: {
     required: true,
-    formats: ['1.1', '1.2', '1.3', '1.4'],
+    formats: ['1.1', '1.2', '1.3', '1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
       if (!/^\d+$/.test(v)) {
@@ -261,7 +295,7 @@ const fields: Record<string, FieldsSchema> = {
   },
 
   suffixe: {
-    formats: ['1.1', '1.2', '1.3', '1.4'],
+    formats: ['1.1', '1.2', '1.3', '1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
       if (!/^[\da-z]/i.test(v)) {
@@ -284,7 +318,7 @@ const fields: Record<string, FieldsSchema> = {
 
   commune_insee: {
     required: true,
-    formats: ['1.2', '1.3', '1.4'],
+    formats: ['1.2', '1.3', '1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
       const code = v.toUpperCase();
@@ -302,7 +336,7 @@ const fields: Record<string, FieldsSchema> = {
 
   commune_nom: {
     required: true,
-    formats: ['1.1', '1.2', '1.3', '1.4'],
+    formats: ['1.1', '1.2', '1.3', '1.4', '1.5'],
     trim: true,
     allowRegionalLang: true,
     parse(v: string, { addError }) {
@@ -319,7 +353,7 @@ const fields: Record<string, FieldsSchema> = {
   },
 
   commune_deleguee_insee: {
-    formats: ['1.2', '1.3', '1.4'],
+    formats: ['1.2', '1.3', '1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
       const code = v.toUpperCase();
@@ -332,13 +366,13 @@ const fields: Record<string, FieldsSchema> = {
   },
 
   commune_deleguee_nom: {
-    formats: ['1.2', '1.3', '1.4'],
+    formats: ['1.2', '1.3', '1.4', '1.5'],
     trim: true,
     allowRegionalLang: true,
   },
 
   position: {
-    formats: ['1.1', '1.2', '1.3', '1.4'],
+    formats: ['1.1', '1.2', '1.3', '1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
       const normalizedValue = getNormalizedEnumValue(v);
@@ -356,7 +390,7 @@ const fields: Record<string, FieldsSchema> = {
   },
 
   x: {
-    formats: ['1.1', '1.2', '1.3', '1.4'],
+    formats: ['1.1', '1.2', '1.3', '1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
       if (isValidFloat(v)) {
@@ -373,7 +407,7 @@ const fields: Record<string, FieldsSchema> = {
   },
 
   y: {
-    formats: ['1.1', '1.2', '1.3', '1.4'],
+    formats: ['1.1', '1.2', '1.3', '1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
       if (isValidFloat(v)) {
@@ -390,7 +424,7 @@ const fields: Record<string, FieldsSchema> = {
   },
 
   long: {
-    formats: ['1.1', '1.2', '1.3', '1.4'],
+    formats: ['1.1', '1.2', '1.3', '1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
       if (isValidFloat(v)) {
@@ -407,7 +441,7 @@ const fields: Record<string, FieldsSchema> = {
   },
 
   lat: {
-    formats: ['1.1', '1.2', '1.3', '1.4'],
+    formats: ['1.1', '1.2', '1.3', '1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
       if (isValidFloat(v)) {
@@ -424,7 +458,7 @@ const fields: Record<string, FieldsSchema> = {
   },
 
   cad_parcelles: {
-    formats: ['1.2', '1.3', '1.4'],
+    formats: ['1.2', '1.3', '1.4', '1.5'],
     trim: true,
 
     parse(v: string, { addError }) {
@@ -455,7 +489,7 @@ const fields: Record<string, FieldsSchema> = {
   },
 
   source: {
-    formats: ['1.1', '1.2', '1.3', '1.4'],
+    formats: ['1.1', '1.2', '1.3', '1.4', '1.5'],
     required: true,
     trim: true,
   },
@@ -463,7 +497,7 @@ const fields: Record<string, FieldsSchema> = {
   date_der_maj,
 
   certification_commune: {
-    formats: ['1.3', '1.4'],
+    formats: ['1.3', '1.4', '1.5'],
     required: false,
     trim: true,
     parse(v: string, { addError }) {

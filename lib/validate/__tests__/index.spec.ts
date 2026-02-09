@@ -175,4 +175,39 @@ describe('VALIDATE TEST', () => {
     expect(!profilesValidation['1.3-relax'].isValid).toBeTruthy();
     expect(!profilesValidation['1.3'].isValid).toBeTruthy();
   });
+
+  it('validation avec toponyme remplaçant voie_nom', async () => {
+    const buffer = await readAsBuffer('toponyme-replacing-voie_nom.csv');
+    const { rows, uniqueErrors, globalErrors, fields } = (await validate(
+      buffer,
+      {
+        profile: '1.5',
+      },
+    )) as ValidateType;
+
+    // Le champ toponyme doit être reconnu
+    expect(fields.some((f) => f.schemaName === 'toponyme')).toBeTruthy();
+
+    // Pas d'erreur field.voie_nom.missing car toponyme le remplace
+    expect(globalErrors.includes('field.voie_nom.missing')).toBeFalsy();
+
+    // Pas d'erreur row.adresse_incomplete car toponyme est présent
+    expect(uniqueErrors.includes('row.adresse_incomplete')).toBeFalsy();
+
+    // La valeur parsée du toponyme doit être correcte
+    expect(rows[0].parsedValues.toponyme).toBe('Rue des 3 Places');
+  });
+
+  it('validation sans voie_nom ni toponyme doit échouer', async () => {
+    const buffer = await readAsBuffer('without-voie_nom-nor-toponyme.csv');
+    const { rows, uniqueErrors } = (await validate(buffer, {
+      profile: '1.5',
+    })) as ValidateType;
+
+    // L'adresse doit être incomplète car ni voie_nom ni toponyme n'est présent
+    expect(uniqueErrors.includes('row.adresse_incomplete')).toBeTruthy();
+    expect(
+      rows[0].errors.some((e) => e.code === 'row.adresse_incomplete'),
+    ).toBeTruthy();
+  });
 });
