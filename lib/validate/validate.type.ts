@@ -84,6 +84,7 @@ export type NotFoundFieldLevelType = NotFoundFieldType & {
 };
 
 export type ValidateType = Omit<PrevalidateType, 'notFoundFields' | 'rows'> & {
+  profile: string;
   profilErrors: ProfileErrorType[];
   notFoundFields: NotFoundFieldLevelType[];
   rows: ValidateRowFullType[];

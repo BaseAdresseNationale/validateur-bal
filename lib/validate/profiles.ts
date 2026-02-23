@@ -75,21 +75,22 @@ function validateProfileNotFoundFields(
 
 export function validateProfile(
   prevalidateResult: PrevalidateType,
-  profileName: string,
+  profile: string,
 ): ValidateType {
-  const rows = validateProfileRows(prevalidateResult.rows, profileName);
+  const rows = validateProfileRows(prevalidateResult.rows, profile);
   const profilErrors = validateProfileUniqueErrors(
     prevalidateResult.uniqueErrors,
-    profileName,
+    profile,
   );
 
   const notFoundFields = validateProfileNotFoundFields(
     prevalidateResult.notFoundFields,
-    profileName,
+    profile,
   );
 
   return {
     ...prevalidateResult,
+    profile,
     rows,
     notFoundFields,
     profilErrors,

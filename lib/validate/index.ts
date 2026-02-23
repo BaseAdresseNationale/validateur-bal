@@ -18,6 +18,26 @@ import {
 import { ParseFileType } from './parse/parse.type';
 import { exportCsvBALWithReport } from './csv';
 
+function calculateProfile(fields: FieldType[]): string {
+  const idBanAdresseExist =
+    fields.some(({ schemaName }) => schemaName === 'id_ban_commune') &&
+    fields.some(({ schemaName }) => schemaName === 'id_ban_toponyme') &&
+    fields.some(({ schemaName }) => schemaName === 'id_ban_adresse');
+
+  const toponymeExist = fields.some(
+    ({ schemaName }) => schemaName === 'toponyme',
+  );
+
+  if (idBanAdresseExist) {
+    if (toponymeExist) {
+      return '1.5';
+    } else {
+      return '1.4';
+    }
+  }
+  return '1.3';
+}
+
 export async function prevalidate(
   file: Buffer,
 ): Promise<ParseFileType | PrevalidateType> {
@@ -102,14 +122,16 @@ export async function validate(
   file: Buffer,
   options: { profile?: string } = {},
 ): Promise<ParseFileType | ValidateType> {
-  const profile = options.profile || '1.3';
-
   const prevalidateResult: PrevalidateType | ParseFileType =
     await prevalidate(file);
 
   if (!prevalidateResult.parseOk) {
     return prevalidateResult as ParseFileType;
   }
+
+  const profile = options.profile
+    ? options.profile
+    : calculateProfile((prevalidateResult as PrevalidateType).fields);
 
   return validateProfile(prevalidateResult as PrevalidateType, profile);
 }

@@ -208,4 +208,24 @@ describe('VALIDATE TEST', () => {
       rows[0].errors.some((e) => e.code === 'row.adresse_incomplete'),
     ).toBeTruthy();
   });
+
+  describe('calculateProfile — auto-détection du profil', () => {
+    it('auto-détecte le profil 1.3 pour un fichier sans champs BAN', async () => {
+      const buffer = await readAsBuffer('sample.csv');
+      const report = (await validate(buffer)) as ValidateType;
+      expect(report.profile).toBe('1.3');
+    });
+
+    it('auto-détecte le profil 1.4 pour un fichier avec id_ban_* sans toponyme', async () => {
+      const buffer = await readAsBuffer('auto-detect-1.4.csv');
+      const report = (await validate(buffer)) as ValidateType;
+      expect(report.profile).toBe('1.4');
+    });
+
+    it('auto-détecte le profil 1.5 pour un fichier avec id_ban_* et toponyme', async () => {
+      const buffer = await readAsBuffer('auto-detect-1.5.csv');
+      const report = (await validate(buffer)) as ValidateType;
+      expect(report.profile).toBe('1.5');
+    });
+  });
 });
