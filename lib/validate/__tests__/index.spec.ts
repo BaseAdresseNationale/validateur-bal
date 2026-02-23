@@ -228,4 +228,30 @@ describe('VALIDATE TEST', () => {
       expect(report.profile).toBe('1.5');
     });
   });
+
+  describe('profil forcé via options.profile', () => {
+    it('utilise le profil 1.3 quand forcé explicitement', async () => {
+      const buffer = await readAsBuffer('sample.csv');
+      const report = (await validate(buffer, {
+        profile: '1.3',
+      })) as ValidateType;
+      expect(report.profile).toBe('1.3');
+    });
+
+    it('utilise le profil 1.4 quand forcé explicitement', async () => {
+      const buffer = await readAsBuffer('auto-detect-1.4.csv');
+      const report = (await validate(buffer, {
+        profile: '1.4',
+      })) as ValidateType;
+      expect(report.profile).toBe('1.4');
+    });
+
+    it('utilise le profil 1.5 quand forcé explicitement', async () => {
+      const buffer = await readAsBuffer('auto-detect-1.5.csv');
+      const report = (await validate(buffer, {
+        profile: '1.5',
+      })) as ValidateType;
+      expect(report.profile).toBe('1.5');
+    });
+  });
 });
