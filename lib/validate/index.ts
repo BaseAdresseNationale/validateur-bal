@@ -20,7 +20,6 @@ import { exportCsvBALWithReport } from './csv';
 
 export async function prevalidate(
   file: Buffer,
-  format: string = '1.4',
   relaxFieldsDetection: boolean = false,
 ): Promise<ParseFileType | PrevalidateType> {
   const globalErrors = new Set<string>();
@@ -54,7 +53,7 @@ export async function prevalidate(
     fields,
     notFoundFields,
   }: { fields: FieldType[]; notFoundFields: NotFoundFieldType[] } =
-    computeFields(originalFields, format, {
+    computeFields(originalFields, {
       globalErrors,
     });
 
@@ -111,10 +110,8 @@ export async function validate(
     relaxFieldsDetection = profiles[profile].relax;
   }
 
-  const { format } = profiles[profile];
   const prevalidateResult: PrevalidateType | ParseFileType = await prevalidate(
     file,
-    format,
     relaxFieldsDetection,
   );
 

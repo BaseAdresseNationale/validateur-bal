@@ -189,7 +189,10 @@ describe('VALIDATE TEST', () => {
     expect(fields.some((f) => f.schemaName === 'toponyme')).toBeTruthy();
 
     // Pas d'erreur field.voie_nom.missing car toponyme le remplace
-    expect(globalErrors.includes('field.voie_nom.missing')).toBeFalsy();
+    expect(globalErrors.includes('field.voie_nom.missing')).toBeTruthy();
+
+    // Pas d'erreur field.voie_nom.missing car toponyme le remplace
+    expect(globalErrors.includes('field.toponyme.missing')).toBeFalsy();
 
     // Pas d'erreur row.adresse_incomplete car toponyme est présent
     expect(uniqueErrors.includes('row.adresse_incomplete')).toBeFalsy();

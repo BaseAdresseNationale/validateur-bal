@@ -1,4 +1,10 @@
-import { ErrorLevelEnum, getErrorLevel } from '../utils/helpers';
+import fields from '../schema/fields';
+import profiles from '../schema/profiles';
+import {
+  ErrorLevelEnum,
+  getErrorLevel,
+  parseErrorCode,
+} from '../utils/helpers';
 import {
   NotFoundFieldType,
   PrevalidateType,
@@ -13,11 +19,18 @@ function validateProfileRows(
   computedRows: ValidateRowType[],
   profileName: string,
 ): ValidateRowFullType[] {
+  const format = profiles[profileName].format;
   return computedRows.map((row) => {
-    const errors = row.errors.map((e) => ({
-      ...e,
-      level: getErrorLevel(profileName, e.code),
-    }));
+    const errors = row.errors
+      .filter(({ schemaName }) => {
+        return fields[schemaName] === undefined
+          ? true
+          : fields[schemaName].formats?.includes(format);
+      })
+      .map((e) => ({
+        ...e,
+        level: getErrorLevel(profileName, e.code),
+      }));
 
     const isValid = !errors.some((e) => e.level === ErrorLevelEnum.ERROR);
 
@@ -33,20 +46,31 @@ function validateProfileUniqueErrors(
   uniqueErrors: string[],
   profileName: string,
 ): ProfileErrorType[] {
-  return uniqueErrors.map((code) => ({
-    code,
-    level: getErrorLevel(profileName, code),
-  }));
+  const format = profiles[profileName].format;
+  return uniqueErrors
+    .filter((code) => {
+      const { schemaName } = parseErrorCode(code);
+      return schemaName === undefined
+        ? true
+        : fields[schemaName].formats?.includes(format);
+    })
+    .map((code) => ({
+      code,
+      level: getErrorLevel(profileName, code),
+    }));
 }
 
 function validateProfileNotFoundFields(
   notFoundFields: NotFoundFieldType[],
   profileName: string,
 ): NotFoundFieldLevelType[] {
-  return notFoundFields.map(({ schemaName }) => ({
-    schemaName,
-    level: getErrorLevel(profileName, `field.${schemaName}.missing`),
-  }));
+  const format = profiles[profileName].format;
+  return notFoundFields
+    .filter(({ schemaName }) => fields[schemaName].formats.includes(format))
+    .map(({ schemaName }) => ({
+      schemaName,
+      level: getErrorLevel(profileName, `field.${schemaName}.missing`),
+    }));
 }
 
 export function validateProfile(
