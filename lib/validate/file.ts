@@ -71,19 +71,9 @@ export function validateFile(
   return { encoding, delimiter, linebreak };
 }
 
-export async function parseFile(
-  file: Buffer,
-  relaxFieldsDetection: boolean,
-): Promise<ParseFileType> {
-  const parseOptions = relaxFieldsDetection
-    ? { transformHeader: (h) => h.toLowerCase().trim() }
-    : {};
-
+export async function parseFile(file: Buffer): Promise<ParseFileType> {
   // Must be a Blob for browser or a Buffer for Node.js
-  const { meta, errors, data, encoding }: ParseReturn = await parse(
-    file,
-    parseOptions,
-  );
+  const { meta, errors, data, encoding }: ParseReturn = await parse(file);
 
   const errorsKinds: string[] = uniq(errors.map((e: ParseError) => e.code));
   const parseOk: boolean = !errorsKinds.some((e) => FATAL_PARSE_ERRORS.has(e));

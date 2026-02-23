@@ -47,9 +47,7 @@ describe('VALIDATE 1.4 TEST', () => {
 
   test('Valid file 1.4 with relaxFieldsDetection', async () => {
     const buffer = await readAsBuffer('1.4-valid-relax.csv');
-    const report = (await validate(buffer, {
-      relaxFieldsDetection: true,
-    })) as ValidateType;
+    const report = (await validate(buffer)) as ValidateType;
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
@@ -59,7 +57,6 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-valid-relax.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-      relaxFieldsDetection: true,
     })) as ValidateType;
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -70,7 +67,6 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-valid-relax.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-      relaxFieldsDetection: false,
     })) as ValidateType;
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);

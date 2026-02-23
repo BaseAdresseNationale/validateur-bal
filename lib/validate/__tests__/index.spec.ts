@@ -32,9 +32,7 @@ describe('VALIDATE TEST', () => {
 
   it('No validate a file with aliases / relaxFieldsDetection true', async () => {
     const buffer = await readAsBuffer('aliases.csv');
-    const { notFoundFields } = (await validate(buffer, {
-      relaxFieldsDetection: true,
-    })) as ValidateType;
+    const { notFoundFields } = (await validate(buffer)) as ValidateType;
 
     expect(notFoundFields.length).toBe(14);
     for (const field of [
@@ -63,7 +61,6 @@ describe('VALIDATE TEST', () => {
     const buffer = await readAsBuffer('aliases.csv');
     const { fields, notFoundFields } = (await validate(buffer, {
       profile: '1.3-relax',
-      relaxFieldsDetection: false,
     })) as ValidateType;
 
     const unknownFields = fields.filter((f) => !f.schemaName);
@@ -88,9 +85,7 @@ describe('VALIDATE TEST', () => {
 
   it('validate a file with aliases / relaxFieldsDetection false', async () => {
     const buffer = await readAsBuffer('aliases.csv');
-    const { fields, notFoundFields } = (await validate(buffer, {
-      relaxFieldsDetection: false,
-    })) as ValidateType;
+    const { fields, notFoundFields } = (await validate(buffer)) as ValidateType;
 
     const unknownFields = fields.filter((f) => !f.schemaName);
     const knownFields = fields.filter((f) => f.schemaName);
