@@ -28,6 +28,7 @@ export enum PositionTypeEnum {
 export type CommuneNomIsoCodeKey = `commune_nom_${string}`;
 export type CommuneDelegueeNomIsoCodeKey = `commune_deleguee_nom_${string}`;
 export type VoieNomIsoCodeKey = `voie_nom_${string}`;
+export type ToponymeIsoCodeKey = `toponyme_${string}`;
 export type LieuditComplementNomIsoCodeKey = `lieudit_complement_nom_${string}`;
 
 export type ParsedValues = {
@@ -57,6 +58,7 @@ export type ParsedValues = {
   [key: CommuneNomIsoCodeKey]: string;
   [key: CommuneDelegueeNomIsoCodeKey]: string;
   [key: VoieNomIsoCodeKey]: string;
+  [key: ToponymeIsoCodeKey]: string;
   [key: LieuditComplementNomIsoCodeKey]: string;
 };
 
