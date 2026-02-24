@@ -23,7 +23,6 @@ module.exports = {
     const file = await readFile(argv.file);
     try {
       const report: ValidateType = (await validate(file, {
-        relaxFieldsDetection: argv.relaxFieldsDetection,
         profile: argv.profile,
       })) as ValidateType;
       printReport(report);

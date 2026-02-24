@@ -47,9 +47,7 @@ describe('VALIDATE 1.4 TEST', () => {
 
   test('Valid file 1.4 with relaxFieldsDetection', async () => {
     const buffer = await readAsBuffer('1.4-valid-relax.csv');
-    const report = (await validate(buffer, {
-      relaxFieldsDetection: true,
-    })) as ValidateType;
+    const report = (await validate(buffer)) as ValidateType;
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
     expect(report.profilesValidation['1.4'].isValid).toBe(false);
@@ -59,7 +57,6 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-valid-relax.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-      relaxFieldsDetection: true,
     })) as ValidateType;
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -70,7 +67,6 @@ describe('VALIDATE 1.4 TEST', () => {
     const buffer = await readAsBuffer('1.4-valid-relax.csv');
     const report = (await validate(buffer, {
       profile: '1.4',
-      relaxFieldsDetection: false,
     })) as ValidateType;
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
@@ -263,31 +259,33 @@ describe('VALIDATE 1.4 TEST', () => {
   test('Error uid_adresse type invalide', async () => {
     const buffer = await readAsBuffer('1.3-invalid-uid_adresse.csv');
     const report = (await validate(buffer, {
-      profile: '1.4',
+      profile: '1.3',
     })) as ValidateType;
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
-    expect(report.profilesValidation['1.4'].isValid).toBe(false);
+    expect(report.profilesValidation['1.3'].isValid).toBeTruthy();
+    expect(report.profilesValidation['1.4'].isValid).toBeFalsy();
     const error = report.profilErrors.filter(
       (e) => e.code === 'uid_adresse.type_invalide',
     );
     expect(error.length).toBe(1);
-    expect(error[0].level).toBe(ErrorLevelEnum.ERROR);
+    expect(error[0].level).toBe(ErrorLevelEnum.WARNING);
   });
 
   test('Error uid_adresse incoherence_id_ban', async () => {
     const buffer = await readAsBuffer('1.3-incoherent-uid_adresse.csv');
     const report = (await validate(buffer, {
-      profile: '1.4',
+      profile: '1.3',
     })) as ValidateType;
     expect(report.encoding).toBe('utf-8');
     expect(report.parseOk).toBe(true);
-    expect(report.profilesValidation['1.4'].isValid).toBe(false);
+    expect(report.profilesValidation['1.3'].isValid).toBeTruthy();
+    expect(report.profilesValidation['1.4'].isValid).toBeFalsy();
     const error = report.profilErrors.filter(
       (e) => e.code === 'row.lack_of_id_ban',
     );
     expect(error.length).toBe(1);
-    expect(error[0].level).toBe(ErrorLevelEnum.ERROR);
+    expect(error[0].level).toBe(ErrorLevelEnum.INFO);
     // CHECK REMEDIATION
     expect(report.rows[0].remediations).toHaveProperty('id_ban_commune');
   });

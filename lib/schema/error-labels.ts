@@ -61,6 +61,15 @@ const errorLabels: Record<string, string> = {
   'voie_nom.contient_tiret_bas':
     'Le nom de la voie contient un caractère tiret bas',
 
+  // toponyme
+  'toponyme.trop_court':
+    'Le nom de la voie est trop court (3 caractères minimum)',
+  'toponyme.trop_long':
+    'Le nom de la voie est trop long (200 caractères maximum)',
+  'toponyme.casse_incorrecte': 'Le nom de la voie est en majuscules',
+  'toponyme.contient_tiret_bas':
+    'Le nom de la voie contient un caractère tiret bas',
+
   // commune_insee
   'commune_insee.commune_invalide':
     'Le code INSEE de la commune n’est pas valide',

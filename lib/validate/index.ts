@@ -18,10 +18,28 @@ import {
 import { ParseFileType } from './parse/parse.type';
 import { exportCsvBALWithReport } from './csv';
 
+function calculateProfile(fields: FieldType[]): string {
+  const idBanAdresseExist =
+    fields.some(({ schemaName }) => schemaName === 'id_ban_commune') &&
+    fields.some(({ schemaName }) => schemaName === 'id_ban_toponyme') &&
+    fields.some(({ schemaName }) => schemaName === 'id_ban_adresse');
+
+  const toponymeExist = fields.some(
+    ({ schemaName }) => schemaName === 'toponyme',
+  );
+
+  if (idBanAdresseExist) {
+    if (toponymeExist) {
+      return '1.5';
+    } else {
+      return '1.4';
+    }
+  }
+  return '1.3';
+}
+
 export async function prevalidate(
   file: Buffer,
-  format: string = '1.4',
-  relaxFieldsDetection: boolean = false,
 ): Promise<ParseFileType | PrevalidateType> {
   const globalErrors = new Set<string>();
   const rowsErrors = new Set<string>();
@@ -35,7 +53,7 @@ export async function prevalidate(
     parseOk,
     parseErrors,
     parsedRows,
-  }: ParseFileType = await parseFile(file, relaxFieldsDetection);
+  }: ParseFileType = await parseFile(file);
 
   if (!parseOk) {
     return {
@@ -54,7 +72,7 @@ export async function prevalidate(
     fields,
     notFoundFields,
   }: { fields: FieldType[]; notFoundFields: NotFoundFieldType[] } =
-    computeFields(originalFields, format, {
+    computeFields(originalFields, {
       globalErrors,
     });
 
@@ -102,25 +120,18 @@ export async function prevalidate(
 
 export async function validate(
   file: Buffer,
-  options: { profile?: string; relaxFieldsDetection?: boolean } = {},
+  options: { profile?: string } = {},
 ): Promise<ParseFileType | ValidateType> {
-  const profile = options.profile || '1.3';
-  let { relaxFieldsDetection } = options;
-
-  if (options.relaxFieldsDetection === undefined) {
-    relaxFieldsDetection = profiles[profile].relax;
-  }
-
-  const { format } = profiles[profile];
-  const prevalidateResult: PrevalidateType | ParseFileType = await prevalidate(
-    file,
-    format,
-    relaxFieldsDetection,
-  );
+  const prevalidateResult: PrevalidateType | ParseFileType =
+    await prevalidate(file);
 
   if (!prevalidateResult.parseOk) {
     return prevalidateResult as ParseFileType;
   }
+
+  const profile = options.profile
+    ? options.profile
+    : calculateProfile((prevalidateResult as PrevalidateType).fields);
 
   return validateProfile(prevalidateResult as PrevalidateType, profile);
 }

@@ -5,7 +5,6 @@ import { FieldType, NotFoundFieldType } from './validate.type';
 
 export function computeFields(
   originalFields: string[],
-  format: string,
   { globalErrors }: { globalErrors: Set<string> },
 ): {
   fields;
@@ -37,18 +36,10 @@ export function computeFields(
 
     // Si le champ n'est pas trouvé on créé des erreurs
     if (
-      !foundFields.has(schemaName) &&
-      Schema.fields[schemaName].formats.includes(format)
+      !foundFields.has(schemaName) //&&
     ) {
-      if (
-        schemaName === 'voie_nom' &&
-        fields.find(({ name }) => name === 'toponyme')
-      ) {
-        // Ajout d'une execption pour le champ voie_nom si le champ toponyme existe
-      } else {
-        notFoundFields.add(schemaName);
-        globalErrors.add(`field.${schemaName}.missing`);
-      }
+      notFoundFields.add(schemaName);
+      globalErrors.add(`field.${schemaName}.missing`);
     }
 
     // On définit la fonction helper de recherche des variantes localisées
