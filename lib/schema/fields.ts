@@ -1,7 +1,7 @@
 import { trim, trimStart, deburr } from 'lodash';
 
 import { isCommuneActuelle, isCommuneAncienne } from '../utils/cog';
-import { validate as isUuid } from 'uuid';
+import { validate as isUuid, version as versionUuid } from 'uuid';
 import { ParsedValue, PositionTypeEnum, RemediationValue } from './shema.type';
 import { date_der_maj } from './fields/date_der_maj.field';
 
@@ -134,9 +134,9 @@ const fields: Record<string, FieldsSchema> = {
       const idBanAdresse = uuidAdresse?.substr(3) || null;
 
       if (
-        (idBanCommune && !isUuid(idBanCommune)) ||
-        (idBanToponyme && !isUuid(idBanToponyme)) ||
-        (idBanAdresse && !isUuid(idBanAdresse))
+        (idBanCommune && (!isUuid(idBanCommune) || versionUuid(v) !== 4)) ||
+        (idBanToponyme && (!isUuid(idBanToponyme) || versionUuid(v) !== 4)) ||
+        (idBanAdresse && (!isUuid(idBanAdresse) || versionUuid(v) !== 4))
       ) {
         addError('type_invalide');
         return undefined;
@@ -156,7 +156,7 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
-      if (!isUuid(v)) {
+      if (!isUuid(v) || versionUuid(v) !== 4) {
         addError('type_invalide');
         return undefined;
       }
@@ -169,7 +169,7 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
-      if (!isUuid(v)) {
+      if (!isUuid(v) || versionUuid(v) !== 4) {
         addError('type_invalide');
         return undefined;
       }
@@ -182,7 +182,7 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
-      if (!isUuid(v)) {
+      if (!isUuid(v) || versionUuid(v) !== 4) {
         addError('type_invalide');
         return undefined;
       }
