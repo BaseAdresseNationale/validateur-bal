@@ -58,6 +58,10 @@ for (const value of Object.values(PositionTypeEnum)) {
   enumPositionMap.set(getNormalizedEnumValue(value), value.normalize());
 }
 
+function isUuidV4(value: string): boolean {
+  return isUuid(value) ? versionUuid(value) === 4 : false;
+}
+
 const fields: Record<string, FieldsSchema> = {
   cle_interop: {
     required: true,
@@ -134,9 +138,9 @@ const fields: Record<string, FieldsSchema> = {
       const idBanAdresse = uuidAdresse?.substr(3) || null;
 
       if (
-        (idBanCommune && (!isUuid(idBanCommune) || versionUuid(v) !== 4)) ||
-        (idBanToponyme && (!isUuid(idBanToponyme) || versionUuid(v) !== 4)) ||
-        (idBanAdresse && (!isUuid(idBanAdresse) || versionUuid(v) !== 4))
+        (idBanCommune && !isUuidV4(idBanCommune)) ||
+        (idBanToponyme && !isUuidV4(idBanToponyme)) ||
+        (idBanAdresse && !isUuidV4(idBanAdresse))
       ) {
         addError('type_invalide');
         return undefined;
@@ -156,7 +160,7 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
-      if (!isUuid(v) || versionUuid(v) !== 4) {
+      if (!isUuidV4(v)) {
         addError('type_invalide');
         return undefined;
       }
@@ -169,7 +173,7 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
-      if (!isUuid(v) || versionUuid(v) !== 4) {
+      if (!isUuidV4(v)) {
         addError('type_invalide');
         return undefined;
       }
@@ -182,7 +186,7 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
-      if (!isUuid(v) || versionUuid(v) !== 4) {
+      if (!isUuidV4(v)) {
         addError('type_invalide');
         return undefined;
       }
