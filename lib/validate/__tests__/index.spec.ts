@@ -32,9 +32,7 @@ describe('VALIDATE TEST', () => {
 
   it('No validate a file with aliases / relaxFieldsDetection true', async () => {
     const buffer = await readAsBuffer('aliases.csv');
-    const { notFoundFields } = (await validate(buffer, {
-      relaxFieldsDetection: true,
-    })) as ValidateType;
+    const { notFoundFields } = (await validate(buffer)) as ValidateType;
 
     expect(notFoundFields.length).toBe(14);
     for (const field of [
@@ -63,7 +61,6 @@ describe('VALIDATE TEST', () => {
     const buffer = await readAsBuffer('aliases.csv');
     const { fields, notFoundFields } = (await validate(buffer, {
       profile: '1.3-relax',
-      relaxFieldsDetection: false,
     })) as ValidateType;
 
     const unknownFields = fields.filter((f) => !f.schemaName);
@@ -88,9 +85,7 @@ describe('VALIDATE TEST', () => {
 
   it('validate a file with aliases / relaxFieldsDetection false', async () => {
     const buffer = await readAsBuffer('aliases.csv');
-    const { fields, notFoundFields } = (await validate(buffer, {
-      relaxFieldsDetection: false,
-    })) as ValidateType;
+    const { fields, notFoundFields } = (await validate(buffer)) as ValidateType;
 
     const unknownFields = fields.filter((f) => !f.schemaName);
     const knownFields = fields.filter((f) => f.schemaName);
@@ -189,7 +184,10 @@ describe('VALIDATE TEST', () => {
     expect(fields.some((f) => f.schemaName === 'toponyme')).toBeTruthy();
 
     // Pas d'erreur field.voie_nom.missing car toponyme le remplace
-    expect(globalErrors.includes('field.voie_nom.missing')).toBeFalsy();
+    expect(globalErrors.includes('field.voie_nom.missing')).toBeTruthy();
+
+    // Pas d'erreur field.voie_nom.missing car toponyme le remplace
+    expect(globalErrors.includes('field.toponyme.missing')).toBeFalsy();
 
     // Pas d'erreur row.adresse_incomplete car toponyme est présent
     expect(uniqueErrors.includes('row.adresse_incomplete')).toBeFalsy();
@@ -209,5 +207,51 @@ describe('VALIDATE TEST', () => {
     expect(
       rows[0].errors.some((e) => e.code === 'row.adresse_incomplete'),
     ).toBeTruthy();
+  });
+
+  describe('calculateProfile — auto-détection du profil', () => {
+    it('auto-détecte le profil 1.3 pour un fichier sans champs BAN', async () => {
+      const buffer = await readAsBuffer('sample.csv');
+      const report = (await validate(buffer)) as ValidateType;
+      expect(report.profile).toBe('1.3');
+    });
+
+    it('auto-détecte le profil 1.4 pour un fichier avec id_ban_* sans toponyme', async () => {
+      const buffer = await readAsBuffer('auto-detect-1.4.csv');
+      const report = (await validate(buffer)) as ValidateType;
+      expect(report.profile).toBe('1.4');
+    });
+
+    it('auto-détecte le profil 1.5 pour un fichier avec id_ban_* et toponyme', async () => {
+      const buffer = await readAsBuffer('auto-detect-1.5.csv');
+      const report = (await validate(buffer)) as ValidateType;
+      expect(report.profile).toBe('1.5');
+    });
+  });
+
+  describe('profil forcé via options.profile', () => {
+    it('utilise le profil 1.3 quand forcé explicitement', async () => {
+      const buffer = await readAsBuffer('sample.csv');
+      const report = (await validate(buffer, {
+        profile: '1.3',
+      })) as ValidateType;
+      expect(report.profile).toBe('1.3');
+    });
+
+    it('utilise le profil 1.4 quand forcé explicitement', async () => {
+      const buffer = await readAsBuffer('auto-detect-1.4.csv');
+      const report = (await validate(buffer, {
+        profile: '1.4',
+      })) as ValidateType;
+      expect(report.profile).toBe('1.4');
+    });
+
+    it('utilise le profil 1.5 quand forcé explicitement', async () => {
+      const buffer = await readAsBuffer('auto-detect-1.5.csv');
+      const report = (await validate(buffer, {
+        profile: '1.5',
+      })) as ValidateType;
+      expect(report.profile).toBe('1.5');
+    });
   });
 });

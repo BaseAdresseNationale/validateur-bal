@@ -97,7 +97,7 @@ export function parseErrorCode(code: string): {
   }
 
   if (parts[0] === 'field') {
-    return { prefix: 'field', code };
+    return { prefix: 'field', code, schemaName: parts[1] };
   }
 
   if (parts[0] === 'rows') {
