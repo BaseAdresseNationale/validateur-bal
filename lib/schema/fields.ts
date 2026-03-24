@@ -1,7 +1,7 @@
 import { trim, trimStart, deburr } from 'lodash';
 
 import { isCommuneActuelle, isCommuneAncienne } from '../utils/cog';
-import { validate as isUuid } from 'uuid';
+import { validate as isUuid, version as versionUuid } from 'uuid';
 import { ParsedValue, PositionTypeEnum, RemediationValue } from './shema.type';
 import { date_der_maj } from './fields/date_der_maj.field';
 
@@ -56,6 +56,10 @@ const enumPositionMap = new Map();
 
 for (const value of Object.values(PositionTypeEnum)) {
   enumPositionMap.set(getNormalizedEnumValue(value), value.normalize());
+}
+
+function isUuidV4(value: string): boolean {
+  return isUuid(value) ? versionUuid(value) === 4 : false;
 }
 
 const fields: Record<string, FieldsSchema> = {
@@ -134,9 +138,9 @@ const fields: Record<string, FieldsSchema> = {
       const idBanAdresse = uuidAdresse?.substr(3) || null;
 
       if (
-        (idBanCommune && !isUuid(idBanCommune)) ||
-        (idBanToponyme && !isUuid(idBanToponyme)) ||
-        (idBanAdresse && !isUuid(idBanAdresse))
+        (idBanCommune && !isUuidV4(idBanCommune)) ||
+        (idBanToponyme && !isUuidV4(idBanToponyme)) ||
+        (idBanAdresse && !isUuidV4(idBanAdresse))
       ) {
         addError('type_invalide');
         return undefined;
@@ -156,7 +160,7 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
-      if (!isUuid(v)) {
+      if (!isUuidV4(v)) {
         addError('type_invalide');
         return undefined;
       }
@@ -169,7 +173,7 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
-      if (!isUuid(v)) {
+      if (!isUuidV4(v)) {
         addError('type_invalide');
         return undefined;
       }
@@ -182,7 +186,7 @@ const fields: Record<string, FieldsSchema> = {
     formats: ['1.4', '1.5'],
     trim: true,
     parse(v: string, { addError }) {
-      if (!isUuid(v)) {
+      if (!isUuidV4(v)) {
         addError('type_invalide');
         return undefined;
       }
