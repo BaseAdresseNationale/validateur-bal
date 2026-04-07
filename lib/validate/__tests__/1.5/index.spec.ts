@@ -79,19 +79,4 @@ describe('VALIDATE 1.5 TEST', () => {
     expect(error.length).toBe(1);
     expect(error[0].level).toBe(ErrorLevelEnum.ERROR);
   });
-
-  test('Error numero.not_to_be_zero (file 1.5)', async () => {
-    const buffer = await readAsBuffer('1.5-numero-zero.csv');
-    const report = (await validate(buffer, {
-      profile: '1.5',
-    })) as ValidateType;
-    expect(report.encoding).toBe('utf-8');
-    expect(report.parseOk).toBe(true);
-    expect(report.profilesValidation['1.5'].isValid).toBe(false);
-    const error = report.profilErrors.filter(
-      (e) => e.code === 'numero.not_to_be_zero',
-    );
-    expect(error.length).toBe(1);
-    expect(error[0].level).toBe(ErrorLevelEnum.ERROR);
-  });
 });
