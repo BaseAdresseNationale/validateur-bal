@@ -6,8 +6,6 @@ const additionalError = new Set([
   'field.id_ban_commune.missing',
   'field.id_ban_toponyme.missing',
   'field.id_ban_adresse.missing',
-  // NUMERO
-  'numero.not_to_be_zero',
   //TOPONYME
   'field.toponyme.missing',
   'toponyme.valeur_manquante',
