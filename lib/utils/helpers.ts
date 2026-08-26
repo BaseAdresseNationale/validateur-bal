@@ -34,8 +34,11 @@ export function getVoieIdentifier(
     ${isToponyme && `#${parsedValues.numero === Number(IS_TOPO_NB) ? 'toponyme' : 'voie'}`}`;
 }
 
-export function getNumeroIdentifier({ parsedValues }: ValidateRowType) {
-  return `${parsedValues.numero}#${parsedValues.suffixe}#${normalize(getVoieNom(parsedValues))}#${parsedValues.commune_deleguee_insee}`;
+export function getNumeroIdentifier({
+  parsedValues,
+  additionalValues,
+}: ValidateRowType) {
+  return `${parsedValues.numero}#${parsedValues.suffixe}#${normalize(getVoieNom(parsedValues))}#${additionalValues?.cle_interop?.codeVoie || parsedValues.commune_deleguee_insee}`;
 }
 
 // On fait une liste des langues régional que l'on peut utiliser
